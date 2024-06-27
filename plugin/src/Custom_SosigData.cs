@@ -1,7 +1,7 @@
 ﻿using FistVR;
 using UnityEngine;
 
-namespace Packer
+namespace CustomSosigLoader
 {
     internal class Custom_SosigData
     {

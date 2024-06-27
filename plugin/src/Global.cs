@@ -5,7 +5,7 @@ using BepInEx;
 using System.IO;
 using System.Linq;
 
-namespace Packer
+namespace CustomSosigLoader
 {
     internal class Global
     {
@@ -24,7 +24,7 @@ namespace Packer
 
             if (directories.Count == 0)
             {
-                Debug.Log("Custom Sosigs: No Custom Sosigs were found!");
+                Debug.Log("Custom Sosig Loader - No Custom Sosigs were found!");
                 return;
             }
 
@@ -53,7 +53,7 @@ namespace Packer
                     //Add to our collection
                     CustomSosigLoaderPlugin.customSosigs.Add(sosigTemplate.sosigEnemyID, sosigTemplate);
 
-                    Debug.Log("Custom Sosig: Loaded " + sosigTemplate.sosigEnemyID + " - " + sosigTemplate.displayName);
+                    Debug.Log("Custom Sosig Loader - Loaded " + sosigTemplate.sosigEnemyID + " - " + sosigTemplate.displayName);
                 }
             }
         }
@@ -67,7 +67,7 @@ namespace Packer
                 if (IM.OD.TryGetValue(itemIDs[i], out mainObject))
                     input.Add(mainObject);
                 else
-                    Debug.Log("Supply Raid Custom Sosig - Could not find " + itemIDs);
+                    Debug.Log("Custom Sosig Loader - Could not find " + itemIDs);
             }
         }
 
@@ -75,7 +75,7 @@ namespace Packer
         {
             //if(loadedTextures.Contains(textureName))
 
-            string path = Paths.PluginPath + "\\Packer-SupplyRaid\\" + textureName;
+            string path = Paths.PluginPath + "\\Packer-Custom_Sosig_Loader\\" + textureName;
             Texture2D tex = null;
 
             byte[] fileData;
@@ -89,7 +89,7 @@ namespace Packer
 
             if (tex == null)
             {
-                Debug.LogError("Supply Raid - Texture Not Found: " + path);
+                Debug.LogError("Custom Sosig Loader - Texture Not Found: " + path);
                 whiteSosig = null;
             }
 

@@ -2,7 +2,7 @@
 using FistVR;
 using System.Collections.Generic;
 
-namespace Packer
+namespace CustomSosigLoader
 {
     [System.Serializable]
     public class Custom_OutfitConfig

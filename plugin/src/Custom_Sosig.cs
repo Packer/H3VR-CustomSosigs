@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using FistVR;
 
-namespace Packer
+namespace CustomSosigLoader
 {
     [System.Serializable]
     public class Custom_Sosig

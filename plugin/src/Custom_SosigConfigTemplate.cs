@@ -2,7 +2,7 @@
 using FistVR;
 using UnityEngine;
 
-namespace Packer
+namespace CustomSosigLoader
 {
     [System.Serializable]
     public class Custom_SosigConfigTemplate

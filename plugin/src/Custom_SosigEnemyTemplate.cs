@@ -4,7 +4,7 @@ using System.IO;
 using BepInEx;
 using System.Collections.Generic;
 
-namespace Packer
+namespace CustomSosigLoader
 {
     [System.Serializable]
     public class Custom_SosigEnemyTemplate

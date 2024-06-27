@@ -3,7 +3,7 @@ using HarmonyLib;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Packer
+namespace CustomSosigLoader
 {
     [HarmonyPatch]
     internal static class Hooks
@@ -11,7 +11,6 @@ namespace Packer
         [HarmonyPatch(typeof(Sosig)), HarmonyPatch(nameof(Sosig.Configure)), HarmonyPrefix]
         public static void Configure_Prefix(Sosig __instance, SosigConfigTemplate t)
         {
-            Debug.Log(" ATHIS AJHJSNA D JLASDK JLKSDAB JBLKSAD JLBKDSAJ BLKDASB LJDSALBJ ADSL JBADS");
             //Get Sosig ID if its custom Sosig
             if (CustomSosigLoaderPlugin.customSosigConfigs.TryGetValue(t, out SosigEnemyID id))
             {

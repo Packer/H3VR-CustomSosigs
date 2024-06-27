@@ -4,25 +4,30 @@ using FistVR;
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
+using BepInEx.Bootstrap;
 
-namespace Packer
+namespace CustomSosigLoader
 {
     [BepInPlugin("com.Packer.CustomSosigLoader", "Custom Sosig Loader", "1.0.0")]
     [BepInProcess("h3vr.exe")]
+    [BepInDependency("VIP.TommySoucy.H3MP", BepInDependency.DependencyFlags.SoftDependency)]
     public partial class CustomSosigLoaderPlugin : BaseUnityPlugin
     {
+        public static bool h3mpEnabled = false;
+
         //public static Dictionary<int, Custom_SosigEnemyTemplate> customSosigs = new Dictionary<int, Custom_SosigEnemyTemplate>();
         //public static List<Custom_SosigEnemyTemplate> customSosigs = new List<Custom_SosigEnemyTemplate>();
         public static Dictionary<int, Custom_SosigEnemyTemplate> customSosigs = new Dictionary<int, Custom_SosigEnemyTemplate>();
         public static Dictionary<SosigConfigTemplate, SosigEnemyID> customSosigConfigs = new Dictionary<SosigConfigTemplate, SosigEnemyID>();
         public static Texture2D customSosigTexture;
-        private AnvilCallback<GameObject> _sosigData;
+        //private AnvilCallback<GameObject> _sosigData;
 
 
         private void Awake()
         {
             Logger = base.Logger;
-            
+            h3mpEnabled = Chainloader.PluginInfos.ContainsKey("VIP.TommySoucy.H3MP");
+
             // Your plugin's ID, Name, and Version are available here.
             //Logger.LogMessage($"Hello, world! Sent from {Id} {Name} {Version}");
 
