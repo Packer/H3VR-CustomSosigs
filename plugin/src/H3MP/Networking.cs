@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using H3MP;
+using H3MP.Tracking;
 
 namespace CustomSosigLoader
 {
@@ -10,7 +11,12 @@ namespace CustomSosigLoader
     {
         public void thing()
         {
-            //H3MP.Tracking.TrackedSosigData.OnCollectAdditionalData;
+            TrackedSosigData.OnCollectAdditionalData += IncludeData;
+        }
+
+        private void IncludeData(ref bool collected, TrackedSosigData trackedSosigData)
+        {
+            throw new NotImplementedException();
         }
     }
 }

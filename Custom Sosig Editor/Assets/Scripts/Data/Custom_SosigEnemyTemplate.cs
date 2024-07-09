@@ -10,7 +10,6 @@ namespace CustomSosigLoader
         public string displayName = "New Sosig";
         public int sosigEnemyCategory = 0;
         public int sosigEnemyID = -1;
-        public Custom_Sosig[] customSosig;
 
         public string[] weaponOptionsID;
         public string[] weaponOptions_SecondaryID;
@@ -18,6 +17,7 @@ namespace CustomSosigLoader
         public string[] weaponOptions_TertiaryID;
         public float tertiaryChance = 0;
 
+        public Custom_Sosig[] customSosig;
         public Custom_OutfitConfig[] outfitConfig;
         public Custom_SosigConfigTemplate[] configTemplates;
     }

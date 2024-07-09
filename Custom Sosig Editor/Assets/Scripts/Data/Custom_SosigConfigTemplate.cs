@@ -59,10 +59,10 @@ namespace CustomSosigLoader
         public float DamMult_Thermal = 1;
         public float DamMult_Chilling = 1;
         public float DamMult_EMP = 1;
-        public List<float> LinkDamageMultipliers;
-        public List<float> LinkStaggerMultipliers;
-        public List<Vector2> StartingLinkIntegrity;
-        public List<float> StartingChanceBrokenJoint;
+        public List<float> LinkDamageMultipliers = new List<float> { 4, 2, 1.2f, 1 };
+        public List<float> LinkStaggerMultipliers = new List<float> { 8, 0.3f, 0.8f, 1 };
+        public List<Vector2> StartingLinkIntegrity = new List<Vector2> { new Vector2(100, 100), new Vector2(100, 100), new Vector2(100, 100), new Vector2(100, 100) };
+        public List<float> StartingChanceBrokenJoint = new List<float> { 0, 0, 0, 0 };
 
         [Header("Shudder Params")]
         public float ShudderThreshold = 2f;
