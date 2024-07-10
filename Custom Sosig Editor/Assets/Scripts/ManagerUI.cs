@@ -6,6 +6,11 @@ using UnityEngine.UI;
 public class ManagerUI : MonoBehaviour
 {
     public static ManagerUI instance;
+    public Text versionText;
+
+    [Header("Debug")]
+    [SerializeField] Text debugLine;
+    private string debugLog = "";
 
     [SerializeField] List<Sprite> sosigsBase = new List<Sprite>();
     [SerializeField] List<Sprite> accessoriesBase = new List<Sprite>();
@@ -32,26 +37,33 @@ public class ManagerUI : MonoBehaviour
     public Text warningMessage;
     public string warningConfirmMethod = "";
     private bool loadedSosig = false;
+    public GameObject loadingScreen;
 
 
     [Header("Pages")]
     public GameObject[] pages;
+    public GameObject mainMenu;
+    public GameObject saveButton;
 
 
     [Header("Preview")]
     public Image previewSosig;
     public Image[] previewClothing;
+    public Image[] previewWeapons;
 
 
     private void Awake()
     {
         instance = this;
+        versionText.text = "v" + Application.version;
     }
 
     // Start is called before the first frame update
     void Start()
     {
         CloseAllPages();
+        saveButton.SetActive(false);
+        mainMenu.SetActive(true);
 
         //Load our base items
         sosigs.AddRange(sosigsBase);
@@ -78,26 +90,17 @@ public class ManagerUI : MonoBehaviour
 
     public void OpenPage(int i)
     {
-        CloseAllPages();
-        pages[i].SetActive(true);
-
-        switch (i)
-        {
-            default:
-                case 0:
-                break;
-            case 1:
-                break;
-            case 2:
-                break;
-        }
+        CloseAllPages(i);
     }
 
-    void CloseAllPages()
+    void CloseAllPages(int index = -1)
     {
         for (int i = 0; i < pages.Length; i++)
         {
-            pages[i].SetActive(false);
+            if (index == i)
+                pages[i].SetActive(true);
+            else
+                pages[i].SetActive(false);
         }
     }
 
@@ -108,6 +111,7 @@ public class ManagerUI : MonoBehaviour
 
     public void GeneratePreview()
     {
+        //Clothing
         previewClothing[(int)WearType.Head].sprite = GetSosigClothing(OutfitConfigUI.instance.wears[(int)WearType.Head]);
         previewClothing[(int)WearType.Eye].sprite = GetSosigClothing(OutfitConfigUI.instance.wears[(int)WearType.Eye]);
         previewClothing[(int)WearType.Torso].sprite = GetSosigClothing(OutfitConfigUI.instance.wears[(int)WearType.Torso]);
@@ -115,11 +119,43 @@ public class ManagerUI : MonoBehaviour
         previewClothing[(int)WearType.PantsLower].sprite = GetSosigClothing(OutfitConfigUI.instance.wears[(int)WearType.PantsLower]);
         //previewClothing[(int)WearType.Backpacks].sprite = GetSosigClothing(OutfitConfigUI.instance.wears[(int)WearType.Head]);
         //previewClothing[(int)WearType.Head].sprite = GetSosigClothing(OutfitConfigUI.instance.wears[(int)WearType.Head]);
+
+        //Weapons
+        previewWeapons[0].sprite = GetSosigWeapon(0);
+        previewWeapons[1].sprite = GetSosigWeapon(1);
+        previewWeapons[2].sprite = GetSosigWeapon(2);
+    }
+
+    Sprite GetSosigWeapon(int index)
+    {
+        bool success = index == 0 ? true : false;
+
+        List<GenericButton> buttons;
+        if (index == 1)
+        {
+            buttons = SosigEnemyTemplateUI.instance.weaponOptions_SecondaryID;
+            success = Random.Range(0.00f, 1.00f) <= float.Parse(SosigEnemyTemplateUI.instance.secondaryChance.text);
+        }
+        else if (index == 2)
+        {
+            buttons = SosigEnemyTemplateUI.instance.weaponOptions_TertiaryID;
+            success = Random.Range(0.00f, 1.00f) <= float.Parse(SosigEnemyTemplateUI.instance.tertiaryChance.text);
+        }
+        else
+        {
+            buttons = SosigEnemyTemplateUI.instance.weaponOptionsID;
+            success = true;
+        }
+
+        if (buttons.Count >= 1 && success)
+            return buttons[Random.Range(0, buttons.Count)].image.sprite;
+        else
+            return blankSprite;
     }
 
     Sprite GetSosigClothing(OutfitConfigUI.Wear wear)
     {
-        if (wear.buttons.Count >= 1)
+        if (wear.buttons.Count >= 1 && Random.Range(0.00f, 1.00f) <= float.Parse(wear.chance.text))
             return wear.buttons[Random.Range(0, wear.buttons.Count)].image.sprite;
         else
             return blankSprite;
@@ -147,6 +183,8 @@ public class ManagerUI : MonoBehaviour
 
         SosigEnemyTemplateUI.instance.Load(template);
         loadedSosig = true;
+        saveButton.SetActive(true);
+        mainMenu.SetActive(false);
     }
 
     public void Load()
@@ -162,13 +200,14 @@ public class ManagerUI : MonoBehaviour
         //GET EXTERNAL TEMPLATE HERE
         SosigEnemyTemplateUI.instance.Load(new Custom_SosigEnemyTemplate());
         loadedSosig = true;
+        saveButton.SetActive(true);
+        mainMenu.SetActive(false);
     }
 
     public void Save()
     {
         Debug.Log("Fake Saving!");
     }
-
 
     //----------------------------------------------------------------------------
     //Popup Warning
@@ -197,4 +236,23 @@ public class ManagerUI : MonoBehaviour
         warningConfirmMethod = "";
     }
 
+    //----------------------------------------------------------------------------
+    // Console Log
+    //----------------------------------------------------------------------------
+
+    public static void LogError(string text)
+    {
+        instance.debugLog += "\n" + text;
+        instance.debugLine.text = text;
+        instance.debugLine.color = Color.red;
+        Debug.LogError(text);
+    }
+
+    public static void Log(string text)
+    {
+        instance.debugLog += "\n" + text;
+        instance.debugLine.text = text;
+        instance.debugLine.color = Color.white;
+        Debug.Log(text);
+    }
 }

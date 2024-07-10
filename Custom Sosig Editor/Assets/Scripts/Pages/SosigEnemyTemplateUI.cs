@@ -9,6 +9,7 @@ public class SosigEnemyTemplateUI : MonoBehaviour
     public static SosigEnemyTemplateUI instance;
 
     public Custom_SosigEnemyTemplate template;
+    public Text outfitTitleText;
 
     [Header("Enemy Template")]
     public InputField displayName;
@@ -27,13 +28,17 @@ public class SosigEnemyTemplateUI : MonoBehaviour
     [SerializeField] Transform tertiaryContent;
     public InputField tertiaryChance;
 
-    [Header("Configs")]
+    [Header("Config Dropdowns")]
+    public Dropdown outfitDropdown;
+    public Dropdown customSosigDropdown;
+    public Dropdown configTemplateDropdown;
+    /*
     public Custom_Sosig[] customSosig;
 
-    public Dropdown outfitDropdown;
     public Custom_OutfitConfig[] outfitConfig;
 
     public Custom_SosigConfigTemplate[] configTemplates;
+    */
 
     void Awake()
     {
@@ -52,6 +57,7 @@ public class SosigEnemyTemplateUI : MonoBehaviour
 
     public void OutfitLoad()
     {
+        int lastValue = outfitDropdown.value;
         outfitDropdown.ClearOptions();
         List<Dropdown.OptionData> options = new List<Dropdown.OptionData>();
         for (int i = 0; i < template.outfitConfig.Count; i++)
@@ -61,6 +67,14 @@ public class SosigEnemyTemplateUI : MonoBehaviour
             options.Add(option);
         }
         outfitDropdown.AddOptions(options);
+
+        if(lastValue < outfitDropdown.options.Count)
+            outfitDropdown.value = lastValue;
+        else
+            outfitDropdown.value = 0;
+
+        OutfitSelect();
+        outfitTitleText.text = "OUTFIT CONFIG: " + outfitDropdown.options[outfitDropdown.value].text;
     }
 
     public void OutfitAdd()
@@ -70,15 +84,21 @@ public class SosigEnemyTemplateUI : MonoBehaviour
         option.text = outfit.name;
         template.outfitConfig.Add(outfit);
         outfitDropdown.options.Add(option);
+        outfitDropdown.value++;
+        OutfitSelect();
+        outfitTitleText.text = "OUTFIT CONFIG: " + outfitDropdown.options[outfitDropdown.value].text;
     }
 
     public void OutfitDuplicate()
     {
         Dropdown.OptionData option = new Dropdown.OptionData();
-        Custom_OutfitConfig outfit = template.outfitConfig[outfitDropdown.value];
+        Custom_OutfitConfig outfit = Global.ObjectCloner.Clone(template.outfitConfig[outfitDropdown.value]);
         option.text = outfit.name;
         template.outfitConfig.Add(outfit);
         outfitDropdown.options.Add(option);
+        outfitDropdown.value++;
+        OutfitSelect();
+        outfitTitleText.text = "OUTFIT CONFIG: " + outfitDropdown.options[outfitDropdown.value].text;
     }
 
     public void OutfitRemove()
@@ -89,6 +109,8 @@ public class SosigEnemyTemplateUI : MonoBehaviour
 
         template.outfitConfig.RemoveAt(outfitDropdown.value);
         outfitDropdown.options.RemoveAt(outfitDropdown.value);
+        outfitDropdown.value--;
+        outfitTitleText.text = "OUTFIT CONFIG: " + outfitDropdown.options[outfitDropdown.value].text;
     }
 
     public void OutfitSelect()

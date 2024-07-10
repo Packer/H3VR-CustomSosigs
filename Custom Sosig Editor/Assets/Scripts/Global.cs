@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 
 public class Global
 {
@@ -33,12 +35,15 @@ public class Global
         List<string> collection = new List<string>();
         for (int i = 0; i < inputs.Length; i++)
         {
-            collection.Add(inputs[i].inputField.text);
+            if (inputs[i].inputField.text == "")
+                collection.Add("");
+            else
+                collection.Add(inputs[i].inputField.text);
         }
         return collection;
     }
 
-    public static GenericButton SetupCollectionButton(string item, ItemType type, Transform content)
+    public static GenericButton SetupCollectionButton(string item, ItemType type, Transform content, int index = -1)
     {
         GameObject prefab;
         List<Sprite> collection;
@@ -66,6 +71,7 @@ public class Global
         if(button.transform.parent && button.transform.parent.childCount >= 2)
             button.transform.SetSiblingIndex(button.transform.parent.childCount - 2);
         button.inputField.SetTextWithoutNotify(item);
+        button.index = index;
 
         //Populate Image
         if (item != "")
@@ -82,12 +88,24 @@ public class Global
         List<GenericButton> buttons = new List<GenericButton>();
         for (int i = 0; i < items.Count; i++)
         {
-            if (items[i] == "")
-                continue;
-
-            buttons.Add(SetupCollectionButton(items[i], type, content));
+            buttons.Add(SetupCollectionButton(items[i], type, content, i));
         }
         return buttons;
+    }
+
+    internal static class ObjectCloner
+    {
+        public static T Clone<T>(T obj)
+        {
+            using (MemoryStream buffer = new MemoryStream())
+            {
+                BinaryFormatter formatter = new BinaryFormatter();
+                formatter.Serialize(buffer, obj);
+                buffer.Position = 0;
+                T temp = (T)formatter.Deserialize(buffer);
+                return temp;
+            }
+        }
     }
 }
 

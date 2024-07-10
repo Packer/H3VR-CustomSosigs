@@ -18,6 +18,8 @@ public class LibraryManager : MonoBehaviour
 
     private bool sortOrder = false;
 
+    private string lastLoaded;
+
     private void Awake()
     {
         instance = this;
@@ -27,21 +29,22 @@ public class LibraryManager : MonoBehaviour
     {
         selectedButton = button;
         libraryMenu.SetActive(true);
-        SetupLibrary(ManagerUI.sosigs, true, "Sosig Library");
+        StartCoroutine(SetupLibrary(ManagerUI.sosigs, true, "Sosig Library"));
     }
 
     public void OpenWeaponsLibrary(GenericButton button)
     {
         selectedButton = button;
         libraryMenu.SetActive(true);
-        SetupLibrary(ManagerUI.weapons, false, "Weapons Library");
+        StartCoroutine(SetupLibrary(ManagerUI.weapons, false, "Weapons Library"));
+        //SetupLibrary(ManagerUI.weapons, false, "Weapons Library");
     }
 
     public void OpenAccessoriesLibrary(GenericButton button)
     {
         selectedButton = button;
         libraryMenu.SetActive(true);
-        SetupLibrary(ManagerUI.accessories, false, "Accessories Library");
+        StartCoroutine(SetupLibrary(ManagerUI.accessories, false, "Accessories Library"));
     }
 
     public void CloseLibrary()
@@ -57,26 +60,39 @@ public class LibraryManager : MonoBehaviour
         if (selectedButton && selectedItem != null)
         {
             selectedButton.image.sprite = selectedItem.image.sprite;
+            //Notify button of value change so it saves
             selectedButton.inputField.text = selectedItem.description;
+            selectedButton.inputField.ActivateInputField();
         }
         selectedButton = null;
 
         libraryMenu.SetActive(false);
     }
 
-    public void SetupLibrary(List<Sprite> sprites, bool idPrefix, string title)
+    public static IEnumerator SetupLibrary(List<Sprite> sprites, bool idPrefix, string title)
     {
-        libraryTitle.text = title;
+        ManagerUI.instance.loadingScreen.SetActive(true);
+        instance.libraryTitle.text = title;
+        yield return null;
 
-        for (int i = itemButtons.Count - 1; i >= 0; i--)
+        if (instance.lastLoaded == title)
         {
-            Destroy(itemButtons[i].gameObject);
+            ManagerUI.instance.loadingScreen.SetActive(false);
+            yield break;
         }
-        itemButtons.Clear();
+        else
+            instance.lastLoaded = title;
 
-        for (int i = 0; i < sprites.Count; i++)
+
+        for (int i = instance.itemButtons.Count - 1; i >= 0; i--)
         {
-            GenericButton btn = Instantiate(buttonPrefab.gameObject, itemContent).GetComponent<GenericButton>();
+            Destroy(instance.itemButtons[i].gameObject);
+        }
+        instance.itemButtons.Clear();
+
+        for (int i = 0, x = 0; i < sprites.Count; i++, x++)
+        {
+            GenericButton btn = Instantiate(instance.buttonPrefab.gameObject, instance.itemContent).GetComponent<GenericButton>();
             btn.description = sprites[i].name;
             btn.text.text = sprites[i].name;
             btn.image.sprite = sprites[i];
@@ -85,8 +101,16 @@ public class LibraryManager : MonoBehaviour
             if(idPrefix)
                 btn.id = int.Parse(GetInitialNumber(sprites[i].name));
 
-            itemButtons.Add(btn);
+            instance.itemButtons.Add(btn);
+
+            if (x == 100)
+            {
+                x = 0;
+                yield return null;
+            }
         }
+
+        ManagerUI.instance.loadingScreen.SetActive(false);
     }
 
     public void SortByName()
