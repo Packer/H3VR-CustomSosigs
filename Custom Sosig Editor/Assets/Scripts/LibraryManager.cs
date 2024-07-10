@@ -9,6 +9,8 @@ public class LibraryManager : MonoBehaviour
     public static GenericButton selectedItem;
     public GameObject libraryMenu;
     private GenericButton selectedButton;
+    public InputField searchInput;
+    public Text libraryTitle;
 
     public Transform itemContent;
     private List<GenericButton> itemButtons = new List<GenericButton>();
@@ -25,29 +27,34 @@ public class LibraryManager : MonoBehaviour
     {
         selectedButton = button;
         libraryMenu.SetActive(true);
-        SetupLibrary(ManagerUI.sosigs, true);
+        SetupLibrary(ManagerUI.sosigs, true, "Sosig Library");
     }
 
     public void OpenWeaponsLibrary(GenericButton button)
     {
         selectedButton = button;
         libraryMenu.SetActive(true);
-        SetupLibrary(ManagerUI.weapons, false);
+        SetupLibrary(ManagerUI.weapons, false, "Weapons Library");
     }
 
     public void OpenAccessoriesLibrary(GenericButton button)
     {
         selectedButton = button;
         libraryMenu.SetActive(true);
-        SetupLibrary(ManagerUI.accessories, false);
+        SetupLibrary(ManagerUI.accessories, false, "Accessories Library");
     }
 
-    public void CloseLibrary(bool empty, GenericButton selectedItem)
+    public void CloseLibrary()
     {
-        if (empty)
+        CloseLibrary(null);
+    }
+
+    public void CloseLibrary(GenericButton selectedItem)
+    {
+        if (selectedItem == null)
             LibraryManager.selectedItem = null;
 
-        if (selectedButton)
+        if (selectedButton && selectedItem != null)
         {
             selectedButton.image.sprite = selectedItem.image.sprite;
             selectedButton.inputField.text = selectedItem.description;
@@ -57,8 +64,10 @@ public class LibraryManager : MonoBehaviour
         libraryMenu.SetActive(false);
     }
 
-    public void SetupLibrary(List<Sprite> sprites, bool idPrefix)
+    public void SetupLibrary(List<Sprite> sprites, bool idPrefix, string title)
     {
+        libraryTitle.text = title;
+
         for (int i = itemButtons.Count - 1; i >= 0; i--)
         {
             Destroy(itemButtons[i].gameObject);
@@ -91,6 +100,27 @@ public class LibraryManager : MonoBehaviour
         }
 
         sortOrder = !sortOrder;
+    }
+
+    public void SearchName()
+    {
+        if (searchInput.text == "")
+        {
+            for (int i = 0; i < itemButtons.Count; i++)
+            {
+                itemButtons[i].gameObject.SetActive(true);
+            }
+            return;
+        }
+
+        for (int i = 0; i < itemButtons.Count; i++)
+        {
+            if(itemButtons[i].description.Contains(searchInput.text, System.StringComparison.OrdinalIgnoreCase))
+                itemButtons[i].gameObject.SetActive(true);
+            else
+                itemButtons[i].gameObject.SetActive(false);
+        }
+
     }
 
     public static string GetInitialNumber(string input)

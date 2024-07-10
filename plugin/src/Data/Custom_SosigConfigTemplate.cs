@@ -114,9 +114,11 @@ namespace CustomSosigLoader
             return config;
         }
 
-        [Header("Supply Raid")]
-        public bool forceOverrideAIEntityParams = false;
-        public string[] spawnItemIDOnDestroy;
+        public string name;
+
+        //[Header("Supply Raid")]
+        //public bool forceOverrideAIEntityParams = false;
+        //public string[] spawnItemIDOnDestroy;
 
         [Header("AIEntityParams")]
         public float ViewDistance = 250f;

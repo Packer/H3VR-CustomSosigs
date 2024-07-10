@@ -3,7 +3,7 @@
 [System.Serializable]
 public class Custom_Sosig
 {
-    public string name; //For internal use
+    public string name = "Custom Sosig"; //For internal use
     public int baseSosigID = 0;
     //public string customTextureName = "";
 

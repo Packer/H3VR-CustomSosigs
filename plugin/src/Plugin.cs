@@ -11,9 +11,11 @@ namespace CustomSosigLoader
     [BepInPlugin("com.Packer.CustomSosigLoader", "Custom Sosig Loader", "1.0.0")]
     [BepInProcess("h3vr.exe")]
     [BepInDependency("VIP.TommySoucy.H3MP", BepInDependency.DependencyFlags.SoftDependency)]
+    [BepInDependency("com.Packer.SupplyRaid", BepInDependency.DependencyFlags.SoftDependency)]
     public partial class CustomSosigLoaderPlugin : BaseUnityPlugin
     {
         public static bool h3mpEnabled = false;
+        public static bool supplyRaidEnabled = false;
 
         //public static Dictionary<int, Custom_SosigEnemyTemplate> customSosigs = new Dictionary<int, Custom_SosigEnemyTemplate>();
         //public static List<Custom_SosigEnemyTemplate> customSosigs = new List<Custom_SosigEnemyTemplate>();
@@ -27,6 +29,7 @@ namespace CustomSosigLoader
         {
             Logger = base.Logger;
             h3mpEnabled = Chainloader.PluginInfos.ContainsKey("VIP.TommySoucy.H3MP");
+            supplyRaidEnabled = Chainloader.PluginInfos.ContainsKey("com.Packer.SupplyRaid");
 
             // Your plugin's ID, Name, and Version are available here.
             //Logger.LogMessage($"Hello, world! Sent from {Id} {Name} {Version}");

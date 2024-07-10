@@ -4,9 +4,11 @@ using UnityEngine;
 [System.Serializable]
 public class Custom_SosigConfigTemplate
 {
-    [Header("Supply Raid")]
-    public bool forceOverrideAIEntityParams = false;
-    public string[] spawnItemIDOnDestroy;
+    public string name = "Config Template";
+
+    //[Header("Supply Raid")]
+    //public bool forceOverrideAIEntityParams = false;
+    //public string[] spawnItemIDOnDestroy;
 
     [Header("AIEntityParams")]
     public float ViewDistance = 250f;

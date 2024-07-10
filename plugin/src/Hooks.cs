@@ -119,7 +119,6 @@ namespace CustomSosigLoader
             speechSet.BaseVolume = custom.voiceVolume;
 
             sosig.Speech = speechSet;
-
         }
     }
 }

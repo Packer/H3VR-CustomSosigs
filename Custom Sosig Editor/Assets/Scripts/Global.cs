@@ -1,40 +1,91 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Global
 {
-
-    public static List<GenericButton> SetupCollection(string[] items, ItemType type, Transform content)
+    public static Sprite GetSpriteByName(ItemType type ,string description)
     {
+        Sprite foundSprite = null;
         switch (type)
         {
+            default:
             case ItemType.Sosigs:
-                return SetupCollection(items, ManagerUI.instance.sosigCollectionPrefab, content, ManagerUI.sosigs);
+                foundSprite = ManagerUI.sosigs.Find(x => x.name == description);
+                break;
             case ItemType.Weapons:
-                return SetupCollection(items, ManagerUI.instance.weaponsCollectionPrefab, content, ManagerUI.weapons);
+                foundSprite = ManagerUI.weapons.Find(x => x.name == description);
+                break;
             case ItemType.Accessories:
-                return SetupCollection(items, ManagerUI.instance.accessoriesCollectionPrefab, content, ManagerUI.accessories);
+                foundSprite = ManagerUI.accessories.Find(x => x.name == description);
+                break;
         }
 
-        return SetupCollection(items, ManagerUI.instance.sosigCollectionPrefab, content, ManagerUI.sosigs);
+        if(foundSprite != null)
+            return foundSprite;
+        return ManagerUI.DefaultSprite();
+
     }
 
-    public static List<GenericButton> SetupCollection(string[] items, GameObject prefab, Transform content, List<Sprite> collection)
+    public static List<string> GenericButtonsToStringList(GenericButton[] inputs)
+    {
+        List<string> collection = new List<string>();
+        for (int i = 0; i < inputs.Length; i++)
+        {
+            collection.Add(inputs[i].inputField.text);
+        }
+        return collection;
+    }
+
+    public static GenericButton SetupCollectionButton(string item, ItemType type, Transform content)
+    {
+        GameObject prefab;
+        List<Sprite> collection;
+
+        switch (type)
+        {
+            default:
+            case ItemType.Sosigs:
+                prefab = ManagerUI.instance.sosigCollectionPrefab;
+                collection = ManagerUI.sosigs;
+                break;
+            case ItemType.Weapons:
+                prefab = ManagerUI.instance.weaponsCollectionPrefab;
+                collection = ManagerUI.weapons;
+                break;
+            case ItemType.Accessories:
+                prefab = ManagerUI.instance.accessoriesCollectionPrefab;
+                collection = ManagerUI.accessories;
+                break;
+        }
+
+        GenericButton button = GameObject.Instantiate(prefab, content).GetComponent<GenericButton>();
+        button.gameObject.SetActive(true);
+
+        if(button.transform.parent && button.transform.parent.childCount >= 2)
+            button.transform.SetSiblingIndex(button.transform.parent.childCount - 2);
+        button.inputField.SetTextWithoutNotify(item);
+
+        //Populate Image
+        if (item != "")
+        {
+            Sprite thumbnail = collection.Find(x => x.name == item);
+            button.image.sprite = thumbnail;
+        }
+
+        return button;
+    }
+
+    public static List<GenericButton> SetupCollection(List<string> items, ItemType type, Transform content)
     {
         List<GenericButton> buttons = new List<GenericButton>();
-        for (int i = 0; i < items.Length; i++)
+        for (int i = 0; i < items.Count; i++)
         {
             if (items[i] == "")
                 continue;
 
-            GenericButton button = GameObject.Instantiate(prefab,content).GetComponent<GenericButton>();
-            button.inputField.SetTextWithoutNotify(items[i]);
-
-            //Populate Image
-            Sprite thumbnail = collection.Find(x => x.name == items[i]);
-            button.image.sprite = thumbnail;
-            buttons.Add(button);
+            buttons.Add(SetupCollectionButton(items[i], type, content));
         }
         return buttons;
     }

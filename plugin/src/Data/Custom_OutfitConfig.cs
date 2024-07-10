@@ -44,6 +44,8 @@ namespace CustomSosigLoader
             return outfit;
         }
 
+        public string name;
+
         public string[] headwearID;
         public float chance_HeadWear = 0;
         public bool headUsesTorsoIndex = false;
