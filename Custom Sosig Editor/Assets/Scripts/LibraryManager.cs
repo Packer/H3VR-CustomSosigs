@@ -1,12 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class LibraryManager : MonoBehaviour
 {
     public static LibraryManager instance;
     public static GenericButton selectedItem;
     public GameObject libraryMenu;
+    private GenericButton selectedButton;
 
     public Transform itemContent;
     private List<GenericButton> itemButtons = new List<GenericButton>();
@@ -19,30 +21,38 @@ public class LibraryManager : MonoBehaviour
         instance = this;
     }
 
-
-
-    public void OpenSosigLibrary()
+    public void OpenSosigLibrary(GenericButton button)
     {
+        selectedButton = button;
         libraryMenu.SetActive(true);
         SetupLibrary(ManagerUI.sosigs, true);
     }
 
-    public void OpenWeaponsLibrary()
+    public void OpenWeaponsLibrary(GenericButton button)
     {
+        selectedButton = button;
         libraryMenu.SetActive(true);
         SetupLibrary(ManagerUI.weapons, false);
     }
 
-    public void OpenAccessoriesLibrary()
+    public void OpenAccessoriesLibrary(GenericButton button)
     {
+        selectedButton = button;
         libraryMenu.SetActive(true);
         SetupLibrary(ManagerUI.accessories, false);
     }
 
-    public void CloseLibrary(bool empty)
+    public void CloseLibrary(bool empty, GenericButton selectedItem)
     {
         if (empty)
-            selectedItem = null;
+            LibraryManager.selectedItem = null;
+
+        if (selectedButton)
+        {
+            selectedButton.image.sprite = selectedItem.image.sprite;
+            selectedButton.inputField.text = selectedItem.description;
+        }
+        selectedButton = null;
 
         libraryMenu.SetActive(false);
     }
@@ -83,7 +93,7 @@ public class LibraryManager : MonoBehaviour
         sortOrder = !sortOrder;
     }
 
-    static string GetInitialNumber(string input)
+    public static string GetInitialNumber(string input)
     {
         // Regular expression to match initial numbers at the start of the string
         string pattern = @"^\d+";

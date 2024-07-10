@@ -53,6 +53,7 @@ namespace CustomSosigLoader
                 SosigEnemyTemplate template = customTemplate.Value.Initialize();
 
                 template.SosigEnemyID = (SosigEnemyID)customTemplate.Value.sosigEnemyID;
+                template.SosigEnemyCategory = (SosigEnemyCategory)customTemplate.Value.sosigEnemyCategory;
 
                 template.SosigPrefabs = new List<FVRObject>();
 

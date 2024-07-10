@@ -10,10 +10,11 @@ public class GenericButton : MonoBehaviour
     public int id = -1;
     public Text text;
     public Image image;
+    public InputField inputField;
 
     public void SelectLibraryItem()
     {
         LibraryManager.selectedItem = this;
-        LibraryManager.instance.CloseLibrary(false);
+        LibraryManager.instance.CloseLibrary(false, this);
     }
 }

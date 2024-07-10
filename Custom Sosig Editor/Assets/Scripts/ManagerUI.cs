@@ -5,9 +5,11 @@ using UnityEngine.UI;
 
 public class ManagerUI : MonoBehaviour
 {
-    public List<Sprite> sosigsBase = new List<Sprite>();
-    public List<Sprite> accessoriesBase = new List<Sprite>();
-    public List<Sprite> weaponBase = new List<Sprite>();
+    public static ManagerUI instance;
+
+    [SerializeField] List<Sprite> sosigsBase = new List<Sprite>();
+    [SerializeField] List<Sprite> accessoriesBase = new List<Sprite>();
+    [SerializeField] List<Sprite> weaponBase = new List<Sprite>();
 
 
     public static List<Sprite> sosigs = new List<Sprite>();
@@ -18,6 +20,14 @@ public class ManagerUI : MonoBehaviour
     private string accessoriesPath = "";
     private string weaponIDsPath = "";
 
+    public GameObject sosigCollectionPrefab;
+    public GameObject weaponsCollectionPrefab;
+    public GameObject accessoriesCollectionPrefab;
+
+    private void Awake()
+    {
+        instance = this;
+    }
 
     // Start is called before the first frame update
     void Start()
