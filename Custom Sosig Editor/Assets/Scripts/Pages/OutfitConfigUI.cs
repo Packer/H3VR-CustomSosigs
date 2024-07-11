@@ -27,7 +27,7 @@ public class OutfitConfigUI : MonoBehaviour
             {
                 if (buttons[i])
                     Destroy(buttons[i].gameObject);
-                Debug.Log("A " + i);
+                //Debug.Log("A " + i);
             }
             buttons.Clear();
         }
@@ -96,7 +96,6 @@ public class OutfitConfigUI : MonoBehaviour
     public void RemoveAccessory(GenericButton button)
     {
         //id - WearType
-        Debug.Log(button.id);
         wears[button.id].buttons.Remove(button);
 
         //Destroy Old Button
@@ -201,7 +200,7 @@ public class OutfitConfigUI : MonoBehaviour
         outfitConfig.beltID = Global.GenericButtonsToStringList(wears[7].buttons.ToArray());
 
         //Save Log
-        ManagerUI.Log("Outfit saved at: " + System.DateTime.Now);
+        ManagerUI.Log("Outfit applied at: " + System.DateTime.Now);
 
         //Update UI
         SosigEnemyTemplateUI.instance.OutfitLoad();

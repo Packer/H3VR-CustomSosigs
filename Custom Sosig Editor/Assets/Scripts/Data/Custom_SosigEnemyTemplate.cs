@@ -9,10 +9,10 @@ public class Custom_SosigEnemyTemplate
     public int sosigEnemyCategory = 0;
     public int sosigEnemyID = -1;
 
-    public List<string> weaponOptionsID;
-    public List<string> weaponOptions_SecondaryID;
+    public List<string> weaponOptionsID = new List<string>();
+    public List<string> weaponOptions_SecondaryID = new List<string>();
     public float secondaryChance = 0;
-    public List<string> weaponOptions_TertiaryID;
+    public List<string> weaponOptions_TertiaryID = new List<string>();
     public float tertiaryChance = 0;
 
     public List<Custom_Sosig> customSosig = new List<Custom_Sosig>();

@@ -3,10 +3,94 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 using System.Linq;
+using SFB;
+using System;
 
 public class DataLoader : MonoBehaviour
 {
     public static List<Sprite> loadedSprites = new List<Sprite>();
+    public static Custom_SosigEnemyTemplate sosigEnemyTemplate;
+    public static string lastDirectory;
+
+    public static void OnSaveDialogue(string json)
+    {
+        string path = StandaloneFileBrowser.SaveFilePanel(
+            "Save Custom Sosig",
+            Path.GetDirectoryName(lastDirectory),
+            Path.GetFileName(lastDirectory),
+            "csosig");
+
+        if (!string.IsNullOrEmpty(path))
+        {
+            File.WriteAllText(path, json);
+            ManagerUI.Log("Saved Custom Sosig " + path);
+        }
+    }
+
+    public static bool OnLoadDialogue()
+    {
+        string[] paths;
+        string modPath = lastDirectory;
+
+        if (modPath == "")
+            modPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "/r2modmanPlus-local/H3VR/profiles/";
+
+        if (!Directory.Exists(modPath))
+            modPath = "";
+
+        paths = StandaloneFileBrowser.OpenFilePanel("Load Custom Sosig", modPath, "csosig", false);
+
+
+        if (paths.Length > 0)
+        {
+            lastDirectory = paths[0];
+            PlayerPrefs.SetString("lastCharacterDirectory", lastDirectory);
+
+            ManagerUI.instance.StartCoroutine(OutputRoutine(new Uri(paths[0]).AbsoluteUri));
+        }
+        else
+        {
+            ManagerUI.Log("Loading Custom Sosig Canceled");
+            return false;
+        }
+
+        return true;
+    }
+
+    public static IEnumerator OutputRoutine(string url)
+    {
+        var loader = new WWW(url);
+        yield return loader;
+
+        Custom_SosigEnemyTemplate template = LoadCustomSosig(loader.text);
+        yield return null;
+
+        if (template != null)
+            SosigEnemyTemplateUI.instance.LoadEnemyTemplate(template);
+
+    }
+
+    public static Custom_SosigEnemyTemplate LoadCustomSosig(string json)
+    {
+        try
+        {
+            sosigEnemyTemplate = JsonUtility.FromJson<Custom_SosigEnemyTemplate>(json);
+        }
+        catch (Exception ex)
+        {
+            ManagerUI.LogError(ex.Message);
+            return null;
+        }
+
+        if (sosigEnemyTemplate != null)
+        {
+            ManagerUI.Log("Loaded Custom Sosig " + sosigEnemyTemplate.displayName);
+        }
+
+        return sosigEnemyTemplate;
+    }
+
+
 
     public static Sprite LoadSprite(string path)
     {

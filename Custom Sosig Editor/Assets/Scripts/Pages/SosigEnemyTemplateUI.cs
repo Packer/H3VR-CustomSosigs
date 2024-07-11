@@ -32,13 +32,6 @@ public class SosigEnemyTemplateUI : MonoBehaviour
     public Dropdown outfitDropdown;
     public Dropdown customSosigDropdown;
     public Dropdown configTemplateDropdown;
-    /*
-    public Custom_Sosig[] customSosig;
-
-    public Custom_OutfitConfig[] outfitConfig;
-
-    public Custom_SosigConfigTemplate[] configTemplates;
-    */
 
     void Awake()
     {
@@ -181,8 +174,33 @@ public class SosigEnemyTemplateUI : MonoBehaviour
 
         //Destroy Old Button
         Destroy(button.gameObject);
+
+        SaveEnemyTemplate();
     }
 
+    public void ClearAllWeapons()
+    {
+        for (int i = 0; i < weaponOptionsID.Count; i++)
+        {
+            if(weaponOptionsID[i])
+                Destroy(weaponOptionsID[i].gameObject);
+        }
+        weaponOptionsID.Clear();
+
+        for (int i = 0; i < weaponOptions_SecondaryID.Count; i++)
+        {
+            if (weaponOptions_SecondaryID[i])
+                Destroy(weaponOptions_SecondaryID[i].gameObject);
+        }
+        weaponOptions_SecondaryID.Clear();
+
+        for (int i = 0; i < weaponOptions_TertiaryID.Count; i++)
+        {
+            if (weaponOptions_TertiaryID[i])
+                Destroy(weaponOptions_TertiaryID[i].gameObject);
+        }
+        weaponOptions_TertiaryID.Clear();
+    }
 
     //----------------------------------------------------------------------------
     // Load Save
@@ -192,7 +210,7 @@ public class SosigEnemyTemplateUI : MonoBehaviour
     /// Used for Load and New
     /// </summary>
     /// <param name="newTemplate"></param>
-    public void Load(Custom_SosigEnemyTemplate newTemplate)
+    public void LoadEnemyTemplate(Custom_SosigEnemyTemplate newTemplate)
     {
         template = newTemplate;
 
@@ -200,14 +218,27 @@ public class SosigEnemyTemplateUI : MonoBehaviour
         sosigEnemyCategory.SetTextWithoutNotify(template.sosigEnemyCategory.ToString());
         sosigEnemyID.SetTextWithoutNotify(template.sosigEnemyID.ToString());
 
+        //Weapons
+        ClearAllWeapons();
+
+        weaponOptionsID = Global.SetupCollection(template.weaponOptionsID, ItemType.Weapons, primaryContent);
+        weaponOptions_SecondaryID = Global.SetupCollection(template.weaponOptions_SecondaryID, ItemType.Weapons, secondaryContent);
+        weaponOptions_TertiaryID = Global.SetupCollection(template.weaponOptions_TertiaryID, ItemType.Weapons, tertiaryContent);
+
+        secondaryChance.text = template.secondaryChance.ToString();
+        tertiaryChance.text = template.tertiaryChance.ToString();
+
+        //Load Outfits
         OutfitLoad();
 
         //Load Custom
 
         //Load Enemy Template
+
+        ManagerUI.instance.GeneratePreview();
     }
 
-    public void Save()
+    public void SaveEnemyTemplate()
     {
         template.displayName = displayName.text;
         template.sosigEnemyCategory = int.Parse(sosigEnemyCategory.text);
@@ -216,10 +247,12 @@ public class SosigEnemyTemplateUI : MonoBehaviour
         template.weaponOptionsID = Global.GenericButtonsToStringList(weaponOptionsID.ToArray());
 
         template.weaponOptions_SecondaryID = Global.GenericButtonsToStringList(weaponOptions_SecondaryID.ToArray());
-        template.secondaryChance = int.Parse(secondaryChance.text);
+        template.secondaryChance = float.Parse(secondaryChance.text);
 
         template.weaponOptions_TertiaryID = Global.GenericButtonsToStringList(weaponOptions_TertiaryID.ToArray());
-        template.tertiaryChance = int.Parse(tertiaryChance.text);
+        template.tertiaryChance = float.Parse(tertiaryChance.text);
+
+        ManagerUI.Log("Enemy Template applied at: " + System.DateTime.Now);
     }
 
     //----------------------------------------------------------------------------

@@ -181,7 +181,7 @@ public class ManagerUI : MonoBehaviour
         template.outfitConfig.Add(new Custom_OutfitConfig());
         template.configTemplates.Add(new Custom_SosigConfigTemplate());
 
-        SosigEnemyTemplateUI.instance.Load(template);
+        SosigEnemyTemplateUI.instance.LoadEnemyTemplate(template);
         loadedSosig = true;
         saveButton.SetActive(true);
         mainMenu.SetActive(false);
@@ -198,7 +198,9 @@ public class ManagerUI : MonoBehaviour
     void LoadSosig()
     {
         //GET EXTERNAL TEMPLATE HERE
-        SosigEnemyTemplateUI.instance.Load(new Custom_SosigEnemyTemplate());
+        if (!DataLoader.OnLoadDialogue())
+            return;
+        //SosigEnemyTemplateUI.instance.LoadEnemyTemplate(new Custom_SosigEnemyTemplate());
         loadedSosig = true;
         saveButton.SetActive(true);
         mainMenu.SetActive(false);
@@ -206,7 +208,11 @@ public class ManagerUI : MonoBehaviour
 
     public void Save()
     {
-        Debug.Log("Fake Saving!");
+        //Last save just in case
+        SosigEnemyTemplateUI.instance.SaveEnemyTemplate();
+
+        string json = JsonUtility.ToJson(SosigEnemyTemplateUI.instance.template, true);
+        DataLoader.OnSaveDialogue(json);
     }
 
     //----------------------------------------------------------------------------
