@@ -11,11 +11,19 @@ public class GenericButton : MonoBehaviour
     public Text text;
     public Image image;
     public InputField inputField;
+    public InputField inputFieldX;
+    public InputField inputFieldY;
+    public InputField inputFieldZ;
 
     public void SelectLibraryItem()
     {
         LibraryManager.selectedItem = this;
         LibraryManager.instance.CloseLibrary(this);
+    }
+
+    public void TrashLinkSpawnButton()
+    {
+        ConfigTemplateUI.instance.RemoveLinkSpawn(this);
     }
 
     public void TrashOutfitButton()

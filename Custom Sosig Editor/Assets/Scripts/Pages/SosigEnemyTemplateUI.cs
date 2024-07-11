@@ -118,6 +118,79 @@ public class SosigEnemyTemplateUI : MonoBehaviour
     }
 
     //----------------------------------------------------------------------------
+    // Config Template Menu
+    //----------------------------------------------------------------------------
+
+    public void ConfigTemplateLoad()
+    {
+        int lastValue = configTemplateDropdown.value;
+        configTemplateDropdown.ClearOptions();
+        List<Dropdown.OptionData> options = new List<Dropdown.OptionData>();
+        for (int i = 0; i < template.configTemplates.Count; i++)
+        {
+            Dropdown.OptionData option = new Dropdown.OptionData();
+            option.text = template.configTemplates[i].name;
+            options.Add(option);
+        }
+        configTemplateDropdown.AddOptions(options);
+
+        if (lastValue < configTemplateDropdown.options.Count)
+            configTemplateDropdown.value = lastValue;
+        else
+            configTemplateDropdown.value = 0;
+
+        ConfigTemplateSelect();
+        outfitTitleText.text = "CONFIG TEMPLATE: " + configTemplateDropdown.options[configTemplateDropdown.value].text;
+    }
+
+    public void ConfigTemplateAdd()
+    {
+        Dropdown.OptionData option = new Dropdown.OptionData();
+        Custom_SosigConfigTemplate outfit = new Custom_SosigConfigTemplate();
+        option.text = outfit.name;
+        template.configTemplates.Add(outfit);
+        configTemplateDropdown.options.Add(option);
+        configTemplateDropdown.value++;
+        ConfigTemplateSelect();
+        outfitTitleText.text = "OUTFIT TEMPLATE: " + configTemplateDropdown.options[configTemplateDropdown.value].text;
+    }
+
+    public void ConfigTemplateDuplicate()
+    {
+        Dropdown.OptionData option = new Dropdown.OptionData();
+        Custom_SosigConfigTemplate config = template.configTemplates[configTemplateDropdown.value].Clone();
+        option.text = config.name;
+        template.configTemplates.Add(config);
+        configTemplateDropdown.options.Add(option);
+        configTemplateDropdown.value++;
+        ConfigTemplateSelect();
+        outfitTitleText.text = "OUTFIT TEMPLATE: " + configTemplateDropdown.options[configTemplateDropdown.value].text;
+    }
+
+    public void ConfigTemplateRemove()
+    {
+        //Don't delete last option
+        if (configTemplateDropdown.options.Count <= 1)
+            return;
+
+        template.configTemplates.RemoveAt(configTemplateDropdown.value);
+        configTemplateDropdown.options.RemoveAt(configTemplateDropdown.value);
+        configTemplateDropdown.value--;
+        outfitTitleText.text = "OUTFIT TEMPLATE: " + configTemplateDropdown.options[configTemplateDropdown.value].text;
+    }
+
+    public void ConfigTemplateSelect()
+    {
+        ConfigTemplateUI.instance.OpenConfigTemplate(template.configTemplates[configTemplateDropdown.value]);
+        ManagerUI.instance.OpenPage(2);
+    }
+
+    public Custom_SosigConfigTemplate GetCurrentConfig()
+    {
+        return template.configTemplates[configTemplateDropdown.value];
+    }
+
+    //----------------------------------------------------------------------------
     // Weapons
     //----------------------------------------------------------------------------
     public void AddWeapon(int type)
@@ -234,6 +307,7 @@ public class SosigEnemyTemplateUI : MonoBehaviour
         //Load Custom
 
         //Load Enemy Template
+        ConfigTemplateLoad();
 
         ManagerUI.instance.GeneratePreview();
     }
@@ -241,7 +315,10 @@ public class SosigEnemyTemplateUI : MonoBehaviour
     public void SaveEnemyTemplate()
     {
         template.displayName = displayName.text;
-        template.sosigEnemyCategory = int.Parse(sosigEnemyCategory.text);
+        if (sosigEnemyCategory.text == "")
+            template.sosigEnemyCategory = 0;
+        else
+            template.sosigEnemyCategory = int.Parse(sosigEnemyCategory.text);
         template.sosigEnemyID = int.Parse(sosigEnemyID.text);
 
         template.weaponOptionsID = Global.GenericButtonsToStringList(weaponOptionsID.ToArray());

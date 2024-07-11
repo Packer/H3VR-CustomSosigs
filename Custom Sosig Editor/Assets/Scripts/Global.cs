@@ -42,6 +42,30 @@ public class Global
         }
         return collection;
     }
+    public static List<float> GenericButtonsToFloatList(GenericButton[] inputs)
+    {
+        List<float> collection = new List<float>();
+        for (int i = 0; i < inputs.Length; i++)
+        {
+            if (inputs[i].inputField.text == "")
+                collection.Add(0);
+            else
+                collection.Add(float.Parse(inputs[i].inputField.text));
+        }
+        return collection;
+    }
+    public static List<float> GenericButtonsXToFloatList(GenericButton[] inputs)
+    {
+        List<float> collection = new List<float>();
+        for (int i = 0; i < inputs.Length; i++)
+        {
+            if (inputs[i].inputFieldX.text == "")
+                collection.Add(0);
+            else
+                collection.Add(float.Parse(inputs[i].inputFieldX.text));
+        }
+        return collection;
+    }
 
     public static GenericButton SetupCollectionButton(string item, ItemType type, Transform content, int index = -1)
     {
@@ -113,5 +137,6 @@ public enum ItemType
 {
     Sosigs = 0,
     Weapons = 1,
-    Accessories = 2
+    Accessories = 2,
+    Items = 2
 }

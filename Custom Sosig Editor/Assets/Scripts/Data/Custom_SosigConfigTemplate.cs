@@ -105,4 +105,108 @@ public class Custom_SosigConfigTemplate
     public bool UsesLinkSpawns = false;
     public List<string> LinkSpawns;
     public List<float> LinkSpawnChance;
+
+    public Custom_SosigConfigTemplate Clone()
+    {
+        Custom_SosigConfigTemplate template = new Custom_SosigConfigTemplate();
+        template.name = name;
+
+        ///AIEntityParams
+        template.ViewDistance = ViewDistance;
+        template.StateSightRangeMults = StateSightRangeMults;
+        template.HearingDistance = HearingDistance;
+        template.StateHearingRangeMults = StateHearingRangeMults;
+        template.MaxFOV = MaxFOV;
+        template.StateFOVMults = StateFOVMults;
+
+        ///Core Identity Params
+        template.HasABrain = HasABrain;
+        template.RegistersPassiveThreats = RegistersPassiveThreats;
+        template.DoesAggroOnFriendlyFire = DoesAggroOnFriendlyFire;
+        template.SearchExtentsModifier = SearchExtentsModifier;
+        template.DoesDropWeaponsOnBallistic = DoesDropWeaponsOnBallistic;
+        template.CanPickup_Ranged = CanPickup_Ranged;
+        template.CanPickup_Melee = CanPickup_Melee;
+        template.CanPickup_Other = CanPickup_Other;
+
+        ///TargetPrioritySystemParams
+        template.TargetCapacity = TargetCapacity;
+        template.TargetTrackingTime = TargetTrackingTime;
+        template.NoFreshTargetTime = NoFreshTargetTime;
+        template.AssaultPointOverridesSkirmishPointWhenFurtherThan = AssaultPointOverridesSkirmishPointWhenFurtherThan;
+        template.TimeInSkirmishToAlert = TimeInSkirmishToAlert;
+
+        ///Movement Params
+        template.RunSpeed = RunSpeed;
+        template.WalkSpeed = WalkSpeed;
+        template.SneakSpeed = SneakSpeed;
+        template.CrawlSpeed = CrawlSpeed;
+        template.TurnSpeed = TurnSpeed;
+        template.MaxJointLimit = MaxJointLimit;
+        template.MovementRotMagnitude = MovementRotMagnitude;
+
+        ///Damage Params
+        template.AppliesDamageResistToIntegrityLoss = AppliesDamageResistToIntegrityLoss;
+        template.TotalMustard = TotalMustard;
+        template.BleedDamageMult = BleedDamageMult;
+        template.BleedRateMultiplier = BleedRateMultiplier;
+        template.BleedVFXIntensity = BleedVFXIntensity;
+        template.DamMult_Projectile = DamMult_Projectile;
+        template.DamMult_Explosive = DamMult_Explosive;
+        template.DamMult_Melee = DamMult_Melee;
+        template.DamMult_Piercing = DamMult_Piercing;
+        template.DamMult_Blunt = DamMult_Blunt;
+        template.DamMult_Cutting = DamMult_Cutting;
+        template.DamMult_Thermal = DamMult_Thermal;
+        template.DamMult_Chilling = DamMult_Chilling;
+        template.DamMult_EMP = DamMult_EMP;
+        template.LinkDamageMultipliers = LinkDamageMultipliers;
+        template.LinkStaggerMultipliers = LinkStaggerMultipliers;
+        template.StartingLinkIntegrity = StartingLinkIntegrity;
+        template.StartingChanceBrokenJoint = StartingChanceBrokenJoint;
+
+        ///Shudder Params
+        template.ShudderThreshold = ShudderThreshold;
+
+        ///Confusion Params
+        template.ConfusionThreshold = ConfusionThreshold;
+        template.ConfusionMultiplier = ConfusionMultiplier;
+        template.ConfusionTimeMax = ConfusionTimeMax;
+
+        ///Stun Params
+        template.StunThreshold = StunThreshold;
+        template.StunMultiplier = StunMultiplier;
+        template.StunTimeMax = StunTimeMax;
+
+        ///Unconsciousness Params
+        template.CanBeKnockedOut = CanBeKnockedOut;
+        template.MaxUnconsciousTime = MaxUnconsciousTime;
+
+        ///Resistances
+        template.CanBeGrabbed = CanBeGrabbed;
+        template.CanBeSevered = CanBeSevered;
+        template.CanBeStabbed = CanBeStabbed;
+
+        ///Suppression
+        template.CanBeSurpressed = CanBeSurpressed;
+        template.SuppressionMult = SuppressionMult;
+
+        ///Death Flags
+        template.DoesJointBreakKill_Head = DoesJointBreakKill_Head;
+        template.DoesJointBreakKill_Upper = DoesJointBreakKill_Upper;
+        template.DoesJointBreakKill_Lower = DoesJointBreakKill_Lower;
+        template.DoesSeverKill_Head = DoesSeverKill_Head;
+        template.DoesSeverKill_Upper = DoesSeverKill_Upper;
+        template.DoesSeverKill_Lower = DoesSeverKill_Lower;
+        template.DoesExplodeKill_Head = DoesExplodeKill_Head;
+        template.DoesExplodeKill_Upper = DoesExplodeKill_Upper;
+        template.DoesExplodeKill_Lower = DoesExplodeKill_Lower;
+
+        ///SpawnOnLinkDestroy
+        template.UsesLinkSpawns = UsesLinkSpawns;
+        template.LinkSpawns = LinkSpawns;
+        template.LinkSpawnChance = LinkSpawnChance;
+
+        return template;
+    }
 }
