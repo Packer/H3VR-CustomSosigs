@@ -19,7 +19,8 @@ public class Custom_Sosig
     public Vector3 scaleLegsLower = Vector3.one;
 
     //Materials
-    public bool useCustomSkin = false;  //Default or White
+    public int useCustomSkin = 0;  //Default, White or Custom
+    public string customSkin = "";
     public Color color = Color.white;
     public float metallic = 0;
     public float specularity = 0.3f;
@@ -28,4 +29,35 @@ public class Custom_Sosig
     public float normalStrength = 1f;
     public bool specularHighlights = true;
     public bool glossyReflections = true;
+
+    public Custom_Sosig Clone()
+    {
+        Custom_Sosig template = new Custom_Sosig();
+        template.name = name; //For internal use
+        template.baseSosigID = baseSosigID;
+
+        //Voice
+        template.voicePitch = voicePitch;
+        template.voiceVolume = voiceVolume;
+
+        //Scale
+        template.scaleBody = scaleBody;     //Width and Height (Don't split x and z)
+        template.scaleHead = scaleHead;
+        template.scaleTorso = scaleTorso;
+        template.scaleLegsUpper = scaleLegsUpper;
+        template.scaleLegsLower = scaleLegsLower;
+
+        //Materials
+        template.useCustomSkin = useCustomSkin;  //Default or White
+        template.color = color;
+        template.metallic = metallic;
+        template.specularity = specularity;
+        template.specularTint = specularTint;
+        template.roughness = roughness;
+        template.normalStrength = normalStrength;
+        template.specularHighlights = specularHighlights;
+        template.glossyReflections = glossyReflections;
+
+        return template;
+    }
 }

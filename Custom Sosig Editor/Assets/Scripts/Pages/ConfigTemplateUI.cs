@@ -124,6 +124,7 @@ public class ConfigTemplateUI : MonoBehaviour
         configTemplate = template;
 
         nameField.SetTextWithoutNotify(template.name);
+        SosigEnemyTemplateUI.instance.configTemplateTitleText.text = "CONFIG TEMPLATE: " + template.name;
 
         //AIEntityParams
         ViewDistance.SetTextWithoutNotify(template.ViewDistance.ToString());

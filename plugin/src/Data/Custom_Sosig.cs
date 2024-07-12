@@ -8,7 +8,6 @@ namespace CustomSosigLoader
     {
         public string name; //For internal use
         public SosigEnemyID baseSosigID = SosigEnemyID.Misc_Dummy;
-        public string customTextureName = "";
 
         //Voice
         public float voicePitch = 1;
@@ -22,7 +21,8 @@ namespace CustomSosigLoader
         public Vector3 scaleLegsLower = Vector3.one;
 
         //Materials
-        public bool useCustomSkin = false;  //Default or White
+        public int useCustomSkin = 0;  //Default or White or Custom
+        public string customSkin = "";  //Name.png Name_Normal.png Name_MASR.png
         public Color color;
         public float metallic = 0;
         public float specularity = 0.3f;

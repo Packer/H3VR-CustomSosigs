@@ -44,7 +44,7 @@ namespace CustomSosigLoader
             //Sosig Material Changes
             MeshRenderer head = Custom_SosigData.GetSosigMeshRenderer("Geo_Head", sosig.Links[0].transform);
             Material sosigMaterial = head.material;
-            if (custom.useCustomSkin)
+            if (custom.useCustomSkin == 1)
                 sosigMaterial.SetTexture("_MainTex", CustomSosigLoaderPlugin.customSosigTexture);
             sosigMaterial.SetColor("_Color", custom.color);
             sosigMaterial.SetFloat("_Metallic", custom.metallic);

@@ -46,12 +46,22 @@ public class ManagerUI : MonoBehaviour
     public GameObject mainMenu;
     public GameObject saveButton;
 
+    [Header("Color Picker")]
+    public GameObject colorPickerPanel;
+    public Color prevColor;
+    public Image newColor;
+    public Image colorImage;
+    public ColorPicker colorPicker;
 
     [Header("Preview")]
+    public Camera previewCamera;
     public Image previewSosig;
-    public Image[] previewClothing;
+    public SpriteRenderer[] previewClothing;
     public Image[] previewWeapons;
-
+    public MeshRenderer[] sosigRenderers;
+    public Material sosigMaterial;
+    public Material sosigDefaultMaterial;
+    public bool modfiyingSosigColor = false;
 
     private void Awake()
     {
@@ -62,6 +72,17 @@ public class ManagerUI : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        sosigMaterial = Instantiate(sosigDefaultMaterial);
+        //Color event for sosigs
+        for (int i = 0; i < sosigRenderers.Length; i++)
+        {
+            sosigRenderers[i].sharedMaterial = sosigMaterial;
+        }
+        //sosigMaterial.SetColor("_Color", sosigDefaultMaterial.GetColor("_Color"));
+        //sosigMaterial.SetColor("_EmissionColor", sosigDefaultMaterial.GetColor("_EmissionColor"));
+
+        colorPicker.onColorChanged += OnColorChanged;
+
         CloseAllPages();
         saveButton.SetActive(false);
         mainMenu.SetActive(true);
@@ -78,11 +99,16 @@ public class ManagerUI : MonoBehaviour
             sosigEnemyIDs.sosigEnemyID.Add((int)pieceType);
         }
 
-            //Load Our Mods
+        //Load Our Mods
         DataLoader.LoadCustomImages(0);
         DataLoader.LoadCustomImages(1);
         DataLoader.LoadCustomImages(2);
     }
+    private void OnDestroy()
+    {
+       colorPicker.onColorChanged -= OnColorChanged;
+    }
+
 
     //----------------------------------------------------------------------------
     // Page Management
@@ -109,6 +135,15 @@ public class ManagerUI : MonoBehaviour
     //----------------------------------------------------------------------------
 
 
+    public void OnColorChanged(Color c)
+    {
+        if (!modfiyingSosigColor)
+            return;
+
+        sosigMaterial.SetColor("_Color", c);
+        sosigMaterial.SetColor("_EmissionColor", Color.Lerp(Color.black, c, 0.75f));
+    }
+
     public void GeneratePreview()
     {
         //Clothing
@@ -117,13 +152,21 @@ public class ManagerUI : MonoBehaviour
         previewClothing[(int)WearType.Torso].sprite = GetSosigClothing(OutfitConfigUI.instance.wears[(int)WearType.Torso]);
         previewClothing[(int)WearType.Pants].sprite = GetSosigClothing(OutfitConfigUI.instance.wears[(int)WearType.Pants]);
         previewClothing[(int)WearType.PantsLower].sprite = GetSosigClothing(OutfitConfigUI.instance.wears[(int)WearType.PantsLower]);
-        //previewClothing[(int)WearType.Backpacks].sprite = GetSosigClothing(OutfitConfigUI.instance.wears[(int)WearType.Head]);
-        //previewClothing[(int)WearType.Head].sprite = GetSosigClothing(OutfitConfigUI.instance.wears[(int)WearType.Head]);
+        previewClothing[(int)WearType.Backpacks].sprite = GetSosigClothing(OutfitConfigUI.instance.wears[(int)WearType.Backpacks]);
+        previewClothing[(int)WearType.TorsoDecoration].sprite = GetSosigClothing(OutfitConfigUI.instance.wears[(int)WearType.TorsoDecoration]);
+        previewClothing[(int)WearType.Belt].sprite = GetSosigClothing(OutfitConfigUI.instance.wears[(int)WearType.Belt]);
 
         //Weapons
         previewWeapons[0].sprite = GetSosigWeapon(0);
         previewWeapons[1].sprite = GetSosigWeapon(1);
         previewWeapons[2].sprite = GetSosigWeapon(2);
+    }
+
+    public void TakeScreenshot()
+    {
+        DataLoader.TakeScreenshot(
+            SosigEnemyTemplateUI.instance.template.sosigEnemyID.ToString() + "_" + SosigEnemyTemplateUI.instance.template.displayName,
+            previewCamera);
     }
 
     Sprite GetSosigWeapon(int index)
@@ -240,6 +283,52 @@ public class ManagerUI : MonoBehaviour
     {
         warningPanel.SetActive(false);
         warningConfirmMethod = "";
+    }
+
+    //----------------------------------------------------------------------------
+    // Color Picker
+    //----------------------------------------------------------------------------
+
+    public void ConfirmColor()
+    {
+        if (colorImage)
+            colorImage.color = newColor.color;
+        colorPickerPanel.SetActive(false);
+        colorImage = null;
+
+        if (modfiyingSosigColor)
+            CustomSosigUI.instance.SaveCustomSosig();
+
+        modfiyingSosigColor = false;
+    }
+
+    public void OpenSosigColor(Image previewImage)
+    {
+        modfiyingSosigColor = true;
+        OpenColorPicker(previewImage);
+    }
+
+    public void OpenColorPicker(Image previewImage)
+    {
+        colorImage = previewImage;
+        prevColor = previewImage.color;
+        colorPickerPanel.SetActive(true);
+        colorPicker.color = previewImage.color;
+    }
+
+    public void CancelColor()
+    {
+        if (colorImage)
+        {
+            colorImage.color = prevColor;
+        }
+        colorPickerPanel.SetActive(false);
+        colorImage = null;
+
+        if (modfiyingSosigColor)
+            OnColorChanged(prevColor);
+
+        modfiyingSosigColor = false;
     }
 
     //----------------------------------------------------------------------------

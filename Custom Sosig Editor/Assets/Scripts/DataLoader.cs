@@ -193,6 +193,55 @@ public class DataLoader : MonoBehaviour
         }
     }
 
+
+    public static void TakeScreenshot(string nameID, Camera captureCamera)
+    {
+        RenderTexture currentRT = RenderTexture.active;
+        RenderTexture.active = captureCamera.targetTexture;
+        captureCamera.Render();
+
+
+        Texture2D imageOverview = new Texture2D(
+            captureCamera.targetTexture.width,
+            captureCamera.targetTexture.height,
+            TextureFormat.RGBA32,
+            false,
+            true);
+
+        imageOverview.ReadPixels(new Rect(0, 0, captureCamera.targetTexture.width, captureCamera.targetTexture.height), 0, 0);
+        imageOverview.Apply();
+        RenderTexture.active = currentRT;
+
+        // Encode texture into PNG
+        byte[] bytes = imageOverview.EncodeToPNG();
+
+        // save in memory
+        string filename = nameID + ".png";
+        string path = Application.dataPath + "/../" + "Sosigs/";
+
+        try
+        {
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+            }
+        }
+        catch (Exception ex)
+        {
+            ManagerUI.LogError(ex.Message);
+            return;
+        }
+
+        path += filename;
+        //File.WriteAllBytes(path, bytes);
+
+        using (FileStream fileStream = new FileStream(path, FileMode.OpenOrCreate))
+        {
+            ManagerUI.Log("Write to file: " + filename + " - " + path);
+            fileStream.Write(bytes, 0, bytes.Length);
+        }
+    }
+
     /*
 
     public static List<string> GetDirectories(string location)

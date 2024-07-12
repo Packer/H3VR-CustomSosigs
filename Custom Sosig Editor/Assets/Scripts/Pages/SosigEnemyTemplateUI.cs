@@ -10,6 +10,8 @@ public class SosigEnemyTemplateUI : MonoBehaviour
 
     public Custom_SosigEnemyTemplate template;
     public Text outfitTitleText;
+    public Text configTemplateTitleText;
+    public Text customSosigTitleText;
 
     [Header("Enemy Template")]
     public InputField displayName;
@@ -140,31 +142,31 @@ public class SosigEnemyTemplateUI : MonoBehaviour
             customSosigDropdown.value = 0;
 
         CustomSosigSelect();
-        outfitTitleText.text = "CUSTOM SOSIG: " + customSosigDropdown.options[customSosigDropdown.value].text;
+        customSosigTitleText.text = "CUSTOM SOSIG: " + customSosigDropdown.options[customSosigDropdown.value].text;
     }
 
     public void CustomSosigAdd()
     {
         Dropdown.OptionData option = new Dropdown.OptionData();
-        Custom_CustomSosigConfig outfit = new Custom_CustomSosigConfig();
-        option.text = outfit.name;
-        template.customSosig.Add(outfit);
+        Custom_Sosig sosig = new Custom_Sosig();
+        option.text = sosig.name;
+        template.customSosig.Add(sosig);
         customSosigDropdown.options.Add(option);
         customSosigDropdown.value++;
         CustomSosigSelect();
-        outfitTitleText.text = "CUSTOM SOSIG: " + customSosigDropdown.options[customSosigDropdown.value].text;
+        customSosigTitleText.text = "CUSTOM SOSIG: " + customSosigDropdown.options[customSosigDropdown.value].text;
     }
 
     public void CustomSosigDuplicate()
     {
         Dropdown.OptionData option = new Dropdown.OptionData();
-        Custom_CustomSosigConfig outfit = Global.ObjectCloner.Clone(template.customSosig[customSosigDropdown.value]);
-        option.text = outfit.name;
-        template.customSosig.Add(outfit);
+        Custom_Sosig sosig = template.customSosig[customSosigDropdown.value].Clone();
+        option.text = sosig.name;
+        template.customSosig.Add(sosig);
         customSosigDropdown.options.Add(option);
         customSosigDropdown.value++;
         CustomSosigSelect();
-        outfitTitleText.text = "CUSTOM SOSIG: " + customSosigDropdown.options[customSosigDropdown.value].text;
+        customSosigTitleText.text = "CUSTOM SOSIG: " + customSosigDropdown.options[customSosigDropdown.value].text;
     }
 
     public void CustomSosigRemove()
@@ -176,16 +178,16 @@ public class SosigEnemyTemplateUI : MonoBehaviour
         template.customSosig.RemoveAt(customSosigDropdown.value);
         customSosigDropdown.options.RemoveAt(customSosigDropdown.value);
         customSosigDropdown.value--;
-        outfitTitleText.text = "CUSTOM SOSIG: " + customSosigDropdown.options[customSosigDropdown.value].text;
+        customSosigTitleText.text = "CUSTOM SOSIG: " + customSosigDropdown.options[customSosigDropdown.value].text;
     }
 
     public void CustomSosigSelect()
     {
         CustomSosigUI.instance.OpenCustomSosig(template.customSosig[customSosigDropdown.value]);
-        ManagerUI.instance.OpenPage(2);
+        ManagerUI.instance.OpenPage(3);
     }
 
-    public Custom_CustomSosigConfig GetCurrentCustomSosig()
+    public Custom_Sosig GetCurrentCustomSosig()
     {
         return template.customSosig[customSosigDropdown.value];
     }
@@ -213,7 +215,7 @@ public class SosigEnemyTemplateUI : MonoBehaviour
             configTemplateDropdown.value = 0;
 
         ConfigTemplateSelect();
-        outfitTitleText.text = "CONFIG TEMPLATE: " + configTemplateDropdown.options[configTemplateDropdown.value].text;
+        configTemplateTitleText.text = "CONFIG TEMPLATE: " + configTemplateDropdown.options[configTemplateDropdown.value].text;
     }
 
     public void ConfigTemplateAdd()
@@ -225,7 +227,7 @@ public class SosigEnemyTemplateUI : MonoBehaviour
         configTemplateDropdown.options.Add(option);
         configTemplateDropdown.value++;
         ConfigTemplateSelect();
-        outfitTitleText.text = "OUTFIT TEMPLATE: " + configTemplateDropdown.options[configTemplateDropdown.value].text;
+        configTemplateTitleText.text = "OUTFIT TEMPLATE: " + configTemplateDropdown.options[configTemplateDropdown.value].text;
     }
 
     public void ConfigTemplateDuplicate()
@@ -237,7 +239,7 @@ public class SosigEnemyTemplateUI : MonoBehaviour
         configTemplateDropdown.options.Add(option);
         configTemplateDropdown.value++;
         ConfigTemplateSelect();
-        outfitTitleText.text = "OUTFIT TEMPLATE: " + configTemplateDropdown.options[configTemplateDropdown.value].text;
+        configTemplateTitleText.text = "OUTFIT TEMPLATE: " + configTemplateDropdown.options[configTemplateDropdown.value].text;
     }
 
     public void ConfigTemplateRemove()
@@ -249,7 +251,7 @@ public class SosigEnemyTemplateUI : MonoBehaviour
         template.configTemplates.RemoveAt(configTemplateDropdown.value);
         configTemplateDropdown.options.RemoveAt(configTemplateDropdown.value);
         configTemplateDropdown.value--;
-        outfitTitleText.text = "OUTFIT TEMPLATE: " + configTemplateDropdown.options[configTemplateDropdown.value].text;
+        configTemplateTitleText.text = "OUTFIT TEMPLATE: " + configTemplateDropdown.options[configTemplateDropdown.value].text;
     }
 
     public void ConfigTemplateSelect()
@@ -378,6 +380,7 @@ public class SosigEnemyTemplateUI : MonoBehaviour
         OutfitLoad();
 
         //Load Custom
+        CustomSosigLoad();
 
         //Load Enemy Template
         ConfigTemplateLoad();
