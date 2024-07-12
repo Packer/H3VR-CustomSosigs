@@ -9526,7 +9526,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8419251120549841697, guid: c6b90af3c0d3bca43a064bcd1c81bdfd, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0.00000040233135
+      value: -0.00001501292
       objectReference: {fileID: 0}
     - target: {fileID: 8853722265471092274, guid: c6b90af3c0d3bca43a064bcd1c81bdfd, type: 3}
       propertyPath: m_Name
@@ -27749,11 +27749,23 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2319321719501065595, guid: 9aeb4bed515b8614188a2e1f65bcef3d, type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2319321719501065595, guid: 9aeb4bed515b8614188a2e1f65bcef3d, type: 3}
       propertyPath: m_OnDidEndEdit.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2319321719501065595, guid: 9aeb4bed515b8614188a2e1f65bcef3d, type: 3}
       propertyPath: m_OnDidEndEdit.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 2036971776}
+    - target: {fileID: 2319321719501065595, guid: 9aeb4bed515b8614188a2e1f65bcef3d, type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2319321719501065595, guid: 9aeb4bed515b8614188a2e1f65bcef3d, type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 2036971776}
     - target: {fileID: 2319321719501065595, guid: 9aeb4bed515b8614188a2e1f65bcef3d, type: 3}
@@ -27765,11 +27777,27 @@ PrefabInstance:
       value: SaveEnemyTemplate
       objectReference: {fileID: 0}
     - target: {fileID: 2319321719501065595, guid: 9aeb4bed515b8614188a2e1f65bcef3d, type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2319321719501065595, guid: 9aeb4bed515b8614188a2e1f65bcef3d, type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: SosigEnemyIDCheck
+      objectReference: {fileID: 0}
+    - target: {fileID: 2319321719501065595, guid: 9aeb4bed515b8614188a2e1f65bcef3d, type: 3}
       propertyPath: m_OnDidEndEdit.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
       value: SosigEnemyTemplateUI, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 2319321719501065595, guid: 9aeb4bed515b8614188a2e1f65bcef3d, type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: SosigEnemyTemplateUI, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 2319321719501065595, guid: 9aeb4bed515b8614188a2e1f65bcef3d, type: 3}
       propertyPath: m_OnDidEndEdit.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 2319321719501065595, guid: 9aeb4bed515b8614188a2e1f65bcef3d, type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 4539458013700407684, guid: 9aeb4bed515b8614188a2e1f65bcef3d, type: 3}
@@ -37775,6 +37803,8 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 4e9d3c1f5140e5e4fb169ff1219238d0, type: 3}
   - {fileID: 21300000, guid: b817f7ad71bf9fd41a911e821cd5fd2a, type: 3}
   - {fileID: 21300000, guid: 68689e71b4e3cef48acce4fe3f156757, type: 3}
+  sosigEnemyIDs:
+    sosigEnemyID: 
   blankSprite: {fileID: 21300000, guid: 3d4d6449fe450a4498ae6aeff3aef544, type: 3}
   defaultSprite: {fileID: 21300000, guid: 6271e98450ced58418fc385e89cbb950, type: 3}
   sosigCollectionPrefab: {fileID: 0}

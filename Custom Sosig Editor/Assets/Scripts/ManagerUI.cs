@@ -15,6 +15,7 @@ public class ManagerUI : MonoBehaviour
     [SerializeField] List<Sprite> sosigsBase = new List<Sprite>();
     [SerializeField] List<Sprite> accessoriesBase = new List<Sprite>();
     [SerializeField] List<Sprite> weaponBase = new List<Sprite>();
+    public SosigIDCollection sosigEnemyIDs;
 
     public Sprite blankSprite;
     public Sprite defaultSprite;
@@ -70,18 +71,17 @@ public class ManagerUI : MonoBehaviour
         accessories.AddRange(accessoriesBase);
         weapons.AddRange(weaponBase);
 
-        return; //For now
+        //Setup SosigEnemyIds
+        sosigEnemyIDs.sosigEnemyID = new List<int>();
+        foreach (SosigEnemyID pieceType in System.Enum.GetValues(typeof(SosigEnemyID)))
+        {
+            sosigEnemyIDs.sosigEnemyID.Add((int)pieceType);
+        }
 
-        //Setup Path (Incase its moved)
-        sosigEnemyIDsPath = Application.dataPath + "\\Sosigs\\";
-        accessoriesPath = Application.dataPath + "\\Accessories\\";
-        weaponIDsPath = Application.dataPath + "\\Weapons\\";
-
-
-        //Load our Mods
-        sosigs.AddRange(DataLoader.LoadExternalMods(DataLoader.GetSubDirectories(sosigEnemyIDsPath)));
-        accessories.AddRange(DataLoader.LoadExternalMods(DataLoader.GetSubDirectories(accessoriesPath)));
-        weapons.AddRange(DataLoader.LoadExternalMods(DataLoader.GetSubDirectories(weaponIDsPath)));
+            //Load Our Mods
+        DataLoader.LoadCustomImages(0);
+        DataLoader.LoadCustomImages(1);
+        DataLoader.LoadCustomImages(2);
     }
 
     //----------------------------------------------------------------------------

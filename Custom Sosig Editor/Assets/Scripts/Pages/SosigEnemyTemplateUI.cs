@@ -118,6 +118,79 @@ public class SosigEnemyTemplateUI : MonoBehaviour
     }
 
     //----------------------------------------------------------------------------
+    // CustomSosig Config Menu
+    //----------------------------------------------------------------------------
+
+    public void CustomSosigLoad()
+    {
+        int lastValue = customSosigDropdown.value;
+        customSosigDropdown.ClearOptions();
+        List<Dropdown.OptionData> options = new List<Dropdown.OptionData>();
+        for (int i = 0; i < template.customSosig.Count; i++)
+        {
+            Dropdown.OptionData option = new Dropdown.OptionData();
+            option.text = template.customSosig[i].name;
+            options.Add(option);
+        }
+        customSosigDropdown.AddOptions(options);
+
+        if (lastValue < customSosigDropdown.options.Count)
+            customSosigDropdown.value = lastValue;
+        else
+            customSosigDropdown.value = 0;
+
+        CustomSosigSelect();
+        outfitTitleText.text = "CUSTOM SOSIG: " + customSosigDropdown.options[customSosigDropdown.value].text;
+    }
+
+    public void CustomSosigAdd()
+    {
+        Dropdown.OptionData option = new Dropdown.OptionData();
+        Custom_CustomSosigConfig outfit = new Custom_CustomSosigConfig();
+        option.text = outfit.name;
+        template.customSosig.Add(outfit);
+        customSosigDropdown.options.Add(option);
+        customSosigDropdown.value++;
+        CustomSosigSelect();
+        outfitTitleText.text = "CUSTOM SOSIG: " + customSosigDropdown.options[customSosigDropdown.value].text;
+    }
+
+    public void CustomSosigDuplicate()
+    {
+        Dropdown.OptionData option = new Dropdown.OptionData();
+        Custom_CustomSosigConfig outfit = Global.ObjectCloner.Clone(template.customSosig[customSosigDropdown.value]);
+        option.text = outfit.name;
+        template.customSosig.Add(outfit);
+        customSosigDropdown.options.Add(option);
+        customSosigDropdown.value++;
+        CustomSosigSelect();
+        outfitTitleText.text = "CUSTOM SOSIG: " + customSosigDropdown.options[customSosigDropdown.value].text;
+    }
+
+    public void CustomSosigRemove()
+    {
+        //Don't delete last option
+        if (customSosigDropdown.options.Count <= 1)
+            return;
+
+        template.customSosig.RemoveAt(customSosigDropdown.value);
+        customSosigDropdown.options.RemoveAt(customSosigDropdown.value);
+        customSosigDropdown.value--;
+        outfitTitleText.text = "CUSTOM SOSIG: " + customSosigDropdown.options[customSosigDropdown.value].text;
+    }
+
+    public void CustomSosigSelect()
+    {
+        CustomSosigUI.instance.OpenCustomSosig(template.customSosig[customSosigDropdown.value]);
+        ManagerUI.instance.OpenPage(2);
+    }
+
+    public Custom_CustomSosigConfig GetCurrentCustomSosig()
+    {
+        return template.customSosig[customSosigDropdown.value];
+    }
+
+    //----------------------------------------------------------------------------
     // Config Template Menu
     //----------------------------------------------------------------------------
 
@@ -374,6 +447,19 @@ public class SosigEnemyTemplateUI : MonoBehaviour
             options.Add(option);
         }
         sosigEnemyCategoryDropdown.AddOptions(options);
+    }
+
+    public void SosigEnemyIDCheck()
+    {
+        int sosigID = int.Parse(sosigEnemyID.text);
+
+        //ColorBlock block = sosigEnemyID.colors;
+        
+        if (ManagerUI.instance.sosigEnemyIDs.sosigEnemyID.Contains(sosigID))
+            sosigEnemyID.textComponent.color = Color.red;
+        else
+            sosigEnemyID.textComponent.color = Color.white;
+        //sosigEnemyID.colors = block;
     }
 
     //----------------------------------------------------------------------------

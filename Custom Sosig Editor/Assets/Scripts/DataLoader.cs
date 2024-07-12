@@ -91,7 +91,6 @@ public class DataLoader : MonoBehaviour
     }
 
 
-
     public static Sprite LoadSprite(string path)
     {
         //Debug.Log("Supply Raid - Loading: " + path);
@@ -133,6 +132,65 @@ public class DataLoader : MonoBehaviour
         }
 
         return sprites;
+    }
+    public static void LoadCustomImages(int index)
+    {
+
+        string path;
+        switch (index)
+        {
+            default:
+            case 0: //Sosigs
+                path = "/../" + "Sosigs";
+                break;
+            case 1: //Weapons
+                path = "/../" + "Weapons";
+                break;
+            case 2: //Accessories ItemType.Accessories
+                path = "/../" + "Accessories";
+                break;
+        }
+
+        string modFolder = Application.dataPath + path; //"/../" + "CustomSosigs";
+
+        modFolder = Directory.CreateDirectory(modFolder).FullName;
+        //ManagerUI.Log("Mod Folder is at: " + modFolder);
+
+        List<string> directories = Directory.GetFiles(modFolder, "*.png", SearchOption.AllDirectories).ToList();
+
+        //Debug.Log("Count: " + directories.Count);
+        if (directories.Count == 0)
+            return;
+
+        //Load up each of our categories
+        for (int i = 0; i < directories.Count; i++)
+        {
+            Sprite newSprite = LoadSprite(directories[i]);
+
+            //Add custom sosigs to our list of used sosigenemyIDS
+            if (index == (int)ItemType.Sosigs)
+            {
+                int newID;
+                if (int.TryParse(Global.GetInitialNumber(newSprite.name), out newID))
+                {
+                    if (!ManagerUI.instance.sosigEnemyIDs.sosigEnemyID.Contains(newID))
+                        ManagerUI.instance.sosigEnemyIDs.sosigEnemyID.Add(newID);
+                }
+                if (!ManagerUI.sosigs.Contains(newSprite))
+                    ManagerUI.sosigs.Add(newSprite);
+            }
+            else if (index == (int)ItemType.Weapons)
+            {
+                if (!ManagerUI.weapons.Contains(newSprite))
+                    ManagerUI.weapons.Add(newSprite);
+            }
+            else if (index == (int)ItemType.Accessories)
+            {
+                if (!ManagerUI.accessories.Contains(newSprite))
+                    ManagerUI.accessories.Add(newSprite);
+            }
+
+        }
     }
 
     /*

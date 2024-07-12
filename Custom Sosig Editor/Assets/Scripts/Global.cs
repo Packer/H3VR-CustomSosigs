@@ -131,6 +131,18 @@ public class Global
             }
         }
     }
+
+    public static string GetInitialNumber(string input)
+    {
+        // Regular expression to match initial numbers at the start of the string
+        string pattern = @"^\d+";
+
+        // Find match
+        System.Text.RegularExpressions.Match match = System.Text.RegularExpressions.Regex.Match(input, pattern);
+
+        // Return the matched value if found, otherwise null
+        return match.Success ? match.Value : null;
+    }
 }
 
 public enum ItemType
@@ -138,5 +150,5 @@ public enum ItemType
     Sosigs = 0,
     Weapons = 1,
     Accessories = 2,
-    Items = 2
+    Items = 3
 }
