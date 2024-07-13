@@ -15,6 +15,7 @@ public class ManagerUI : MonoBehaviour
     [SerializeField] List<Sprite> sosigsBase = new List<Sprite>();
     [SerializeField] List<Sprite> accessoriesBase = new List<Sprite>();
     [SerializeField] List<Sprite> weaponBase = new List<Sprite>();
+    [SerializeField] List<Sprite> texturesBase = new List<Sprite>();
     public SosigIDCollection sosigEnemyIDs;
 
     public Sprite blankSprite;
@@ -24,10 +25,7 @@ public class ManagerUI : MonoBehaviour
     public static List<Sprite> sosigs = new List<Sprite>();
     public static List<Sprite> accessories = new List<Sprite>();
     public static List<Sprite> weapons = new List<Sprite>();
-
-    private string sosigEnemyIDsPath = "";
-    private string accessoriesPath = "";
-    private string weaponIDsPath = "";
+    public static List<Sprite> textures = new List<Sprite>();
 
     public GameObject sosigCollectionPrefab;
     public GameObject weaponsCollectionPrefab;
@@ -91,6 +89,7 @@ public class ManagerUI : MonoBehaviour
         sosigs.AddRange(sosigsBase);
         accessories.AddRange(accessoriesBase);
         weapons.AddRange(weaponBase);
+        textures.AddRange(texturesBase);
 
         //Setup SosigEnemyIds
         sosigEnemyIDs.sosigEnemyID = new List<int>();
@@ -103,6 +102,7 @@ public class ManagerUI : MonoBehaviour
         DataLoader.LoadCustomImages(0);
         DataLoader.LoadCustomImages(1);
         DataLoader.LoadCustomImages(2);
+        DataLoader.LoadCustomImages(3);
     }
     private void OnDestroy()
     {

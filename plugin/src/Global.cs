@@ -11,6 +11,16 @@ namespace CustomSosigLoader
     {
         //public static List<Texture2D> loadedTextures = new List<Texture2D>();
         public static Texture2D whiteSosig;
+        public static List<SosigMaterial> sosigMaterials;
+
+        public class SosigMaterial
+        {
+            public string name;
+            public Texture2D albedo;
+            public Texture2D normal;
+            public Texture masr;
+        }
+
 
         public static List<string> GetCustomSosigDirectories()
         {
@@ -50,12 +60,27 @@ namespace CustomSosigLoader
                         return;
                     }
 
+                    //Directories
+                    for (int x = 0; x < sosigTemplate.customSosig.Length; x++)
+                    {
+                        sosigTemplate.customSosig[x].directory = directories[i];
+                    }
+
                     //Add to our collection
                     CustomSosigLoaderPlugin.customSosigs.Add(sosigTemplate.sosigEnemyID, sosigTemplate);
 
                     Debug.Log("Custom Sosig Loader - Loaded " + sosigTemplate.sosigEnemyID + " - " + sosigTemplate.displayName);
                 }
             }
+        }
+
+        public static void LoadSosigMaterial(Custom_Sosig customSosig)
+        {
+            string filename = customSosig.directory + customSosig.customSkin;
+
+            customSosig.albedo = LoadTexture(filename + ".png");
+            customSosig.normalmap = LoadTexture(filename + "_Normal.png");
+            customSosig.masr = LoadTexture(filename + "_MARS.png");
         }
 
 
@@ -71,7 +96,28 @@ namespace CustomSosigLoader
             }
         }
 
-        public static void LoadCustomSosigTexture(string textureName)
+        public static Texture2D LoadTexture(string path)
+        {
+            Texture2D tex = null;
+
+            byte[] fileData;
+
+            if (File.Exists(path) && tex == null)
+            {
+                fileData = File.ReadAllBytes(path);
+                tex = new Texture2D(2, 2);
+                tex.LoadImage(fileData);
+            }
+
+            if (tex == null)
+            {
+                Debug.LogError("Custom Sosig Loader - Texture Not Found: " + path);
+                return null;
+            }
+            return tex;
+        }
+
+        public static void LoadWhiteSosigTexture(string textureName)
         {
             //if(loadedTextures.Contains(textureName))
 

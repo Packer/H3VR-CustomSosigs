@@ -17,8 +17,6 @@ namespace CustomSosigLoader
         public static bool h3mpEnabled = false;
         public static bool supplyRaidEnabled = false;
 
-        //public static Dictionary<int, Custom_SosigEnemyTemplate> customSosigs = new Dictionary<int, Custom_SosigEnemyTemplate>();
-        //public static List<Custom_SosigEnemyTemplate> customSosigs = new List<Custom_SosigEnemyTemplate>();
         public static Dictionary<int, Custom_SosigEnemyTemplate> customSosigs = new Dictionary<int, Custom_SosigEnemyTemplate>();
         public static Dictionary<SosigConfigTemplate, SosigEnemyID> customSosigConfigs = new Dictionary<SosigConfigTemplate, SosigEnemyID>();
         public static Texture2D customSosigTexture;
@@ -39,7 +37,7 @@ namespace CustomSosigLoader
         void Start()
         {
             Logger.LogInfo("Custom Sosig Loader: Loading Sosigs");
-            Global.LoadCustomSosigTexture("CustomSosig_Base.png");
+            Global.LoadWhiteSosigTexture("CustomSosig_Base.png");
             Global.LoadCustomSosigs();
             StartCoroutine(SetupSosigTemplates());
             HarmonyLib.Harmony.CreateAndPatchAll(typeof(Hooks), (string)null);
@@ -60,12 +58,27 @@ namespace CustomSosigLoader
 
                 template.SosigPrefabs = new List<FVRObject>();
 
+                List<string> customSkins = new List<string>();
+
                 for (int i = 0; i < customTemplate.Value.customSosig.Length; i++)
                 {
                     //Get our Base Sosig
                     SosigEnemyID id = customTemplate.Value.customSosig[i].baseSosigID;
                     template.SosigPrefabs = IM.Instance.odicSosigObjsByID[id].SosigPrefabs;
+
+                    for (int x = 0; x < template.SosigPrefabs.Count; x++)
+                    {
+                        template.SosigPrefabs[x].GetGameObject().AddComponent<CustomID>().customSosigID = id;
+                    }
+
+                    //Sosig Texture
+                    if (customTemplate.Value.customSosig[i].customSkin != "")
+                    {
+                        Global.LoadSosigMaterial(customTemplate.Value.customSosig[i]);
+                        //.Add(customTemplate.Value.customSosig[i].customSkin);
+                    }
                 }
+
 
                 //Custom Sosigs
                 for (int i = 0; i < template.ConfigTemplates.Count; i++)

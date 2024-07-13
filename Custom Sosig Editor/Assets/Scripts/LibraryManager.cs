@@ -46,6 +46,12 @@ public class LibraryManager : MonoBehaviour
         libraryMenu.SetActive(true);
         StartCoroutine(SetupLibrary(ManagerUI.accessories, false, "Accessories Library"));
     }
+    public void OpenTexturesLibrary(GenericButton button)
+    {
+        selectedButton = button;
+        libraryMenu.SetActive(true);
+        StartCoroutine(SetupLibrary(ManagerUI.textures, false, "Textures Library"));
+    }
 
     public void CloseLibrary()
     {
@@ -61,7 +67,10 @@ public class LibraryManager : MonoBehaviour
         {
             selectedButton.image.sprite = selectedItem.image.sprite;
             //Notify button of value change so it saves
-            selectedButton.inputField.text = selectedItem.description;
+            if(selectedItem.description != "")
+                selectedButton.inputField.text = selectedItem.description;
+            else
+                selectedButton.inputField.text = selectedItem.id.ToString();
             selectedButton.inputField.ActivateInputField();
         }
         selectedButton = null;
@@ -93,7 +102,8 @@ public class LibraryManager : MonoBehaviour
         for (int i = 0, x = 0; i < sprites.Count; i++, x++)
         {
             GenericButton btn = Instantiate(instance.buttonPrefab.gameObject, instance.itemContent).GetComponent<GenericButton>();
-            btn.description = sprites[i].name;
+            if(!idPrefix)
+                btn.description = sprites[i].name;
             btn.text.text = sprites[i].name;
             btn.image.sprite = sprites[i];
             btn.gameObject.SetActive(true);
@@ -103,7 +113,7 @@ public class LibraryManager : MonoBehaviour
 
             instance.itemButtons.Add(btn);
 
-            if (x == 100)
+            if (x == 36)
             {
                 x = 0;
                 yield return null;

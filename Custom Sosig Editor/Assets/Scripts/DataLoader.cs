@@ -9,6 +9,7 @@ using System;
 public class DataLoader : MonoBehaviour
 {
     public static List<Sprite> loadedSprites = new List<Sprite>();
+    public static List<Texture2D> loadedTextures = new List<Texture2D>();
     public static Custom_SosigEnemyTemplate sosigEnemyTemplate;
     public static string lastDirectory;
 
@@ -96,12 +97,22 @@ public class DataLoader : MonoBehaviour
         //Debug.Log("Supply Raid - Loading: " + path);
         Texture2D tex = null;
 
+        bool isTexture = false;
+        if (path.Contains("_Normal"))
+            isTexture = true;
+        else if (path.Contains("_MASR"))
+            return null;
+
+
         byte[] fileData;
 
         if (File.Exists(path) && tex == null)
         {
             fileData = File.ReadAllBytes(path);
-            tex = new Texture2D(2, 2);
+            if (isTexture)
+                tex = new Texture2D(2,2, TextureFormat.RGBA32, true, true); //Normalmap
+            else
+                tex = new Texture2D(2, 2);
             tex.LoadImage(fileData);
         }
 
@@ -110,6 +121,14 @@ public class DataLoader : MonoBehaviour
             Debug.LogError("Texture Not Found: " + path);
             return null;
         }
+
+        if (isTexture)
+        {
+            tex.name = Path.GetFileName(path).Replace(".png", "");
+            loadedTextures.Add(tex);
+            return null;
+        }
+
         Sprite NewSprite = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(0, 0), 100.0f);
         NewSprite.name = Path.GetFileName(path).Replace(".png", "");
         loadedSprites.Add(NewSprite);
@@ -117,11 +136,12 @@ public class DataLoader : MonoBehaviour
         return NewSprite;
     }
 
+    /*
     public static List<string> GetSubDirectories(string location)
     {
         return Directory.GetFiles(location, "*.png", SearchOption.AllDirectories).ToList();
     }
-
+    
     public static List<Sprite> LoadExternalMods(List<string> directories)
     {
         List<Sprite> sprites = new List<Sprite>();
@@ -133,6 +153,8 @@ public class DataLoader : MonoBehaviour
 
         return sprites;
     }
+    */
+
     public static void LoadCustomImages(int index)
     {
 
@@ -149,9 +171,12 @@ public class DataLoader : MonoBehaviour
             case 2: //Accessories ItemType.Accessories
                 path = "/../" + "Accessories";
                 break;
+            case 3: //Textures
+                path = "/../" + "Textures";
+                break;
         }
 
-        string modFolder = Application.dataPath + path; //"/../" + "CustomSosigs";
+        string modFolder = Path.GetFullPath(Application.dataPath + path);
 
         modFolder = Directory.CreateDirectory(modFolder).FullName;
         //ManagerUI.Log("Mod Folder is at: " + modFolder);
@@ -166,6 +191,9 @@ public class DataLoader : MonoBehaviour
         for (int i = 0; i < directories.Count; i++)
         {
             Sprite newSprite = LoadSprite(directories[i]);
+
+            if (newSprite == null)
+                continue;
 
             //Add custom sosigs to our list of used sosigenemyIDS
             if (index == (int)ItemType.Sosigs)
@@ -189,10 +217,13 @@ public class DataLoader : MonoBehaviour
                 if (!ManagerUI.accessories.Contains(newSprite))
                     ManagerUI.accessories.Add(newSprite);
             }
-
+            else if (index == (int)ItemType.Textures)
+            {
+                if (!ManagerUI.textures.Contains(newSprite))
+                    ManagerUI.textures.Add(newSprite);
+            }
         }
     }
-
 
     public static void TakeScreenshot(string nameID, Camera captureCamera)
     {
@@ -207,17 +238,24 @@ public class DataLoader : MonoBehaviour
             TextureFormat.RGBA32,
             false,
             true);
+        Rect rect = new Rect(0, 0, captureCamera.targetTexture.width, captureCamera.targetTexture.height);
 
-        imageOverview.ReadPixels(new Rect(0, 0, captureCamera.targetTexture.width, captureCamera.targetTexture.height), 0, 0);
+        imageOverview.ReadPixels(rect, 0, 0);
         imageOverview.Apply();
         RenderTexture.active = currentRT;
+
+        //Place in Library
+        Sprite newSprite = Sprite.Create(imageOverview, rect, Vector2.one * 0.5f);
+        newSprite.name = nameID;
+        ManagerUI.sosigs.Add(newSprite);
+        ManagerUI.instance.sosigEnemyIDs.sosigEnemyID.Add(int.Parse(Global.GetInitialNumber(nameID)));
 
         // Encode texture into PNG
         byte[] bytes = imageOverview.EncodeToPNG();
 
         // save in memory
         string filename = nameID + ".png";
-        string path = Application.dataPath + "/../" + "Sosigs/";
+        string path = Path.GetFullPath(Application.dataPath + "/../" + "Sosigs/");
 
         try
         {
@@ -237,6 +275,7 @@ public class DataLoader : MonoBehaviour
 
         using (FileStream fileStream = new FileStream(path, FileMode.OpenOrCreate))
         {
+            
             ManagerUI.Log("Write to file: " + filename + " - " + path);
             fileStream.Write(bytes, 0, bytes.Length);
         }

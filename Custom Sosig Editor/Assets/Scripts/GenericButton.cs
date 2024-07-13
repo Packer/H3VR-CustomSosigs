@@ -50,4 +50,8 @@ public class GenericButton : MonoBehaviour
     {
         image.sprite = Global.GetSpriteByName(ItemType.Accessories, inputField.text);
     }
+    public void UpdateTextureThumbnail()
+    {
+        image.sprite = Global.GetSpriteByName(ItemType.Textures, inputField.text);
+    }
 }

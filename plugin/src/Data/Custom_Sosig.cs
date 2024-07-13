@@ -31,5 +31,11 @@ namespace CustomSosigLoader
         public float normalStrength = 1f;
         public bool specularHighlights = true;
         public bool glossyReflections = true;
+
+        //Internal
+        public string directory;
+        public Texture2D albedo;
+        public Texture2D normalmap;
+        public Texture2D masr;
     }
 }

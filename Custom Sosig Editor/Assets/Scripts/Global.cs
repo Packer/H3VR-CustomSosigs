@@ -22,6 +22,9 @@ public class Global
             case ItemType.Accessories:
                 foundSprite = ManagerUI.accessories.Find(x => x.name == description);
                 break;
+            case ItemType.Textures:
+                foundSprite = ManagerUI.textures.Find(x => x.name == description);
+                break;
         }
 
         if(foundSprite != null)
@@ -150,5 +153,5 @@ public enum ItemType
     Sosigs = 0,
     Weapons = 1,
     Accessories = 2,
-    Items = 3
+    Textures = 3
 }

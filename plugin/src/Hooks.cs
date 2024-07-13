@@ -11,13 +11,28 @@ namespace CustomSosigLoader
         [HarmonyPatch(typeof(Sosig)), HarmonyPatch(nameof(Sosig.Configure)), HarmonyPrefix]
         public static void Configure_Prefix(Sosig __instance, SosigConfigTemplate t)
         {
+            CustomID customID;
+
             //Get Sosig ID if its custom Sosig
             if (CustomSosigLoaderPlugin.customSosigConfigs.TryGetValue(t, out SosigEnemyID id))
             {
+
                 //Get Custom Sosig Template
                 if (CustomSosigLoaderPlugin.customSosigs.TryGetValue((int)id, out Custom_SosigEnemyTemplate template))
                 {
                     ModifySosig(__instance, template);
+                    return;
+                }
+            }
+            else if ((customID = __instance.GetComponent<CustomID>()) != null)
+            {
+                for (int i = 0; i < CustomSosigLoaderPlugin.customSosigs.Count; i++)
+                {
+                    if (CustomSosigLoaderPlugin.customSosigs[i].sosigEnemyID == (int)customID.customSosigID)
+                    {
+                        ModifySosig(__instance, CustomSosigLoaderPlugin.customSosigs[i]);
+                        return;
+                    }
                 }
             }
         }
@@ -46,6 +61,20 @@ namespace CustomSosigLoader
             Material sosigMaterial = head.material;
             if (custom.useCustomSkin == 1)
                 sosigMaterial.SetTexture("_MainTex", CustomSosigLoaderPlugin.customSosigTexture);
+
+            if (custom.customSkin != "")
+            {
+                if(custom.albedo)
+                    sosigMaterial.SetTexture("_MainTex", custom.albedo);
+
+                //TODO FIND THE REAL NAMES FOR THESE
+                if (custom.normalmap)
+                    sosigMaterial.SetTexture("_BumpMap", custom.normalmap);
+                if (custom.masr)
+                    sosigMaterial.SetTexture("_Masr", custom.normalmap);
+            }
+
+
             sosigMaterial.SetColor("_Color", custom.color);
             sosigMaterial.SetFloat("_Metallic", custom.metallic);
             sosigMaterial.SetFloat("_Specularity", custom.specularity);

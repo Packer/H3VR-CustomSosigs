@@ -37,12 +37,32 @@ public class CustomSosigUI : MonoBehaviour
     public Toggle specularHighlights;
     public Toggle glossyReflections;
 
+    [Header("Preview")]
+    public Image customTexture;
+
+
     void Awake()
     {
         instance = this;
     }
     private void Start()
     {
+    }
+
+    public void UpdateSosigTexture()
+    {
+        ManagerUI.instance.sosigMaterial.SetTexture("_MainTex", customTexture.sprite.texture);
+        ManagerUI.instance.sosigMaterial.SetTexture("_EmissionMap", customTexture.sprite.texture);
+
+        //Just loop
+        for (int i = 0; i < DataLoader.loadedTextures.Count; i++)
+        {
+            if (DataLoader.loadedTextures[i].name == customTexture.sprite.name + "_Normal")
+            {
+                ManagerUI.instance.sosigMaterial.SetTexture("_BumpMap", DataLoader.loadedTextures[i]);
+            }
+        }
+
     }
 
     public void OpenCustomSosig(Custom_Sosig template)
