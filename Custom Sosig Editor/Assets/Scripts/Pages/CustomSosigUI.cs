@@ -15,6 +15,7 @@ public class CustomSosigUI : MonoBehaviour
     //public string customTextureName = "";
 
     [Header("Voice")]
+    public InputField voiceSet;
     public InputField voiceVolume;
     public InputField voicePitch;
 
@@ -76,6 +77,7 @@ public class CustomSosigUI : MonoBehaviour
         baseSosigID.SetTextWithoutNotify(template.baseSosigID.ToString());
 
         //Voice
+        voiceSet.SetTextWithoutNotify(template.voiceSet.ToString());
         voiceVolume.SetTextWithoutNotify(template.voiceVolume.ToString());
         voicePitch.SetTextWithoutNotify(template.voicePitch.ToString());
 
@@ -122,15 +124,33 @@ public class CustomSosigUI : MonoBehaviour
         customSosig.baseSosigID = int.Parse(baseSosigID.text);
 
         //Voice
+        customSosig.voiceSet = voiceSet.text;
         customSosig.voiceVolume = float.Parse(voiceVolume.text);
         customSosig.voicePitch = float.Parse(voicePitch.text);
 
         //Scale
-        customSosig.scaleBody = new Vector3(float.Parse(scaleBody[0].text), float.Parse(scaleBody[1].text), float.Parse(scaleBody[0].text));
-        customSosig.scaleHead = new Vector3(float.Parse(scaleHead[0].text), float.Parse(scaleHead[1].text), float.Parse(scaleHead[0].text));
-        customSosig.scaleTorso = new Vector3(float.Parse(scaleTorso[0].text), float.Parse(scaleTorso[1].text), float.Parse(scaleTorso[0].text));
-        customSosig.scaleLegsUpper = new Vector3(float.Parse(scaleLegsUpper[0].text), float.Parse(scaleLegsUpper[1].text), float.Parse(scaleLegsUpper[0].text));
-        customSosig.scaleLegsLower = new Vector3(float.Parse(scaleLegsLower[0].text), float.Parse(scaleLegsLower[1].text), float.Parse(scaleLegsLower[0].text));
+        float minScale = 0.5f;
+        float maxScale = 1.5f;
+        customSosig.scaleBody 
+            = new Vector3(Mathf.Clamp(float.Parse(scaleBody[0].text), minScale, maxScale), 
+            Mathf.Clamp(float.Parse(scaleBody[1].text), minScale, maxScale), 
+            Mathf.Clamp(float.Parse(scaleBody[0].text), minScale, maxScale));
+        customSosig.scaleHead 
+            = new Vector3(Mathf.Clamp(float.Parse(scaleHead[0].text), minScale, maxScale), 
+            Mathf.Clamp(float.Parse(scaleHead[1].text), minScale, maxScale), 
+            Mathf.Clamp(float.Parse(scaleHead[0].text), minScale, maxScale));
+        customSosig.scaleTorso 
+            = new Vector3(Mathf.Clamp(float.Parse(scaleTorso[0].text), minScale, maxScale), 
+            Mathf.Clamp(float.Parse(scaleTorso[1].text), minScale, maxScale), 
+            Mathf.Clamp(float.Parse(scaleTorso[0].text), minScale, maxScale));
+        customSosig.scaleLegsUpper 
+            = new Vector3(Mathf.Clamp(float.Parse(scaleLegsUpper[0].text), minScale, maxScale), 
+            Mathf.Clamp(float.Parse(scaleLegsUpper[1].text), minScale, maxScale), 
+            Mathf.Clamp(float.Parse(scaleLegsUpper[0].text), minScale, maxScale));
+        customSosig.scaleLegsLower 
+            = new Vector3(Mathf.Clamp(float.Parse(scaleLegsLower[0].text), minScale, maxScale), 
+            Mathf.Clamp(float.Parse(scaleLegsLower[1].text), minScale, maxScale), 
+            Mathf.Clamp(float.Parse(scaleLegsLower[0].text), minScale, maxScale));
 
         //Materials
         customSosig.useCustomSkin = useCustomSkin.value;

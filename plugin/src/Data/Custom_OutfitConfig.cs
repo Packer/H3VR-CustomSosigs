@@ -31,6 +31,8 @@ namespace CustomSosigLoader
             Global.ItemIDToList(torsoDecorationID, outfit.TorosDecoration);
             outfit.Belt = new List<FVRObject>();
             Global.ItemIDToList(beltID, outfit.Belt);
+            outfit.Facewear = new List<FVRObject>();
+            Global.ItemIDToList(facewearID, outfit.Facewear);
 
             outfit.Chance_Headwear = chance_HeadWear;
             outfit.Chance_Eyewear = chance_Eyewear;
@@ -40,6 +42,8 @@ namespace CustomSosigLoader
             outfit.Chance_Backpacks = chance_Backpacks;
             outfit.Chance_TorosDecoration = chance_TorsoDecoration;
             outfit.Chance_Belt = chance_belt;
+            outfit.Chance_Facewear = chance_Facewear;
+
 
             return outfit;
         }
@@ -72,5 +76,8 @@ namespace CustomSosigLoader
 
         public string[] beltID;
         public float chance_belt = 0;
+
+        public string[] facewearID;
+        public float chance_Facewear = 0;
     }
 }

@@ -11,37 +11,55 @@ namespace CustomSosigLoader
         [HarmonyPatch(typeof(Sosig)), HarmonyPatch(nameof(Sosig.Configure)), HarmonyPrefix]
         public static void Configure_Prefix(Sosig __instance, SosigConfigTemplate t)
         {
-            CustomID customID;
+            SetupCustomSosig(__instance, t);
+        }
+
+        public static void SetupCustomSosig(Sosig sosig, SosigConfigTemplate t)
+        {
+            //Debug.Log("config " + t.name);
+
+            if (!CustomSosigLoaderPlugin.customSosigConfigs.ContainsKey(t))
+                return;
+
+            SosigEnemyID id = CustomSosigLoaderPlugin.customSosigConfigs.GetValueOrDefault(t);
 
             //Get Sosig ID if its custom Sosig
-            if (CustomSosigLoaderPlugin.customSosigConfigs.TryGetValue(t, out SosigEnemyID id))
+            if (id != SosigEnemyID.Misc_Dummy)
             {
+                int sosigID = (int)id;
+
+                if (!CustomSosigLoaderPlugin.customSosigs.ContainsKey(sosigID))
+                    return;
+
+                Custom_SosigEnemyTemplate template = CustomSosigLoaderPlugin.customSosigs.GetValueOrDefault(sosigID);
 
                 //Get Custom Sosig Template
-                if (CustomSosigLoaderPlugin.customSosigs.TryGetValue((int)id, out Custom_SosigEnemyTemplate template))
+                if (template != null)
                 {
-                    ModifySosig(__instance, template);
-                    return;
-                }
-            }
-            else if ((customID = __instance.GetComponent<CustomID>()) != null)
-            {
-                for (int i = 0; i < CustomSosigLoaderPlugin.customSosigs.Count; i++)
-                {
-                    if (CustomSosigLoaderPlugin.customSosigs[i].sosigEnemyID == (int)customID.customSosigID)
+                    ModifySosig(sosig, template);
+
+                    //H3MP
+                    if (CustomSosigLoaderPlugin.h3mpEnabled && H3MP.Networking.Networking.IsHost())
                     {
-                        ModifySosig(__instance, CustomSosigLoaderPlugin.customSosigs[i]);
-                        return;
+                        SosigMP.instance.CustomSosig_Send(sosig, (int)id);
                     }
+                    return;
                 }
             }
         }
 
+        public static TValue GetValueOrDefault<TKey, TValue> (this IDictionary<TKey, TValue> dictionary, TKey key)
+        {
+            TValue ret;
+            // Ignore return value
+            dictionary.TryGetValue(key, out ret);
+            return ret;
+        }
 
         public static void ModifySosig(Sosig sosig, Custom_SosigEnemyTemplate template)
         {
             if (template == null)
-                Debug.Log("Custom Sosig Loader: Missing Template");
+                CustomSosigLoaderPlugin.Logger.LogInfo("Missing Template");
 
             Custom_Sosig custom = template.customSosig[Random.Range(0, template.customSosig.Length)];
             Custom_SosigConfigTemplate config = template.configTemplates[Random.Range(0, template.configTemplates.Length)];
@@ -66,14 +84,11 @@ namespace CustomSosigLoader
             {
                 if(custom.albedo)
                     sosigMaterial.SetTexture("_MainTex", custom.albedo);
-
-                //TODO FIND THE REAL NAMES FOR THESE
                 if (custom.normalmap)
                     sosigMaterial.SetTexture("_BumpMap", custom.normalmap);
                 if (custom.masr)
-                    sosigMaterial.SetTexture("_Masr", custom.normalmap);
+                    sosigMaterial.SetTexture("_SpecTex", custom.masr);
             }
-
 
             sosigMaterial.SetColor("_Color", custom.color);
             sosigMaterial.SetFloat("_Metallic", custom.metallic);
@@ -113,41 +128,52 @@ namespace CustomSosigLoader
             sosig.Agent.height *= custom.scaleBody.y;
 
             //ANTON PLEASSS
-            SosigSpeechSet speechSet = ScriptableObject.CreateInstance<SosigSpeechSet>();
+            if (custom.voiceSet != "")  //Default Voice
+            {
+                //Try to get new voice
+                SosigSpeechSet set;
+                CustomSosigLoaderPlugin.customVoicelines.TryGetValue(custom.voiceSet, out set);
 
-            speechSet.OnAssault = sosig.Speech.OnAssault;
-            speechSet.OnAssault = sosig.Speech.OnAssault;
-            speechSet.OnBackBreak = sosig.Speech.OnBackBreak;
-            speechSet.OnBeingAimedAt = sosig.Speech.OnBeingAimedAt;
-            speechSet.OnCall_Assistance = sosig.Speech.OnCall_Assistance;
-            speechSet.OnCall_Skirmish = sosig.Speech.OnCall_Skirmish;
-            speechSet.OnConfusion = sosig.Speech.OnConfusion;
-            speechSet.OnDeath = sosig.Speech.OnDeath;
-            speechSet.OnDeathAlt = sosig.Speech.OnDeathAlt;
-            speechSet.OnInvestigate = sosig.Speech.OnInvestigate;
-            speechSet.OnJointBreak = sosig.Speech.OnJointBreak;
-            speechSet.OnJointSever = sosig.Speech.OnJointSever;
-            speechSet.OnJointSlice = sosig.Speech.OnJointSlice;
-            speechSet.OnMedic = sosig.Speech.OnMedic;
-            speechSet.OnNeckBreak = sosig.Speech.OnNeckBreak;
-            speechSet.OnPain = sosig.Speech.OnPain;
-            speechSet.OnReloading = sosig.Speech.OnReloading;
-            speechSet.OnRespond_Assistance = sosig.Speech.OnRespond_Assistance;
-            speechSet.OnRespond_Skirmish = sosig.Speech.OnRespond_Skirmish;
-            speechSet.OnSearchingForGuns = sosig.Speech.OnSearchingForGuns;
-            speechSet.OnSkirmish = sosig.Speech.OnSkirmish;
-            speechSet.OnTakingCover = sosig.Speech.OnTakingCover;
-            speechSet.OnWander = sosig.Speech.OnWander;
-            speechSet.Test = sosig.Speech.Test;
+                if (set != null)
+                    sosig.Speech = set;
+            }
+            else if (custom.voicePitch != 1.15f || custom.voiceVolume != 0.4f)  //Volume or Pitch change
+            {
+                SosigSpeechSet speechSet = ScriptableObject.CreateInstance<SosigSpeechSet>();
 
-            speechSet.LessTalkativeSkirmish = sosig.Speech.LessTalkativeSkirmish;
-            speechSet.UseAltDeathOnHeadExplode = sosig.Speech.UseAltDeathOnHeadExplode;
-            speechSet.ForceDeathSpeech = sosig.Speech.ForceDeathSpeech;
+                speechSet.OnAssault = sosig.Speech.OnAssault;
+                speechSet.OnBackBreak = sosig.Speech.OnBackBreak;
+                speechSet.OnBeingAimedAt = sosig.Speech.OnBeingAimedAt;
+                speechSet.OnCall_Assistance = sosig.Speech.OnCall_Assistance;
+                speechSet.OnCall_Skirmish = sosig.Speech.OnCall_Skirmish;
+                speechSet.OnConfusion = sosig.Speech.OnConfusion;
+                speechSet.OnDeath = sosig.Speech.OnDeath;
+                speechSet.OnDeathAlt = sosig.Speech.OnDeathAlt;
+                speechSet.OnInvestigate = sosig.Speech.OnInvestigate;
+                speechSet.OnJointBreak = sosig.Speech.OnJointBreak;
+                speechSet.OnJointSever = sosig.Speech.OnJointSever;
+                speechSet.OnJointSlice = sosig.Speech.OnJointSlice;
+                speechSet.OnMedic = sosig.Speech.OnMedic;
+                speechSet.OnNeckBreak = sosig.Speech.OnNeckBreak;
+                speechSet.OnPain = sosig.Speech.OnPain;
+                speechSet.OnReloading = sosig.Speech.OnReloading;
+                speechSet.OnRespond_Assistance = sosig.Speech.OnRespond_Assistance;
+                speechSet.OnRespond_Skirmish = sosig.Speech.OnRespond_Skirmish;
+                speechSet.OnSearchingForGuns = sosig.Speech.OnSearchingForGuns;
+                speechSet.OnSkirmish = sosig.Speech.OnSkirmish;
+                speechSet.OnTakingCover = sosig.Speech.OnTakingCover;
+                speechSet.OnWander = sosig.Speech.OnWander;
+                speechSet.Test = sosig.Speech.Test;
 
-            speechSet.BasePitch = custom.voicePitch;
-            speechSet.BaseVolume = custom.voiceVolume;
+                speechSet.LessTalkativeSkirmish = sosig.Speech.LessTalkativeSkirmish;
+                speechSet.UseAltDeathOnHeadExplode = sosig.Speech.UseAltDeathOnHeadExplode;
+                speechSet.ForceDeathSpeech = sosig.Speech.ForceDeathSpeech;
 
-            sosig.Speech = speechSet;
+                speechSet.BasePitch = custom.voicePitch;
+                speechSet.BaseVolume = custom.voiceVolume;
+
+                sosig.Speech = speechSet;
+            }
         }
     }
 }

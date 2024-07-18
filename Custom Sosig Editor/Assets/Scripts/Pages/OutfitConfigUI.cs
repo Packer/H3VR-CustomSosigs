@@ -8,7 +8,7 @@ public class OutfitConfigUI : MonoBehaviour
     public static OutfitConfigUI instance;
     public Custom_OutfitConfig outfitConfig;
     public InputField nameInputField;
-    public Wear[] wears = new Wear[8];
+    public Wear[] wears = new Wear[9];
 
     [System.Serializable]
     public class Wear
@@ -17,7 +17,6 @@ public class OutfitConfigUI : MonoBehaviour
         public WearType type = WearType.Head;
         public List<GenericButton> buttons;
         public Transform content;
-        [HideInInspector]
         public InputField chance;
         public Toggle toggle;
 
@@ -59,35 +58,30 @@ public class OutfitConfigUI : MonoBehaviour
             default:
             case (int)WearType.Head:
                 button.id = 0;
-                //outfitConfig.headwearID.Add("");
                 break;
             case (int)WearType.Eye:
                 button.id = 1;
-                //outfitConfig.eyewearID.Add("");
                 break;
             case (int)WearType.Torso:
                 button.id = 2;
-                //outfitConfig.torsowearID.Add("");
                 break;
             case (int)WearType.Pants:
                 button.id = 3;
-                //outfitConfig.pantswearID.Add("");
                 break;
             case (int)WearType.PantsLower:
                 button.id = 4;
-                //outfitConfig.pantswear_LowerID.Add("");
                 break;
             case (int)WearType.Backpacks:
                 button.id = 5;
-                //outfitConfig.backpacksID.Add("");
                 break;
             case (int)WearType.TorsoDecoration:
                 button.id = 6;
-                //outfitConfig.torsoDecorationID.Add("");
                 break;
             case (int)WearType.Belt:
                 button.id = 7;
-                //outfitConfig.beltID.Add("");
+                break;
+            case (int)WearType.Face:
+                button.id = 8;
                 break;
         }
         //SaveOutfit();
@@ -142,6 +136,7 @@ public class OutfitConfigUI : MonoBehaviour
         wears[5].SetButtons(Global.SetupCollection(outfit.backpacksID, ItemType.Accessories, wears[5].content));
         wears[6].SetButtons(Global.SetupCollection(outfit.torsoDecorationID, ItemType.Accessories, wears[6].content));
         wears[7].SetButtons(Global.SetupCollection(outfit.beltID, ItemType.Accessories, wears[7].content));
+        wears[8].SetButtons(Global.SetupCollection(outfit.facewearID, ItemType.Accessories, wears[8].content));
 
         //Setup Chance
         wears[0].chance.SetTextWithoutNotify(outfit.chance_HeadWear.ToString());
@@ -152,6 +147,7 @@ public class OutfitConfigUI : MonoBehaviour
         wears[5].chance.SetTextWithoutNotify(outfit.chance_Backpacks.ToString());
         wears[6].chance.SetTextWithoutNotify(outfit.chance_TorsoDecoration.ToString());
         wears[7].chance.SetTextWithoutNotify(outfit.chance_belt.ToString());
+        wears[8].chance.SetTextWithoutNotify(outfit.chance_Facewear.ToString());
 
         //Setup TorsoIndex Toggle
         wears[(int)WearType.Head].toggle.SetIsOnWithoutNotify(outfit.headUsesTorsoIndex);
@@ -199,6 +195,10 @@ public class OutfitConfigUI : MonoBehaviour
         outfitConfig.chance_belt = Mathf.Clamp01(float.Parse(wears[7].chance.text));
         outfitConfig.beltID = Global.GenericButtonsToStringList(wears[7].buttons.ToArray());
 
+        //Facewear
+        outfitConfig.chance_Facewear = Mathf.Clamp01(float.Parse(wears[8].chance.text));
+        outfitConfig.facewearID = Global.GenericButtonsToStringList(wears[8].buttons.ToArray());
+
         //Save Log
         ManagerUI.Log("Outfit applied at: " + System.DateTime.Now);
 
@@ -219,4 +219,5 @@ public enum WearType
     Backpacks = 5,
     TorsoDecoration = 6,
     Belt = 7,
+    Face = 8,
 }

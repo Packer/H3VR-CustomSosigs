@@ -32,4 +32,7 @@ public class Custom_OutfitConfig
 
     public List<string> beltID = new List<string>();
     public float chance_belt = 0;
+
+    public List<string> facewearID = new List<string>();
+    public float chance_Facewear = 0;
 }

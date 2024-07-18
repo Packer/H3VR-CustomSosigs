@@ -129,7 +129,7 @@ public class DataLoader : MonoBehaviour
             return null;
         }
 
-        Sprite NewSprite = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(0, 0), 100.0f);
+        Sprite NewSprite = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(0.5f, 0.5f), 100.0f);
         NewSprite.name = Path.GetFileName(path).Replace(".png", "");
         loadedSprites.Add(NewSprite);
 

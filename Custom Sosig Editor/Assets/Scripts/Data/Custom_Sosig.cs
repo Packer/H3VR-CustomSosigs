@@ -8,8 +8,9 @@ public class Custom_Sosig
     //public string customTextureName = "";
 
     //Voice
-    public float voicePitch = 1;
-    public float voiceVolume = 1;
+    public string voiceSet = "";
+    public float voicePitch = 1.15f;
+    public float voiceVolume = 0.4f;
 
     //Scale
     public Vector3 scaleBody = Vector3.one;     //Width and Height (Don't split x and z)

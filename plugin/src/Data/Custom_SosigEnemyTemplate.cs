@@ -36,10 +36,12 @@ namespace CustomSosigLoader
 
             //Configs & Prefabs
             template.ConfigTemplates = new List<SosigConfigTemplate>();
+            template.ConfigTemplates_Easy = new List<SosigConfigTemplate>();
             for (int i = 0; i < configTemplates.Length; i++)
             {
                 template.ConfigTemplates.Add(configTemplates[i].Initialize());
             }
+            template.ConfigTemplates_Easy.AddRange(template.ConfigTemplates);
 
             //Custom Base
             template.SosigPrefabs = new List<FVRObject>();

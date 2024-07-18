@@ -57,6 +57,7 @@ public class ManagerUI : MonoBehaviour
     public SpriteRenderer[] previewClothing;
     public Image[] previewWeapons;
     public MeshRenderer[] sosigRenderers;
+    public Transform sosigBody;
     public Material sosigMaterial;
     public Material sosigDefaultMaterial;
     public bool modfiyingSosigColor = false;
@@ -155,11 +156,40 @@ public class ManagerUI : MonoBehaviour
         previewClothing[(int)WearType.Backpacks].sprite = GetSosigClothing(OutfitConfigUI.instance.wears[(int)WearType.Backpacks]);
         previewClothing[(int)WearType.TorsoDecoration].sprite = GetSosigClothing(OutfitConfigUI.instance.wears[(int)WearType.TorsoDecoration]);
         previewClothing[(int)WearType.Belt].sprite = GetSosigClothing(OutfitConfigUI.instance.wears[(int)WearType.Belt]);
+        previewClothing[(int)WearType.Face].sprite = GetSosigClothing(OutfitConfigUI.instance.wears[(int)WearType.Face]);
 
         //Weapons
         previewWeapons[0].sprite = GetSosigWeapon(0);
         previewWeapons[1].sprite = GetSosigWeapon(1);
         previewWeapons[2].sprite = GetSosigWeapon(2);
+
+        //Body Scale
+        Custom_Sosig sosig = GetCustomSosig();
+        Vector4 defaultPos = new Vector4(1.35f, 0.9f, 0.45f, 0);
+        if (sosig != null)
+        {
+            //Set Scale
+            sosigBody.localScale = sosig.scaleBody;
+            sosigRenderers[3].transform.parent.localScale = sosig.scaleLegsLower;
+            sosigRenderers[2].transform.parent.localScale = sosig.scaleLegsUpper;
+            sosigRenderers[1].transform.parent.localScale = sosig.scaleTorso;
+            sosigRenderers[0].transform.parent.localScale = sosig.scaleHead;
+
+            //Offset Positions
+            sosigRenderers[3].transform.parent.localPosition = new Vector3(0, 0, 0);
+            Vector3 height = new Vector3(0, 0.225f * sosig.scaleLegsLower.y, 0);
+
+            height += new Vector3(0, 0.225f * sosig.scaleLegsUpper.y, 0);
+            sosigRenderers[2].transform.parent.localPosition = height;
+            height += new Vector3(0, 0.225f * sosig.scaleLegsUpper.y, 0);
+
+            height += new Vector3(0, 0.225f * sosig.scaleTorso.y, 0);
+            sosigRenderers[1].transform.parent.localPosition = height;
+            height += new Vector3(0, 0.225f * sosig.scaleTorso.y, 0);
+
+            height += new Vector3(0, 0.225f * sosig.scaleHead.y, 0);
+            sosigRenderers[0].transform.parent.localPosition = height;
+        }
     }
 
     public void TakeScreenshot()
@@ -167,6 +197,11 @@ public class ManagerUI : MonoBehaviour
         DataLoader.TakeScreenshot(
             SosigEnemyTemplateUI.instance.template.sosigEnemyID.ToString() + "_" + SosigEnemyTemplateUI.instance.template.displayName,
             previewCamera);
+    }
+
+    Custom_Sosig GetCustomSosig()
+    {
+        return SosigEnemyTemplateUI.instance.GetCurrentCustomSosig();
     }
 
     Sprite GetSosigWeapon(int index)

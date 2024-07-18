@@ -54,6 +54,15 @@
       <Reference Include="H3MP">
         <HintPath>..\..\H3VR-DogMod\LootCompanion\libs\H3MP.dll</HintPath>
       </Reference>
+      <Reference Include="OtherLoader">
+        <HintPath>..\..\..\SteamLibrary\steamapps\common\H3VR\CustomTweaker\TakeAndHoldFramework\Libs\OtherLoader.dll</HintPath>
+      </Reference>
+      <Reference Include="Sodalite">
+        <HintPath>..\..\H3VR-Content\NavigationMod\libs\Sodalite.dll</HintPath>
+      </Reference>
+      <Reference Include="TNHFramework">
+        <HintPath>..\..\..\SteamLibrary\steamapps\common\H3VR\CustomTweaker\TakeAndHoldFramework\Libs\TNHFramework.dll</HintPath>
+      </Reference>
     </ItemGroup>
 
     <!-- When in debug mode, also build mono debugging symbols (Only available on Windows) -->
