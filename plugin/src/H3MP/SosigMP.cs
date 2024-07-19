@@ -67,7 +67,7 @@ namespace CustomSosigLoader
             }
         }
 
-        public void CustomSosig_Send(Sosig sosig, int sosigID)
+        public void CustomSosig_Send(Sosig sosig, int sosigID, int customIndex)
         {
             TrackedSosig tracker = sosig.gameObject.GetComponent<TrackedSosig>();
 
@@ -75,8 +75,9 @@ namespace CustomSosigLoader
                 return;
 
             Packet packet = new Packet(sosigUpdate_ID);
-                        packet.Write(tracker.sosigData.trackedID);
+            packet.Write(tracker.sosigData.trackedID);
             packet.Write(sosigID);
+            packet.Write(customIndex);
             ServerSend.SendTCPDataToAll(packet, true);
 
             Debug.Log("Server - Sending Custom sosig data to " + tracker.data.trackedID + " ID: " + sosigID);
@@ -86,6 +87,7 @@ namespace CustomSosigLoader
         {
             int trackedID = packet.ReadInt();
             int sosigID = packet.ReadInt();
+            int customIndex = packet.ReadInt();
 
             Debug.Log("Client - Sosig data: " + trackedID + " ID " + sosigID);
 
@@ -93,7 +95,7 @@ namespace CustomSosigLoader
             {
                 Sosig sosig = Client.objects[trackedID].physical.gameObject.GetComponent<Sosig>();
                 CustomSosigLoaderPlugin.customSosigIDs.TryGetValue((SosigEnemyID)sosigID, out SosigConfigTemplate template);
-                Hooks.SetupCustomSosig(sosig, template);
+                Hooks.SetupCustomSosig(sosig, template, customIndex);
             }
         }
 

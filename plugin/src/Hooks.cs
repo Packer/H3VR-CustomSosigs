@@ -14,7 +14,7 @@ namespace CustomSosigLoader
             SetupCustomSosig(__instance, t);
         }
 
-        public static void SetupCustomSosig(Sosig sosig, SosigConfigTemplate t)
+        public static void SetupCustomSosig(Sosig sosig, SosigConfigTemplate t, int customIndex = -1)
         {
             //Debug.Log("config " + t.name);
 
@@ -36,12 +36,15 @@ namespace CustomSosigLoader
                 //Get Custom Sosig Template
                 if (template != null)
                 {
-                    ModifySosig(sosig, template);
+                    if(customIndex == -1)
+                        customIndex = Random.Range(0, template.customSosig.Length);
+
+                    ModifySosig(sosig, template, customIndex);
 
                     //H3MP
                     if (CustomSosigLoaderPlugin.h3mpEnabled && H3MP.Networking.Networking.IsHost())
                     {
-                        SosigMP.instance.CustomSosig_Send(sosig, (int)id);
+                        SosigMP.instance.CustomSosig_Send(sosig, (int)id, customIndex, customIndex);
                     }
                     return;
                 }
@@ -56,12 +59,12 @@ namespace CustomSosigLoader
             return ret;
         }
 
-        public static void ModifySosig(Sosig sosig, Custom_SosigEnemyTemplate template)
+        public static void ModifySosig(Sosig sosig, Custom_SosigEnemyTemplate template, int customIndex)
         {
             if (template == null)
                 CustomSosigLoaderPlugin.Logger.LogInfo("Missing Template");
 
-            Custom_Sosig custom = template.customSosig[Random.Range(0, template.customSosig.Length)];
+            Custom_Sosig custom = template.customSosig[customIndex];
             Custom_SosigConfigTemplate config = template.configTemplates[Random.Range(0, template.configTemplates.Length)];
             bool stopSever = config.CanBeSevered;
 

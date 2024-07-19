@@ -197,12 +197,6 @@ namespace CustomSosigLoader
                     }
                 }
 
-                //Add to TnHFramework
-                if (tnhFramework)
-                {
-                    TnHFrameworkLoader.AddSosigEnemyTemplateToTnHFramework(template);
-                }
-
                 yield return null;
             }
             Logger.LogInfo("Sosigs Total count: " + IM.Instance.odicSosigObjsByID.Count);
