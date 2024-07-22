@@ -71,15 +71,7 @@ public class ManagerUI : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        sosigMaterial = Instantiate(sosigDefaultMaterial);
-        //Color event for sosigs
-        for (int i = 0; i < sosigRenderers.Length; i++)
-        {
-            sosigRenderers[i].sharedMaterial = sosigMaterial;
-        }
-        //sosigMaterial.SetColor("_Color", sosigDefaultMaterial.GetColor("_Color"));
-        //sosigMaterial.SetColor("_EmissionColor", sosigDefaultMaterial.GetColor("_EmissionColor"));
-
+        SetupDefaultSosigMaterial();
         colorPicker.onColorChanged += OnColorChanged;
 
         CloseAllPages();
@@ -108,6 +100,16 @@ public class ManagerUI : MonoBehaviour
     private void OnDestroy()
     {
        colorPicker.onColorChanged -= OnColorChanged;
+    }
+
+    public void SetupDefaultSosigMaterial()
+    {
+        sosigMaterial = Instantiate(sosigDefaultMaterial);
+        //Color event for sosigs
+        for (int i = 0; i < sosigRenderers.Length; i++)
+        {
+            sosigRenderers[i].sharedMaterial = sosigMaterial;
+        }
     }
 
 
@@ -175,6 +177,12 @@ public class ManagerUI : MonoBehaviour
             sosigRenderers[1].transform.parent.localScale = sosig.scaleTorso;
             sosigRenderers[0].transform.parent.localScale = sosig.scaleHead;
 
+            //Hide
+            sosigRenderers[0].enabled = !sosig.hideHeadMesh;
+            sosigRenderers[1].enabled = !sosig.hideTorsoMesh;
+            sosigRenderers[2].enabled = !sosig.hideLegsUpperMesh;
+            sosigRenderers[3].enabled = !sosig.hideLegsLowerMesh;
+
             //Offset Positions
             sosigRenderers[3].transform.parent.localPosition = new Vector3(0, 0, 0);
             Vector3 height = new Vector3(0, 0.225f * sosig.scaleLegsLower.y, 0);
@@ -195,7 +203,7 @@ public class ManagerUI : MonoBehaviour
     public void TakeScreenshot()
     {
         DataLoader.TakeScreenshot(
-            SosigEnemyTemplateUI.instance.template.sosigEnemyID.ToString() + "_" + SosigEnemyTemplateUI.instance.template.displayName,
+            SosigEnemyTemplateUI.instance.template.SosigEnemyID.ToString() + "_" + SosigEnemyTemplateUI.instance.template.DisplayName,
             previewCamera);
     }
 
@@ -255,14 +263,22 @@ public class ManagerUI : MonoBehaviour
     void NewSosig()
     {
         Custom_SosigEnemyTemplate template = new Custom_SosigEnemyTemplate();
-        template.customSosig.Add(new Custom_Sosig());
-        template.outfitConfig.Add(new Custom_OutfitConfig());
-        template.configTemplates.Add(new Custom_SosigConfigTemplate());
+        template.CustomSosigs.Add(new Custom_Sosig());
+        template.OutfitConfigs.Add(new Custom_OutfitConfig());
+        template.Configs.Add(new Custom_SosigConfigTemplate());
 
         SosigEnemyTemplateUI.instance.LoadEnemyTemplate(template);
         loadedSosig = true;
         saveButton.SetActive(true);
         mainMenu.SetActive(false);
+
+        //Reset Preview
+        SosigEnemyTemplateUI.instance.sosigEnemyCategoryDropdown.SetValueWithoutNotify(1);
+
+        CustomSosigUI.instance.useCustomSkin.SetValueWithoutNotify(0);
+        SetupDefaultSosigMaterial();
+        CustomSosigUI.instance.UpdateSosigSkinDropdown();
+        CustomSosigUI.instance.UpdateSosigTexture();
     }
 
     public void Load()
@@ -282,6 +298,25 @@ public class ManagerUI : MonoBehaviour
         loadedSosig = true;
         saveButton.SetActive(true);
         mainMenu.SetActive(false);
+
+        if (SosigEnemyTemplateUI.instance.template.CustomSosigs.Count > 0)
+        {
+            switch (SosigEnemyTemplateUI.instance.template.CustomSosigs[0].customSkin)
+            {
+                case "":
+                    CustomSosigUI.instance.useCustomSkin.value = 0;
+                    break;
+                case "CustomSosig_Base":
+                    CustomSosigUI.instance.useCustomSkin.value = 1;
+                    break;
+                default:    //Any text
+                    CustomSosigUI.instance.useCustomSkin.value = 2;
+                    break;
+            }
+        }
+
+        CustomSosigUI.instance.UpdateSosigSkinDropdown();
+        CustomSosigUI.instance.UpdateSosigTexture();
     }
 
     public void Save()

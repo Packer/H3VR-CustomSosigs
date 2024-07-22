@@ -55,10 +55,10 @@ public class SosigEnemyTemplateUI : MonoBehaviour
         int lastValue = outfitDropdown.value;
         outfitDropdown.ClearOptions();
         List<Dropdown.OptionData> options = new List<Dropdown.OptionData>();
-        for (int i = 0; i < template.outfitConfig.Count; i++)
+        for (int i = 0; i < template.OutfitConfigs.Count; i++)
         {
             Dropdown.OptionData option = new Dropdown.OptionData();
-            option.text = template.outfitConfig[i].name;
+            option.text = template.OutfitConfigs[i].name;
             options.Add(option);
         }
         outfitDropdown.AddOptions(options);
@@ -77,7 +77,7 @@ public class SosigEnemyTemplateUI : MonoBehaviour
         Dropdown.OptionData option = new Dropdown.OptionData();
         Custom_OutfitConfig outfit = new Custom_OutfitConfig();
         option.text = outfit.name;
-        template.outfitConfig.Add(outfit);
+        template.OutfitConfigs.Add(outfit);
         outfitDropdown.options.Add(option);
         outfitDropdown.value++;
         OutfitSelect();
@@ -87,9 +87,9 @@ public class SosigEnemyTemplateUI : MonoBehaviour
     public void OutfitDuplicate()
     {
         Dropdown.OptionData option = new Dropdown.OptionData();
-        Custom_OutfitConfig outfit = Global.ObjectCloner.Clone(template.outfitConfig[outfitDropdown.value]);
+        Custom_OutfitConfig outfit = Global.ObjectCloner.Clone(template.OutfitConfigs[outfitDropdown.value]);
         option.text = outfit.name;
-        template.outfitConfig.Add(outfit);
+        template.OutfitConfigs.Add(outfit);
         outfitDropdown.options.Add(option);
         outfitDropdown.value++;
         OutfitSelect();
@@ -102,7 +102,7 @@ public class SosigEnemyTemplateUI : MonoBehaviour
         if (outfitDropdown.options.Count <= 1)
             return;
 
-        template.outfitConfig.RemoveAt(outfitDropdown.value);
+        template.OutfitConfigs.RemoveAt(outfitDropdown.value);
         outfitDropdown.options.RemoveAt(outfitDropdown.value);
         outfitDropdown.value--;
         outfitTitleText.text = "OUTFIT CONFIG: " + outfitDropdown.options[outfitDropdown.value].text;
@@ -110,13 +110,13 @@ public class SosigEnemyTemplateUI : MonoBehaviour
 
     public void OutfitSelect()
     {
-        OutfitConfigUI.instance.OpenOutfit(template.outfitConfig[outfitDropdown.value]);
+        OutfitConfigUI.instance.OpenOutfit(template.OutfitConfigs[outfitDropdown.value]);
         ManagerUI.instance.OpenPage(1);
     }
 
     public Custom_OutfitConfig GetCurrentOutfit()
     {
-        return template.outfitConfig[outfitDropdown.value];
+        return template.OutfitConfigs[outfitDropdown.value];
     }
 
     //----------------------------------------------------------------------------
@@ -128,10 +128,10 @@ public class SosigEnemyTemplateUI : MonoBehaviour
         int lastValue = customSosigDropdown.value;
         customSosigDropdown.ClearOptions();
         List<Dropdown.OptionData> options = new List<Dropdown.OptionData>();
-        for (int i = 0; i < template.customSosig.Count; i++)
+        for (int i = 0; i < template.CustomSosigs.Count; i++)
         {
             Dropdown.OptionData option = new Dropdown.OptionData();
-            option.text = template.customSosig[i].name;
+            option.text = template.CustomSosigs[i].name;
             options.Add(option);
         }
         customSosigDropdown.AddOptions(options);
@@ -150,7 +150,7 @@ public class SosigEnemyTemplateUI : MonoBehaviour
         Dropdown.OptionData option = new Dropdown.OptionData();
         Custom_Sosig sosig = new Custom_Sosig();
         option.text = sosig.name;
-        template.customSosig.Add(sosig);
+        template.CustomSosigs.Add(sosig);
         customSosigDropdown.options.Add(option);
         customSosigDropdown.value++;
         CustomSosigSelect();
@@ -160,9 +160,9 @@ public class SosigEnemyTemplateUI : MonoBehaviour
     public void CustomSosigDuplicate()
     {
         Dropdown.OptionData option = new Dropdown.OptionData();
-        Custom_Sosig sosig = template.customSosig[customSosigDropdown.value].Clone();
+        Custom_Sosig sosig = template.CustomSosigs[customSosigDropdown.value].Clone();
         option.text = sosig.name;
-        template.customSosig.Add(sosig);
+        template.CustomSosigs.Add(sosig);
         customSosigDropdown.options.Add(option);
         customSosigDropdown.value++;
         CustomSosigSelect();
@@ -175,7 +175,7 @@ public class SosigEnemyTemplateUI : MonoBehaviour
         if (customSosigDropdown.options.Count <= 1)
             return;
 
-        template.customSosig.RemoveAt(customSosigDropdown.value);
+        template.CustomSosigs.RemoveAt(customSosigDropdown.value);
         customSosigDropdown.options.RemoveAt(customSosigDropdown.value);
         customSosigDropdown.value--;
         customSosigTitleText.text = "CUSTOM SOSIG: " + customSosigDropdown.options[customSosigDropdown.value].text;
@@ -183,13 +183,13 @@ public class SosigEnemyTemplateUI : MonoBehaviour
 
     public void CustomSosigSelect()
     {
-        CustomSosigUI.instance.OpenCustomSosig(template.customSosig[customSosigDropdown.value]);
+        CustomSosigUI.instance.OpenCustomSosig(template.CustomSosigs[customSosigDropdown.value]);
         ManagerUI.instance.OpenPage(3);
     }
 
     public Custom_Sosig GetCurrentCustomSosig()
     {
-        return template.customSosig[customSosigDropdown.value];
+        return template.CustomSosigs[customSosigDropdown.value];
     }
 
     //----------------------------------------------------------------------------
@@ -201,10 +201,10 @@ public class SosigEnemyTemplateUI : MonoBehaviour
         int lastValue = configTemplateDropdown.value;
         configTemplateDropdown.ClearOptions();
         List<Dropdown.OptionData> options = new List<Dropdown.OptionData>();
-        for (int i = 0; i < template.configTemplates.Count; i++)
+        for (int i = 0; i < template.Configs.Count; i++)
         {
             Dropdown.OptionData option = new Dropdown.OptionData();
-            option.text = template.configTemplates[i].name;
+            option.text = template.Configs[i].name;
             options.Add(option);
         }
         configTemplateDropdown.AddOptions(options);
@@ -223,7 +223,7 @@ public class SosigEnemyTemplateUI : MonoBehaviour
         Dropdown.OptionData option = new Dropdown.OptionData();
         Custom_SosigConfigTemplate outfit = new Custom_SosigConfigTemplate();
         option.text = outfit.name;
-        template.configTemplates.Add(outfit);
+        template.Configs.Add(outfit);
         configTemplateDropdown.options.Add(option);
         configTemplateDropdown.value++;
         ConfigTemplateSelect();
@@ -233,9 +233,9 @@ public class SosigEnemyTemplateUI : MonoBehaviour
     public void ConfigTemplateDuplicate()
     {
         Dropdown.OptionData option = new Dropdown.OptionData();
-        Custom_SosigConfigTemplate config = template.configTemplates[configTemplateDropdown.value].Clone();
+        Custom_SosigConfigTemplate config = template.Configs[configTemplateDropdown.value].Clone();
         option.text = config.name;
-        template.configTemplates.Add(config);
+        template.Configs.Add(config);
         configTemplateDropdown.options.Add(option);
         configTemplateDropdown.value++;
         ConfigTemplateSelect();
@@ -248,7 +248,7 @@ public class SosigEnemyTemplateUI : MonoBehaviour
         if (configTemplateDropdown.options.Count <= 1)
             return;
 
-        template.configTemplates.RemoveAt(configTemplateDropdown.value);
+        template.Configs.RemoveAt(configTemplateDropdown.value);
         configTemplateDropdown.options.RemoveAt(configTemplateDropdown.value);
         configTemplateDropdown.value--;
         configTemplateTitleText.text = "OUTFIT TEMPLATE: " + configTemplateDropdown.options[configTemplateDropdown.value].text;
@@ -256,13 +256,13 @@ public class SosigEnemyTemplateUI : MonoBehaviour
 
     public void ConfigTemplateSelect()
     {
-        ConfigTemplateUI.instance.OpenConfigTemplate(template.configTemplates[configTemplateDropdown.value]);
+        ConfigTemplateUI.instance.OpenConfigTemplate(template.Configs[configTemplateDropdown.value]);
         ManagerUI.instance.OpenPage(2);
     }
 
     public Custom_SosigConfigTemplate GetCurrentConfig()
     {
-        return template.configTemplates[configTemplateDropdown.value];
+        return template.Configs[configTemplateDropdown.value];
     }
 
     //----------------------------------------------------------------------------
@@ -362,19 +362,19 @@ public class SosigEnemyTemplateUI : MonoBehaviour
     {
         template = newTemplate;
 
-        displayName.SetTextWithoutNotify(template.displayName);
-        sosigEnemyCategory.SetTextWithoutNotify(template.sosigEnemyCategory.ToString());
-        sosigEnemyID.SetTextWithoutNotify(template.sosigEnemyID.ToString());
+        displayName.SetTextWithoutNotify(template.DisplayName);
+        sosigEnemyCategory.SetTextWithoutNotify(template.SosigEnemyCategory.ToString());
+        sosigEnemyID.SetTextWithoutNotify(template.SosigEnemyID.ToString());
 
         //Weapons
         ClearAllWeapons();
 
-        weaponOptionsID = Global.SetupCollection(template.weaponOptionsID, ItemType.Weapons, primaryContent);
-        weaponOptions_SecondaryID = Global.SetupCollection(template.weaponOptions_SecondaryID, ItemType.Weapons, secondaryContent);
-        weaponOptions_TertiaryID = Global.SetupCollection(template.weaponOptions_TertiaryID, ItemType.Weapons, tertiaryContent);
+        weaponOptionsID = Global.SetupCollection(template.WeaponOptions, ItemType.Weapons, primaryContent);
+        weaponOptions_SecondaryID = Global.SetupCollection(template.WeaponOptionsSecondary, ItemType.Weapons, secondaryContent);
+        weaponOptions_TertiaryID = Global.SetupCollection(template.WeaponOptionsTertiary, ItemType.Weapons, tertiaryContent);
 
-        secondaryChance.text = template.secondaryChance.ToString();
-        tertiaryChance.text = template.tertiaryChance.ToString();
+        secondaryChance.text = template.SecondaryChance.ToString();
+        tertiaryChance.text = template.TertiaryChance.ToString();
 
         //Load Outfits
         OutfitLoad();
@@ -390,20 +390,20 @@ public class SosigEnemyTemplateUI : MonoBehaviour
 
     public void SaveEnemyTemplate()
     {
-        template.displayName = displayName.text;
+        template.DisplayName = displayName.text;
         if (sosigEnemyCategory.text == "")
-            template.sosigEnemyCategory = 0;
+            template.SosigEnemyCategory = 0;
         else
-            template.sosigEnemyCategory = int.Parse(sosigEnemyCategory.text);
-        template.sosigEnemyID = int.Parse(sosigEnemyID.text);
+            template.SosigEnemyCategory = int.Parse(sosigEnemyCategory.text);
+        template.SosigEnemyID = int.Parse(sosigEnemyID.text);
 
-        template.weaponOptionsID = Global.GenericButtonsToStringList(weaponOptionsID.ToArray());
+        template.WeaponOptions = Global.GenericButtonsToStringList(weaponOptionsID.ToArray());
 
-        template.weaponOptions_SecondaryID = Global.GenericButtonsToStringList(weaponOptions_SecondaryID.ToArray());
-        template.secondaryChance = float.Parse(secondaryChance.text);
+        template.WeaponOptionsSecondary = Global.GenericButtonsToStringList(weaponOptions_SecondaryID.ToArray());
+        template.SecondaryChance = float.Parse(secondaryChance.text);
 
-        template.weaponOptions_TertiaryID = Global.GenericButtonsToStringList(weaponOptions_TertiaryID.ToArray());
-        template.tertiaryChance = float.Parse(tertiaryChance.text);
+        template.WeaponOptionsTertiary = Global.GenericButtonsToStringList(weaponOptions_TertiaryID.ToArray());
+        template.TertiaryChance = float.Parse(tertiaryChance.text);
 
         ManagerUI.Log("Enemy Template applied at: " + System.DateTime.Now);
     }

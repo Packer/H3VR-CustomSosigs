@@ -26,9 +26,16 @@ public class CustomSosigUI : MonoBehaviour
     public InputField[] scaleLegsUpper = new InputField[2];
     public InputField[] scaleLegsLower = new InputField[2];
 
+    [Header("Meshes")]
+    public Toggle hideHead;
+    public Toggle hideTorso;
+    public Toggle hideLegsUpper;
+    public Toggle hideLegsLower;
+
     [Header("Materials")]
     public Dropdown useCustomSkin;  //Default or White
     public InputField customSkin;
+    public Sprite customSkinWhite;
     public Image color;
     public InputField metallic;
     public InputField specularity;
@@ -48,22 +55,59 @@ public class CustomSosigUI : MonoBehaviour
     }
     private void Start()
     {
+        //Hide Custom skin input
+        customSkin.transform.parent.gameObject.SetActive(false);
     }
 
     public void UpdateSosigTexture()
     {
-        ManagerUI.instance.sosigMaterial.SetTexture("_MainTex", customTexture.sprite.texture);
-        ManagerUI.instance.sosigMaterial.SetTexture("_EmissionMap", customTexture.sprite.texture);
-
-        //Just loop
-        for (int i = 0; i < DataLoader.loadedTextures.Count; i++)
+        if (useCustomSkin.value == 0)
         {
-            if (DataLoader.loadedTextures[i].name == customTexture.sprite.name + "_Normal")
+            //Reset material to default
+            ManagerUI.instance.SetupDefaultSosigMaterial();
+        }
+        else if (useCustomSkin.value == 1)
+        {
+            //Reset material to default first
+            ManagerUI.instance.SetupDefaultSosigMaterial();
+            ManagerUI.instance.sosigMaterial.SetTexture("_MainTex", customSkinWhite.texture);
+            ManagerUI.instance.sosigMaterial.SetTexture("_EmissionMap", customSkinWhite.texture);
+            ManagerUI.instance.sosigMaterial.SetColor("_Color", customSosig.color);
+        }
+        else if (useCustomSkin.value == 2)
+        {
+            ManagerUI.instance.sosigMaterial.SetTexture("_MainTex", customTexture.sprite.texture);
+            ManagerUI.instance.sosigMaterial.SetTexture("_EmissionMap", customTexture.sprite.texture);
+            ManagerUI.instance.sosigMaterial.SetColor("_Color", customSosig.color);
+
+            for (int i = 0; i < DataLoader.loadedTextures.Count; i++)
             {
-                ManagerUI.instance.sosigMaterial.SetTexture("_BumpMap", DataLoader.loadedTextures[i]);
+                if (DataLoader.loadedTextures[i].name == customTexture.sprite.name + "_Normal")
+                {
+                    ManagerUI.instance.sosigMaterial.SetTexture("_BumpMap", DataLoader.loadedTextures[i]);
+                }
             }
         }
+    }
 
+    public void UpdateSosigSkinDropdown()
+    {
+        switch (useCustomSkin.value)
+        {
+            default:
+            case 0: //Default
+                customSkin.text = "";
+                customSkin.transform.parent.gameObject.SetActive(false);
+                break;
+            case 1: //White
+                customSkin.text = "CustomSosig_Base";
+                customSkin.transform.parent.gameObject.SetActive(false);
+                break;
+            case 2: //Custom
+                customSkin.text = "";
+                customSkin.transform.parent.gameObject.SetActive(true);
+                break;
+        }
     }
 
     public void OpenCustomSosig(Custom_Sosig template)
@@ -74,7 +118,10 @@ public class CustomSosigUI : MonoBehaviour
 
         nameField.SetTextWithoutNotify(template.name);
         SosigEnemyTemplateUI.instance.customSosigTitleText.text = "CUSTOM SOSIG: " + template.name;
+
         baseSosigID.SetTextWithoutNotify(template.baseSosigID.ToString());
+        //Load Base Sprite
+
 
         //Voice
         voiceSet.SetTextWithoutNotify(template.voiceSet.ToString());
@@ -93,8 +140,14 @@ public class CustomSosigUI : MonoBehaviour
         scaleLegsLower[0].SetTextWithoutNotify(template.scaleLegsLower.x.ToString());
         scaleLegsLower[1].SetTextWithoutNotify(template.scaleLegsLower.y.ToString());
 
+        //Mesh Renderers
+        hideHead.SetIsOnWithoutNotify(template.hideHeadMesh);
+        hideTorso.SetIsOnWithoutNotify(template.hideTorsoMesh);
+        hideLegsUpper.SetIsOnWithoutNotify(template.hideLegsUpperMesh);
+        hideLegsLower.SetIsOnWithoutNotify(template.hideLegsLowerMesh);
+
         //Materials
-        useCustomSkin.SetValueWithoutNotify(template.useCustomSkin);
+        //useCustomSkin.SetValueWithoutNotify(template.useCustomSkin);
         customSkin.SetTextWithoutNotify(template.customSkin);
         color.color = template.color;
         metallic.SetTextWithoutNotify(template.metallic.ToString());
@@ -119,7 +172,6 @@ public class CustomSosigUI : MonoBehaviour
 
     public void SaveCustomSosig()
     {
-        
         customSosig.name = nameField.text;
         customSosig.baseSosigID = int.Parse(baseSosigID.text);
 
@@ -152,8 +204,14 @@ public class CustomSosigUI : MonoBehaviour
             Mathf.Clamp(float.Parse(scaleLegsLower[1].text), minScale, maxScale), 
             Mathf.Clamp(float.Parse(scaleLegsLower[0].text), minScale, maxScale));
 
+        //Mesh Renderers
+        customSosig.hideHeadMesh = hideHead.isOn;
+        customSosig.hideTorsoMesh = hideTorso.isOn;
+        customSosig.hideLegsUpperMesh = hideLegsUpper.isOn;
+        customSosig.hideLegsLowerMesh = hideLegsLower.isOn;
+
         //Materials
-        customSosig.useCustomSkin = useCustomSkin.value;
+        //customSosig.useCustomSkin = useCustomSkin.value;
         customSosig.customSkin =  customSkin.text;
         customSosig.color = color.color;
         customSosig.metallic = float.Parse(metallic.text);

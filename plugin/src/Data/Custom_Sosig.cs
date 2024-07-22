@@ -21,8 +21,14 @@ namespace CustomSosigLoader
         public Vector3 scaleLegsUpper = Vector3.one;
         public Vector3 scaleLegsLower = Vector3.one;
 
+        //Mesh
+        public bool hideHeadMesh = false;
+        public bool hideTorsoMesh = false;
+        public bool hideLegsUpperMesh = false;
+        public bool hideLegsLowerMesh = false;
+
         //Materials
-        public int useCustomSkin = 0;  //Default or White or Custom
+        //public int useCustomSkin = 0;  //Default or White or Custom
         public string customSkin = "";  //Name.png Name_Normal.png Name_MASR.png
         public Color color;
         public float metallic = 0;

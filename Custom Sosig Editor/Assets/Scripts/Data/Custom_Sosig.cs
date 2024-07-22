@@ -19,8 +19,14 @@ public class Custom_Sosig
     public Vector3 scaleLegsUpper = Vector3.one;
     public Vector3 scaleLegsLower = Vector3.one;
 
+    //Mesh
+    public bool hideHeadMesh = false;
+    public bool hideTorsoMesh = false;
+    public bool hideLegsUpperMesh = false;
+    public bool hideLegsLowerMesh = false;
+
     //Materials
-    public int useCustomSkin = 0;  //Default, White or Custom
+    //public int useCustomSkin = 0;  //Default, White or Custom
     public string customSkin = "";
     public Color color = Color.white;
     public float metallic = 0;
@@ -49,7 +55,8 @@ public class Custom_Sosig
         template.scaleLegsLower = scaleLegsLower;
 
         //Materials
-        template.useCustomSkin = useCustomSkin;  //Default or White
+        //template.useCustomSkin = useCustomSkin;  //Default or White
+        template.customSkin = customSkin;
         template.color = color;
         template.metallic = metallic;
         template.specularity = specularity;

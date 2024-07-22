@@ -11,73 +11,81 @@ namespace CustomSosigLoader
         {
             SosigOutfitConfig outfit = ScriptableObject.CreateInstance<SosigOutfitConfig>();
 
-            outfit.HeadUsesTorsoIndex = headUsesTorsoIndex;
-            outfit.PantsUsesTorsoIndex = pantsUsesTorsoIndex;
-            outfit.PantsLowerUsesPantsIndex = pantsLowerUsesPantsIndex;
+            outfit.HeadUsesTorsoIndex = HeadUsesTorsoIndex;
+            outfit.PantsUsesTorsoIndex = PantsUsesTorsoIndex;
+            outfit.PantsLowerUsesPantsIndex = PantsLowerUsesPantsIndex;
 
             outfit.Headwear = new List<FVRObject>();
-            Global.ItemIDToList(headwearID, outfit.Headwear);
+            Global.ItemIDToList(Headwear, outfit.Headwear);
             outfit.Eyewear = new List<FVRObject>();
-            Global.ItemIDToList(eyewearID, outfit.Eyewear);
+            Global.ItemIDToList(Eyewear, outfit.Eyewear);
             outfit.Torsowear = new List<FVRObject>();
-            Global.ItemIDToList(torsowearID, outfit.Torsowear);
+            Global.ItemIDToList(Torsowear, outfit.Torsowear);
             outfit.Pantswear = new List<FVRObject>();
-            Global.ItemIDToList(pantswearID, outfit.Pantswear);
+            Global.ItemIDToList(Pantswear, outfit.Pantswear);
             outfit.Pantswear_Lower = new List<FVRObject>();
-            Global.ItemIDToList(pantswear_LowerID, outfit.Pantswear_Lower);
+            Global.ItemIDToList(Pantswear_Lower, outfit.Pantswear_Lower);
             outfit.Backpacks = new List<FVRObject>();
-            Global.ItemIDToList(backpacksID, outfit.Backpacks);
+            Global.ItemIDToList(Backpacks, outfit.Backpacks);
             outfit.TorosDecoration = new List<FVRObject>();
-            Global.ItemIDToList(torsoDecorationID, outfit.TorosDecoration);
+            Global.ItemIDToList(TorsoDecoration, outfit.TorosDecoration);
             outfit.Belt = new List<FVRObject>();
-            Global.ItemIDToList(beltID, outfit.Belt);
+            Global.ItemIDToList(Belt, outfit.Belt);
             outfit.Facewear = new List<FVRObject>();
-            Global.ItemIDToList(facewearID, outfit.Facewear);
+            Global.ItemIDToList(Facewear, outfit.Facewear);
 
-            outfit.Chance_Headwear = chance_HeadWear;
-            outfit.Chance_Eyewear = chance_Eyewear;
-            outfit.Chance_Torsowear = chance_Torsowear;
-            outfit.Chance_Pantswear = chance_Pantswear;
-            outfit.Chance_Pantswear_Lower = chance_Pantswear_Lower;
-            outfit.Chance_Backpacks = chance_Backpacks;
-            outfit.Chance_TorosDecoration = chance_TorsoDecoration;
-            outfit.Chance_Belt = chance_belt;
-            outfit.Chance_Facewear = chance_Facewear;
-
+            outfit.Chance_Headwear = Chance_Headwear;
+            outfit.Chance_Eyewear = Chance_Eyewear;
+            outfit.Chance_Torsowear = Chance_Torsowear;
+            outfit.Chance_Pantswear = Chance_Pantswear;
+            outfit.Chance_Pantswear_Lower = Chance_Pantswear_Lower;
+            outfit.Chance_Backpacks = Chance_Backpacks;
+            outfit.Chance_TorosDecoration = Chance_TorsoDecoration;
+            outfit.Chance_Belt = Chance_belt;
+            outfit.Chance_Facewear = Chance_Facewear;
 
             return outfit;
         }
 
         public string name;
 
-        public string[] headwearID;
-        public float chance_HeadWear = 0;
-        public bool headUsesTorsoIndex = false;
+        public string[] Headwear;
+        public float Chance_Headwear = 0;
+        public bool HeadUsesTorsoIndex = false;
+        public bool ForceWearAllHead = false;
 
-        public string[] eyewearID;
-        public float chance_Eyewear = 0;
+        public string[] Eyewear;
+        public float Chance_Eyewear = 0;
+        public bool ForceWearAllEye = false;
 
-        public string[] torsowearID;
-        public float chance_Torsowear = 0;
+        public string[] Torsowear;
+        public float Chance_Torsowear = 0;
+        public bool ForceWearAllTorso = false;
 
-        public string[] pantswearID;
-        public float chance_Pantswear = 0;
-        public bool pantsUsesTorsoIndex = false;
+        public string[] Pantswear;
+        public float Chance_Pantswear = 0;
+        public bool PantsUsesTorsoIndex = false;
+        public bool ForceWearAllPants = false;
 
-        public string[] pantswear_LowerID;
-        public float chance_Pantswear_Lower = 0;
-        public bool pantsLowerUsesPantsIndex = false;
+        public string[] Pantswear_Lower;
+        public float Chance_Pantswear_Lower = 0;
+        public bool PantsLowerUsesPantsIndex = false;
+        public bool ForceWearAllPantsLower = false;
 
-        public string[] backpacksID;
-        public float chance_Backpacks = 0;
+        public string[] Backpacks;
+        public float Chance_Backpacks = 0;
+        public bool ForceWearAllBackpacks = false;
 
-        public string[] torsoDecorationID;
-        public float chance_TorsoDecoration = 0;
+        public string[] TorsoDecoration;
+        public float Chance_TorsoDecoration = 0;
+        public bool ForceWearAllTorsoDecoration = false;
 
-        public string[] beltID;
-        public float chance_belt = 0;
+        public string[] Belt;
+        public float Chance_belt = 0;
+        public bool ForceWearAllBelt = false;
 
-        public string[] facewearID;
-        public float chance_Facewear = 0;
+        public string[] Facewear;
+        public float Chance_Facewear = 0;
+        public bool ForceWearAllFace = false;
     }
 }

@@ -22,12 +22,10 @@ namespace CustomSosigLoader
             public Texture masr;
         }
 
-
         public static List<string> GetCustomSosigDirectories()
         {
             return Directory.GetFiles(Paths.PluginPath, "*.csosig", SearchOption.AllDirectories).ToList();
         }
-
 
         public static void LoadCustomSosigs()
         {
@@ -62,28 +60,31 @@ namespace CustomSosigLoader
                     }
 
                     //Directories
-                    for (int x = 0; x < sosigTemplate.customSosig.Length; x++)
+                    for (int x = 0; x < sosigTemplate.CustomSosigs.Length; x++)
                     {
-                        sosigTemplate.customSosig[x].directory = directories[i];
+                        sosigTemplate.CustomSosigs[x].directory = directories[i];
                     }
 
                     //Add to our collection
-                    CustomSosigLoaderPlugin.customSosigs.Add(sosigTemplate.sosigEnemyID, sosigTemplate);
+                    CustomSosigLoaderPlugin.customSosigs.Add(sosigTemplate.SosigEnemyID, sosigTemplate);
 
-                    CustomSosigLoaderPlugin.Logger.LogInfo("Custom Sosig Loader - Loaded " + sosigTemplate.sosigEnemyID + " - " + sosigTemplate.displayName);
+                    CustomSosigLoaderPlugin.Logger.LogInfo("Custom Sosig Loader - Loaded " + sosigTemplate.SosigEnemyID + " - " + sosigTemplate.DisplayName);
                 }
             }
         }
 
         public static void LoadSosigMaterial(Custom_Sosig customSosig)
         {
-            string filename = customSosig.directory + customSosig.customSkin;
+            //Using Default White skin so skip
+            if (customSosig.customSkin == "CustomSosig_Base")
+                    return;
+
+            string filename = Path.GetDirectoryName(customSosig.directory) + customSosig.customSkin;
 
             customSosig.albedo = LoadTexture(filename + ".png");
             customSosig.normalmap = LoadTexture(filename + "_Normal.png");
             customSosig.masr = LoadTexture(filename + "_MARS.png");
         }
-
 
         public static void ItemIDToList(string[] itemIDs, List<FVRObject> input)
         {

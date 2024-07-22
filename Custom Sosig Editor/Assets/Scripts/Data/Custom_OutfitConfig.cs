@@ -6,33 +6,42 @@ public class Custom_OutfitConfig
 {
     public string name = "Outfit";
 
-    public List<string> headwearID = new List<string>();
-    public float chance_HeadWear = 0;
-    public bool headUsesTorsoIndex = false;
+    public List<string> Headwear = new List<string>();
+    public float Chance_HeadWear = 0;
+    public bool HeadUsesTorsoIndex = false;
+    public bool ForceWearAllHead = false;
 
-    public List<string> eyewearID = new List<string>();
-    public float chance_Eyewear = 0;
+    public List<string> Eyewear = new List<string>();
+    public float Chance_Eyewear = 0;
+    public bool ForceWearAllEye = false;
 
-    public List<string> torsowearID = new List<string>();
-    public float chance_Torsowear = 0;
+    public List<string> Torsowear = new List<string>();
+    public float Chance_Torsowear = 0;
+    public bool ForceWearAllTorso = false;
 
-    public List<string> pantswearID = new List<string>();
-    public float chance_Pantswear = 0;
-    public bool pantsUsesTorsoIndex = false;
+    public List<string> Pantswear = new List<string>();
+    public float Chance_Pantswear = 0;
+    public bool PantsUsesTorsoIndex = false;
+    public bool ForceWearAllPants = false;
 
-    public List<string> pantswear_LowerID = new List<string>();
-    public float chance_Pantswear_Lower = 0;
-    public bool pantsLowerUsesPantsIndex = false;
+    public List<string> Pantswear_Lower = new List<string>();
+    public float Chance_Pantswear_Lower = 0;
+    public bool PantsLowerUsesPantsIndex = false;
+    public bool ForceWearAllPantsLower = false;
 
-    public List<string> backpacksID = new List<string>();
-    public float chance_Backpacks = 0;
+    public List<string> Backpacks = new List<string>();
+    public float Chance_Backpacks = 0;
+    public bool ForceWearAllBackpacks = false;
 
-    public List<string> torsoDecorationID = new List<string>();
-    public float chance_TorsoDecoration = 0;
+    public List<string> TorsoDecoration = new List<string>();
+    public float Chance_TorsoDecoration = 0;
+    public bool ForceWearAllTorsoDecoration = false;
 
-    public List<string> beltID = new List<string>();
-    public float chance_belt = 0;
+    public List<string> Belt = new List<string>();
+    public float Chance_belt = 0;
+    public bool ForceWearAllBelt = false;
 
-    public List<string> facewearID = new List<string>();
-    public float chance_Facewear = 0;
+    public List<string> Facewear = new List<string>();
+    public float Chance_Facewear = 0;
+    public bool ForceWearAllFace = false;
 }

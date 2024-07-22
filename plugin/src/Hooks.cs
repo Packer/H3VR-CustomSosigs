@@ -37,14 +37,14 @@ namespace CustomSosigLoader
                 if (template != null)
                 {
                     if(customIndex == -1)
-                        customIndex = Random.Range(0, template.customSosig.Length);
+                        customIndex = Random.Range(0, template.CustomSosigs.Length);
 
                     ModifySosig(sosig, template, customIndex);
 
                     //H3MP
                     if (CustomSosigLoaderPlugin.h3mpEnabled && H3MP.Networking.Networking.IsHost())
                     {
-                        SosigMP.instance.CustomSosig_Send(sosig, (int)id, customIndex, customIndex);
+                        SosigMP.instance.CustomSosig_Send(sosig, (int)id, customIndex);
                     }
                     return;
                 }
@@ -64,8 +64,8 @@ namespace CustomSosigLoader
             if (template == null)
                 CustomSosigLoaderPlugin.Logger.LogInfo("Missing Template");
 
-            Custom_Sosig custom = template.customSosig[customIndex];
-            Custom_SosigConfigTemplate config = template.configTemplates[Random.Range(0, template.configTemplates.Length)];
+            Custom_Sosig custom = template.CustomSosigs[customIndex];
+            Custom_SosigConfigTemplate config = template.Configs[Random.Range(0, template.Configs.Length)];
             bool stopSever = config.CanBeSevered;
 
             if (!stopSever)
@@ -77,13 +77,22 @@ namespace CustomSosigLoader
                     stopSever = true;
             }
 
-            //Sosig Material Changes
+            //Mesh Renderers
             MeshRenderer head = Custom_SosigData.GetSosigMeshRenderer("Geo_Head", sosig.Links[0].transform);
-            Material sosigMaterial = head.material;
-            if (custom.useCustomSkin == 1)
-                sosigMaterial.SetTexture("_MainTex", CustomSosigLoaderPlugin.customSosigTexture);
+            MeshRenderer torso = Custom_SosigData.GetSosigMeshRenderer("Geo_Torso", sosig.Links[1].transform);
+            MeshRenderer upper = Custom_SosigData.GetSosigMeshRenderer("Geo_UpperLink", sosig.Links[2].transform);
+            MeshRenderer lower = Custom_SosigData.GetSosigMeshRenderer("Geo_LowerLink", sosig.Links[3].transform);
 
-            if (custom.customSkin != "")
+            head.enabled = !custom.hideHeadMesh;
+            torso.enabled = !custom.hideTorsoMesh;
+            upper.enabled = !custom.hideLegsUpperMesh;
+            lower.enabled = !custom.hideLegsLowerMesh;
+
+            //Sosig Material Changes
+            Material sosigMaterial = head.material;
+            if (custom.customSkin == "CustomSosig_Base")
+                sosigMaterial.SetTexture("_MainTex", CustomSosigLoaderPlugin.customSosigTexture);
+            else if (custom.customSkin != "")
             {
                 if(custom.albedo)
                     sosigMaterial.SetTexture("_MainTex", custom.albedo);
@@ -103,6 +112,7 @@ namespace CustomSosigLoader
             sosigMaterial.SetInt("_GlossyReflections", custom.glossyReflections ? 1 : 0);
             head.sharedMaterial = sosigMaterial;
             sosig.GibMaterial = sosigMaterial;
+
 
             //Head
             if (sosig.Links.Count >= 1)

@@ -128,31 +128,31 @@ public class OutfitConfigUI : MonoBehaviour
         nameInputField.SetTextWithoutNotify(outfit.name);
 
         //Setup new Buttons for IDs
-        wears[0].SetButtons(Global.SetupCollection(outfit.headwearID, ItemType.Accessories, wears[0].content));
-        wears[1].SetButtons(Global.SetupCollection(outfit.eyewearID, ItemType.Accessories, wears[1].content));
-        wears[2].SetButtons(Global.SetupCollection(outfit.torsowearID, ItemType.Accessories, wears[2].content));
-        wears[3].SetButtons(Global.SetupCollection(outfit.pantswearID, ItemType.Accessories, wears[3].content));
-        wears[4].SetButtons(Global.SetupCollection(outfit.pantswear_LowerID, ItemType.Accessories, wears[4].content));
-        wears[5].SetButtons(Global.SetupCollection(outfit.backpacksID, ItemType.Accessories, wears[5].content));
-        wears[6].SetButtons(Global.SetupCollection(outfit.torsoDecorationID, ItemType.Accessories, wears[6].content));
-        wears[7].SetButtons(Global.SetupCollection(outfit.beltID, ItemType.Accessories, wears[7].content));
-        wears[8].SetButtons(Global.SetupCollection(outfit.facewearID, ItemType.Accessories, wears[8].content));
+        wears[0].SetButtons(Global.SetupCollection(outfit.Headwear, ItemType.Accessories, wears[0].content));
+        wears[1].SetButtons(Global.SetupCollection(outfit.Eyewear, ItemType.Accessories, wears[1].content));
+        wears[2].SetButtons(Global.SetupCollection(outfit.Torsowear, ItemType.Accessories, wears[2].content));
+        wears[3].SetButtons(Global.SetupCollection(outfit.Pantswear, ItemType.Accessories, wears[3].content));
+        wears[4].SetButtons(Global.SetupCollection(outfit.Pantswear_Lower, ItemType.Accessories, wears[4].content));
+        wears[5].SetButtons(Global.SetupCollection(outfit.Backpacks, ItemType.Accessories, wears[5].content));
+        wears[6].SetButtons(Global.SetupCollection(outfit.TorsoDecoration, ItemType.Accessories, wears[6].content));
+        wears[7].SetButtons(Global.SetupCollection(outfit.Belt, ItemType.Accessories, wears[7].content));
+        wears[8].SetButtons(Global.SetupCollection(outfit.Facewear, ItemType.Accessories, wears[8].content));
 
         //Setup Chance
-        wears[0].chance.SetTextWithoutNotify(outfit.chance_HeadWear.ToString());
-        wears[1].chance.SetTextWithoutNotify(outfit.chance_Eyewear.ToString());
-        wears[2].chance.SetTextWithoutNotify(outfit.chance_Torsowear.ToString());
-        wears[3].chance.SetTextWithoutNotify(outfit.chance_Pantswear.ToString());
-        wears[4].chance.SetTextWithoutNotify(outfit.chance_Pantswear_Lower.ToString());
-        wears[5].chance.SetTextWithoutNotify(outfit.chance_Backpacks.ToString());
-        wears[6].chance.SetTextWithoutNotify(outfit.chance_TorsoDecoration.ToString());
-        wears[7].chance.SetTextWithoutNotify(outfit.chance_belt.ToString());
-        wears[8].chance.SetTextWithoutNotify(outfit.chance_Facewear.ToString());
+        wears[0].chance.SetTextWithoutNotify(outfit.Chance_HeadWear.ToString());
+        wears[1].chance.SetTextWithoutNotify(outfit.Chance_Eyewear.ToString());
+        wears[2].chance.SetTextWithoutNotify(outfit.Chance_Torsowear.ToString());
+        wears[3].chance.SetTextWithoutNotify(outfit.Chance_Pantswear.ToString());
+        wears[4].chance.SetTextWithoutNotify(outfit.Chance_Pantswear_Lower.ToString());
+        wears[5].chance.SetTextWithoutNotify(outfit.Chance_Backpacks.ToString());
+        wears[6].chance.SetTextWithoutNotify(outfit.Chance_TorsoDecoration.ToString());
+        wears[7].chance.SetTextWithoutNotify(outfit.Chance_belt.ToString());
+        wears[8].chance.SetTextWithoutNotify(outfit.Chance_Facewear.ToString());
 
         //Setup TorsoIndex Toggle
-        wears[(int)WearType.Head].toggle.SetIsOnWithoutNotify(outfit.headUsesTorsoIndex);
-        wears[(int)WearType.Pants].toggle.SetIsOnWithoutNotify(outfit.pantsUsesTorsoIndex);
-        wears[(int)WearType.PantsLower].toggle.SetIsOnWithoutNotify(outfit.pantsLowerUsesPantsIndex);
+        wears[(int)WearType.Head].toggle.SetIsOnWithoutNotify(outfit.HeadUsesTorsoIndex);
+        wears[(int)WearType.Pants].toggle.SetIsOnWithoutNotify(outfit.PantsUsesTorsoIndex);
+        wears[(int)WearType.PantsLower].toggle.SetIsOnWithoutNotify(outfit.PantsLowerUsesPantsIndex);
     }
 
     public void SaveOutfit()
@@ -161,43 +161,43 @@ public class OutfitConfigUI : MonoBehaviour
         outfitConfig.name = nameInputField.text;
 
         //Head
-        outfitConfig.chance_HeadWear = Mathf.Clamp01(float.Parse(wears[0].chance.text));
-        outfitConfig.headUsesTorsoIndex = wears[0].toggle.isOn;
-        outfitConfig.headwearID = Global.GenericButtonsToStringList(wears[0].buttons.ToArray());
+        outfitConfig.Chance_HeadWear = Mathf.Clamp01(float.Parse(wears[0].chance.text));
+        outfitConfig.HeadUsesTorsoIndex = wears[0].toggle.isOn;
+        outfitConfig.Headwear = Global.GenericButtonsToStringList(wears[0].buttons.ToArray());
 
         //Eye
-        outfitConfig.chance_Eyewear = Mathf.Clamp01(float.Parse(wears[1].chance.text));
-        outfitConfig.eyewearID = Global.GenericButtonsToStringList(wears[1].buttons.ToArray());
+        outfitConfig.Chance_Eyewear = Mathf.Clamp01(float.Parse(wears[1].chance.text));
+        outfitConfig.Eyewear = Global.GenericButtonsToStringList(wears[1].buttons.ToArray());
 
         //Torso
-        outfitConfig.chance_Torsowear = Mathf.Clamp01(float.Parse(wears[2].chance.text));
-        outfitConfig.torsowearID = Global.GenericButtonsToStringList(wears[2].buttons.ToArray());
+        outfitConfig.Chance_Torsowear = Mathf.Clamp01(float.Parse(wears[2].chance.text));
+        outfitConfig.Torsowear = Global.GenericButtonsToStringList(wears[2].buttons.ToArray());
 
         //Pants
-        outfitConfig.chance_Pantswear = Mathf.Clamp01(float.Parse(wears[3].chance.text));
-        outfitConfig.pantsUsesTorsoIndex = wears[3].toggle.isOn;
-        outfitConfig.pantswearID = Global.GenericButtonsToStringList(wears[3].buttons.ToArray());
+        outfitConfig.Chance_Pantswear = Mathf.Clamp01(float.Parse(wears[3].chance.text));
+        outfitConfig.PantsUsesTorsoIndex = wears[3].toggle.isOn;
+        outfitConfig.Pantswear = Global.GenericButtonsToStringList(wears[3].buttons.ToArray());
 
         //Pants Lower
-        outfitConfig.chance_Pantswear_Lower = Mathf.Clamp01(float.Parse(wears[4].chance.text));
-        outfitConfig.pantsLowerUsesPantsIndex = wears[4].toggle.isOn;
-        outfitConfig.pantswear_LowerID = Global.GenericButtonsToStringList(wears[4].buttons.ToArray());
+        outfitConfig.Chance_Pantswear_Lower = Mathf.Clamp01(float.Parse(wears[4].chance.text));
+        outfitConfig.PantsLowerUsesPantsIndex = wears[4].toggle.isOn;
+        outfitConfig.Pantswear_Lower = Global.GenericButtonsToStringList(wears[4].buttons.ToArray());
 
         //Backpacks
-        outfitConfig.chance_Backpacks = Mathf.Clamp01(float.Parse(wears[5].chance.text));
-        outfitConfig.backpacksID = Global.GenericButtonsToStringList(wears[5].buttons.ToArray());
+        outfitConfig.Chance_Backpacks = Mathf.Clamp01(float.Parse(wears[5].chance.text));
+        outfitConfig.Backpacks = Global.GenericButtonsToStringList(wears[5].buttons.ToArray());
 
         //Torso Deco
-        outfitConfig.chance_TorsoDecoration = Mathf.Clamp01(float.Parse(wears[6].chance.text));
-        outfitConfig.torsoDecorationID = Global.GenericButtonsToStringList(wears[6].buttons.ToArray());
+        outfitConfig.Chance_TorsoDecoration = Mathf.Clamp01(float.Parse(wears[6].chance.text));
+        outfitConfig.TorsoDecoration = Global.GenericButtonsToStringList(wears[6].buttons.ToArray());
 
         //Belt
-        outfitConfig.chance_belt = Mathf.Clamp01(float.Parse(wears[7].chance.text));
-        outfitConfig.beltID = Global.GenericButtonsToStringList(wears[7].buttons.ToArray());
+        outfitConfig.Chance_belt = Mathf.Clamp01(float.Parse(wears[7].chance.text));
+        outfitConfig.Belt = Global.GenericButtonsToStringList(wears[7].buttons.ToArray());
 
         //Facewear
-        outfitConfig.chance_Facewear = Mathf.Clamp01(float.Parse(wears[8].chance.text));
-        outfitConfig.facewearID = Global.GenericButtonsToStringList(wears[8].buttons.ToArray());
+        outfitConfig.Chance_Facewear = Mathf.Clamp01(float.Parse(wears[8].chance.text));
+        outfitConfig.Facewear = Global.GenericButtonsToStringList(wears[8].buttons.ToArray());
 
         //Save Log
         ManagerUI.Log("Outfit applied at: " + System.DateTime.Now);

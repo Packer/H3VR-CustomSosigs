@@ -143,24 +143,24 @@ namespace CustomSosigLoader
                 //SR_SosigEnemyTemplate customTemplate = SupplyRaidPlugin.customSosigs.Ele;
                 SosigEnemyTemplate template = customTemplate.Value.Initialize();
 
-                template.DisplayName = customTemplate.Value.displayName;
-                template.SosigEnemyID = (SosigEnemyID)customTemplate.Value.sosigEnemyID;
-                template.SosigEnemyCategory = (SosigEnemyCategory)customTemplate.Value.sosigEnemyCategory;
+                template.DisplayName = customTemplate.Value.DisplayName;
+                template.SosigEnemyID = (SosigEnemyID)customTemplate.Value.SosigEnemyID;
+                template.SosigEnemyCategory = (SosigEnemyCategory)customTemplate.Value.SosigEnemyCategory;
 
                 template.SosigPrefabs = new List<FVRObject>();
 
                 List<string> customSkins = new List<string>();
 
-                for (int i = 0; i < customTemplate.Value.customSosig.Length; i++)
+                for (int i = 0; i < customTemplate.Value.CustomSosigs.Length; i++)
                 {
                     //Get our Base Sosig
-                    SosigEnemyID id = customTemplate.Value.customSosig[i].baseSosigID;
+                    SosigEnemyID id = customTemplate.Value.CustomSosigs[i].baseSosigID;
                     template.SosigPrefabs = IM.Instance.odicSosigObjsByID[id].SosigPrefabs;
 
                     //Sosig Texture
-                    if (customTemplate.Value.customSosig[i].customSkin != "")
+                    if (customTemplate.Value.CustomSosigs[i].customSkin != "")
                     {
-                        Global.LoadSosigMaterial(customTemplate.Value.customSosig[i]);
+                        Global.LoadSosigMaterial(customTemplate.Value.CustomSosigs[i]);
                     }
                 }
 

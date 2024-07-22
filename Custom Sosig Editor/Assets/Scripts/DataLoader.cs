@@ -85,7 +85,7 @@ public class DataLoader : MonoBehaviour
 
         if (sosigEnemyTemplate != null)
         {
-            ManagerUI.Log("Loaded Custom Sosig " + sosigEnemyTemplate.displayName);
+            ManagerUI.Log("Loaded Custom Sosig " + sosigEnemyTemplate.DisplayName);
         }
 
         return sosigEnemyTemplate;
