@@ -9,7 +9,7 @@ using OtherLoader.Loaders;
 
 namespace CustomSosigLoader
 {
-    [BepInPlugin("Packer.CustomSosigLoader", "Custom Sosig Loader", "1.0.0")]
+    [BepInPlugin("Packer.CustomSosigLoader", "Custom Sosig Loader", "1.0.1")]
     [BepInProcess("h3vr.exe")]
     [BepInDependency("VIP.TommySoucy.H3MP", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInDependency("com.Packer.SupplyRaid", BepInDependency.DependencyFlags.SoftDependency)]

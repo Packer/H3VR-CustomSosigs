@@ -187,5 +187,6 @@ namespace CustomSosigLoader
                 sosig.Speech = speechSet;
             }
         }
+
     }
 }
