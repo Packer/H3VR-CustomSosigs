@@ -90,7 +90,7 @@ namespace CustomSosigLoader
 
             //Sosig Material Changes
             Material sosigMaterial = head.material;
-            if (custom.customSkin == "CustomSosig_Base")
+            if (custom.customSkin.Contains("CustomSosig_Base"))
                 sosigMaterial.SetTexture("_MainTex", CustomSosigLoaderPlugin.customSosigTexture);
             else if (custom.customSkin != "")
             {
@@ -112,7 +112,6 @@ namespace CustomSosigLoader
             sosigMaterial.SetInt("_GlossyReflections", custom.glossyReflections ? 1 : 0);
             head.sharedMaterial = sosigMaterial;
             sosig.GibMaterial = sosigMaterial;
-
 
             //Head
             if (sosig.Links.Count >= 1)

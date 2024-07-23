@@ -77,7 +77,7 @@ namespace CustomSosigLoader
         {
             //Using Default White skin so skip
             if (customSosig.customSkin == "CustomSosig_Base")
-                    return;
+                return;
 
             string filename = Path.GetDirectoryName(customSosig.directory) + customSosig.customSkin;
 
