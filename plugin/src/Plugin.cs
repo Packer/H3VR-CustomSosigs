@@ -9,10 +9,10 @@ using OtherLoader.Loaders;
 
 namespace CustomSosigLoader
 {
-    [BepInPlugin("Packer.CustomSosigLoader", "Custom Sosig Loader", "1.0.1")]
+    [BepInPlugin("Sosig_Squad.CustomSosigLoader", "Custom Sosig Loader", "1.0.2")]
     [BepInProcess("h3vr.exe")]
     [BepInDependency("VIP.TommySoucy.H3MP", BepInDependency.DependencyFlags.SoftDependency)]
-    [BepInDependency("com.Packer.SupplyRaid", BepInDependency.DependencyFlags.SoftDependency)]
+    [BepInDependency("com.Sosig_Squad.SupplyRaid", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInDependency("h3vr.otherloader", BepInDependency.DependencyFlags.HardDependency)]
     //[BepInDependency("h3vr.tnhframework", BepInDependency.DependencyFlags.SoftDependency)]
     public partial class CustomSosigLoaderPlugin : BaseUnityPlugin

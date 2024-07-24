@@ -7,7 +7,7 @@ public class Custom_OutfitConfig
     public string name = "Outfit";
 
     public List<string> Headwear = new List<string>();
-    public float Chance_HeadWear = 0;
+    public float Chance_Headwear = 0;
     public bool HeadUsesTorsoIndex = false;
     public bool ForceWearAllHead = false;
 
@@ -38,7 +38,7 @@ public class Custom_OutfitConfig
     public bool ForceWearAllTorsoDecoration = false;
 
     public List<string> Belt = new List<string>();
-    public float Chance_belt = 0;
+    public float Chance_Belt = 0;
     public bool ForceWearAllBelt = false;
 
     public List<string> Facewear = new List<string>();

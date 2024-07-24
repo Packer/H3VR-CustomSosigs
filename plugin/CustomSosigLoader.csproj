@@ -2,7 +2,7 @@
     <!-- Plugin name, version, etc. -->
     <!-- TODO: Change these values! -->
     <PropertyGroup>
-        <AssemblyName>Packer.CustomSosigLoader</AssemblyName>
+        <AssemblyName>Sosig_Squad.CustomSosigLoader</AssemblyName>
         <Version>1.0.0</Version>
         <Authors>Packer</Authors>
         <AssemblyTitle>Custom Sosig Loader</AssemblyTitle>

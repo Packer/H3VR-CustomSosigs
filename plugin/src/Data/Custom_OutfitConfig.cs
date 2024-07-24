@@ -41,7 +41,7 @@ namespace CustomSosigLoader
             outfit.Chance_Pantswear_Lower = Chance_Pantswear_Lower;
             outfit.Chance_Backpacks = Chance_Backpacks;
             outfit.Chance_TorosDecoration = Chance_TorsoDecoration;
-            outfit.Chance_Belt = Chance_belt;
+            outfit.Chance_Belt = Chance_Belt;
             outfit.Chance_Facewear = Chance_Facewear;
 
             return outfit;
@@ -81,7 +81,7 @@ namespace CustomSosigLoader
         public bool ForceWearAllTorsoDecoration = false;
 
         public string[] Belt;
-        public float Chance_belt = 0;
+        public float Chance_Belt = 0;
         public bool ForceWearAllBelt = false;
 
         public string[] Facewear;

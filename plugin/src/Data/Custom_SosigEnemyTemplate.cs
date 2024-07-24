@@ -82,7 +82,7 @@ namespace CustomSosigLoader
 
         public void ExportJson()
         {
-            using (StreamWriter streamWriter = new StreamWriter(Paths.PluginPath + "\\Packer-SupplyRaid\\" + DisplayName + ".json"))
+            using (StreamWriter streamWriter = new StreamWriter(Paths.PluginPath + "\\Sosig_Squad-SupplyRaid\\" + DisplayName + ".json"))
             {
                 string json = JsonUtility.ToJson(this, true);
                 streamWriter.Write(json);

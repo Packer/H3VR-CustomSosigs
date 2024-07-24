@@ -129,7 +129,7 @@ namespace CustomSosigLoader
         {
             //if(loadedTextures.Contains(textureName))
 
-            string path = Paths.PluginPath + "\\Packer-Custom_Sosig_Loader\\" + textureName;
+            string path = Paths.PluginPath + "\\Sosig_Squad-Custom_Sosig_Loader\\" + textureName;
             Texture2D tex = null;
 
             byte[] fileData;

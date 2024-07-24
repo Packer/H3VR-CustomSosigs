@@ -139,14 +139,14 @@ public class OutfitConfigUI : MonoBehaviour
         wears[8].SetButtons(Global.SetupCollection(outfit.Facewear, ItemType.Accessories, wears[8].content));
 
         //Setup Chance
-        wears[0].chance.SetTextWithoutNotify(outfit.Chance_HeadWear.ToString());
+        wears[0].chance.SetTextWithoutNotify(outfit.Chance_Headwear.ToString());
         wears[1].chance.SetTextWithoutNotify(outfit.Chance_Eyewear.ToString());
         wears[2].chance.SetTextWithoutNotify(outfit.Chance_Torsowear.ToString());
         wears[3].chance.SetTextWithoutNotify(outfit.Chance_Pantswear.ToString());
         wears[4].chance.SetTextWithoutNotify(outfit.Chance_Pantswear_Lower.ToString());
         wears[5].chance.SetTextWithoutNotify(outfit.Chance_Backpacks.ToString());
         wears[6].chance.SetTextWithoutNotify(outfit.Chance_TorsoDecoration.ToString());
-        wears[7].chance.SetTextWithoutNotify(outfit.Chance_belt.ToString());
+        wears[7].chance.SetTextWithoutNotify(outfit.Chance_Belt.ToString());
         wears[8].chance.SetTextWithoutNotify(outfit.Chance_Facewear.ToString());
 
         //Setup TorsoIndex Toggle
@@ -161,7 +161,7 @@ public class OutfitConfigUI : MonoBehaviour
         outfitConfig.name = nameInputField.text;
 
         //Head
-        outfitConfig.Chance_HeadWear = Mathf.Clamp01(float.Parse(wears[0].chance.text));
+        outfitConfig.Chance_Headwear = Mathf.Clamp01(float.Parse(wears[0].chance.text));
         outfitConfig.HeadUsesTorsoIndex = wears[0].toggle.isOn;
         outfitConfig.Headwear = Global.GenericButtonsToStringList(wears[0].buttons.ToArray());
 
@@ -192,7 +192,7 @@ public class OutfitConfigUI : MonoBehaviour
         outfitConfig.TorsoDecoration = Global.GenericButtonsToStringList(wears[6].buttons.ToArray());
 
         //Belt
-        outfitConfig.Chance_belt = Mathf.Clamp01(float.Parse(wears[7].chance.text));
+        outfitConfig.Chance_Belt = Mathf.Clamp01(float.Parse(wears[7].chance.text));
         outfitConfig.Belt = Global.GenericButtonsToStringList(wears[7].buttons.ToArray());
 
         //Facewear
