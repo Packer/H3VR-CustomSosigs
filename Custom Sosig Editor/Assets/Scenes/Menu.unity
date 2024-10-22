@@ -10474,7 +10474,7 @@ MonoBehaviour:
   outfitConfig:
     name: 
     Headwear: []
-    Chance_HeadWear: 0
+    Chance_Headwear: 0
     HeadUsesTorsoIndex: 0
     ForceWearAllHead: 0
     Eyewear: []
@@ -10498,7 +10498,7 @@ MonoBehaviour:
     Chance_TorsoDecoration: 0
     ForceWearAllTorsoDecoration: 0
     Belt: []
-    Chance_belt: 0
+    Chance_Belt: 0
     ForceWearAllBelt: 0
     Facewear: []
     Chance_Facewear: 0
