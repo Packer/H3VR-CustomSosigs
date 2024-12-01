@@ -94,6 +94,13 @@ namespace CustomSosigLoader
                 return;
             }
 
+            if(input == null)
+            {
+                CustomSosigLoaderPlugin.Logger.LogInfo("Item IDs Input missing");
+                return;
+            }
+
+
             for (int i = 0; i < itemIDs.Length; i++)
             {
                 FVRObject mainObject;

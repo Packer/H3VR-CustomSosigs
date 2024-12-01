@@ -105,6 +105,9 @@ namespace CustomSosigLoader
 
             //SpawnOnLinkDestroy
             config.UsesLinkSpawns = UsesLinkSpawns;
+
+            if (config.LinkSpawns == null)
+                config.LinkSpawns = new List<FVRObject>();
             Global.ItemIDToList(LinkSpawns.ToArray(), config.LinkSpawns);
             config.LinkSpawnChance = LinkSpawnChance;
 

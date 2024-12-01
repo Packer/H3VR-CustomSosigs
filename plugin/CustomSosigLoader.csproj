@@ -48,7 +48,7 @@
         <!-- References to Unity, BepInEx, and the publicized H3 libraries -->
         <PackageReference Include="UnityEngine" Version="5.6.1" />
         <PackageReference Include="BepInEx.Core" Version="5.4.17" />
-        <PackageReference Include="H3VR.GameLibs" Version="0.111.5" />
+        <PackageReference Include="H3VR.GameLibs" Version="0.114.1" />
     </ItemGroup>
     <ItemGroup>
       <Reference Include="H3MP">
