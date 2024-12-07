@@ -66,7 +66,7 @@ namespace CustomSosigLoader
 
             Custom_Sosig custom = template.CustomSosigs[customIndex];
             Custom_SosigConfigTemplate config = template.Configs[Random.Range(0, template.Configs.Length)];
-            bool stopSever = config.CanBeSevered;
+            bool stopSever = !config.CanBeSevered;
 
             if (!stopSever)
             {
