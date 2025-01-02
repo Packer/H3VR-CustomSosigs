@@ -356,6 +356,41 @@ public class ManagerUI : MonoBehaviour
     }
 
     //----------------------------------------------------------------------------
+    // Debug Sosig
+    //----------------------------------------------------------------------------
+
+    public void CreateDebugSosig()
+    {
+        if (!loadedSosig)
+            return;
+
+        PopupWarning(nameof(DebugSosig), "Creating a Debug Sosig will overwrite the previous one, are you sure?");
+
+    }
+    void DebugSosig()
+    {
+        for (int i = 0; i < weapons.Count; i++)
+        {
+            SosigEnemyTemplateUI.instance.AddWeapon(0);
+            SosigEnemyTemplateUI.instance.weaponOptionsID[i].inputField.text = weapons[i].name;
+            SosigEnemyTemplateUI.instance.template.WeaponOptions.Add(weapons[i].name);
+        }
+
+        SosigEnemyTemplateUI.instance.template.OutfitConfigs[0].Chance_Headwear = 0.9f;
+        SosigEnemyTemplateUI.instance.template.OutfitConfigs[0].Chance_Pantswear = 1;
+        SosigEnemyTemplateUI.instance.template.OutfitConfigs[0].Chance_Torsowear = 1;
+        SosigEnemyTemplateUI.instance.template.OutfitConfigs[0].Chance_Pantswear_Lower = 1;
+
+        for (int i = 0; i < accessories.Count; i++)
+        {
+            SosigEnemyTemplateUI.instance.template.OutfitConfigs[0].Headwear.Add(accessories[i].name);
+            SosigEnemyTemplateUI.instance.template.OutfitConfigs[0].Torsowear.Add(accessories[i].name);
+            SosigEnemyTemplateUI.instance.template.OutfitConfigs[0].Pantswear.Add(accessories[i].name);
+            SosigEnemyTemplateUI.instance.template.OutfitConfigs[0].Pantswear_Lower.Add(accessories[i].name);
+        }
+    }
+
+    //----------------------------------------------------------------------------
     // Color Picker
     //----------------------------------------------------------------------------
 

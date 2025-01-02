@@ -59,8 +59,8 @@ public class Custom_SosigConfigTemplate
     public float DamMult_Thermal = 1;
     public float DamMult_Chilling = 1;
     public float DamMult_EMP = 1;
-    public List<float> LinkDamageMultipliers = new List<float> { 4, 2, 1.2f, 1 };
-    public List<float> LinkStaggerMultipliers = new List<float> { 8, 0.3f, 0.8f, 1 };
+    public List<float> LinkDamageMultipliers = new List<float> { 10, 2, 1.2f, 0.8f };
+    public List<float> LinkStaggerMultipliers = new List<float> { 4, 1, 1, 1.5f };
     public List<Vector2> StartingLinkIntegrity = new List<Vector2> { new Vector2(100, 100), new Vector2(100, 100), new Vector2(100, 100), new Vector2(100, 100) };
     public List<float> StartingChanceBrokenJoint = new List<float> { 0, 0, 0, 0 };
 
