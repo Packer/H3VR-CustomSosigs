@@ -9,7 +9,7 @@ using OtherLoader.Loaders;
 
 namespace CustomSosigLoader
 {
-    [BepInPlugin("Sosig_Squad.CustomSosigLoader", "Custom Sosig Loader", "1.0.2")]
+    [BepInPlugin("Sosig_Squad.CustomSosigLoader", "Custom Sosig Loader", "1.0.6")]
     [BepInProcess("h3vr.exe")]
     [BepInDependency("VIP.TommySoucy.H3MP", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInDependency("com.Sosig_Squad.SupplyRaid", BepInDependency.DependencyFlags.SoftDependency)]
@@ -90,7 +90,6 @@ namespace CustomSosigLoader
 
             //Load our intial sosigs
             LoadCustomSosigs();
-            CustomSosigsLoaded = true;
         }
 
         void Update()
@@ -200,6 +199,11 @@ namespace CustomSosigLoader
                 yield return null;
             }
             Logger.LogInfo("Sosigs Total count: " + IM.Instance.odicSosigObjsByID.Count);
+
+            //Finished Loading everything!
+            CustomSosigsLoaded = true;
+            if (SosigsLoadedCompleted != null)
+                SosigsLoadedCompleted.Invoke();
         }
 
         public void PrintAllFVRObjects()
