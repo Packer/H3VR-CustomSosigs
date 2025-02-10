@@ -149,7 +149,7 @@ namespace CustomSosigLoader
                 if (set != null)
                     sosig.Speech = set;
             }
-            else if (custom.voicePitch != 1.15f || custom.voiceVolume != 0.4f)  //Volume or Pitch change
+            else // if (custom.voicePitch != 1.15f || custom.voiceVolume != 0.4f)  //Volume or Pitch change
             {
                 SosigSpeechSet speechSet = ScriptableObject.CreateInstance<SosigSpeechSet>();
 

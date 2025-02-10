@@ -3,7 +3,7 @@
     <!-- TODO: Change these values! -->
     <PropertyGroup>
         <AssemblyName>Sosig_Squad.CustomSosigLoader</AssemblyName>
-        <Version>1.0.6</Version>
+        <Version>1.0.8</Version>
         <Authors>Packer</Authors>
         <AssemblyTitle>Custom Sosig Loader</AssemblyTitle>
         <Description>A Custom Sosig Loader for H3VR</Description>

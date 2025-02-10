@@ -79,7 +79,7 @@ namespace CustomSosigLoader
             if (customSosig.customSkin == "CustomSosig_Base")
                 return;
 
-            string filename = Path.GetDirectoryName(customSosig.directory) + customSosig.customSkin;
+            string filename = Path.GetDirectoryName(customSosig.directory) + @"\" + customSosig.customSkin;
 
             customSosig.albedo = LoadTexture(filename + ".png");
             customSosig.normalmap = LoadTexture(filename + "_Normal.png");
@@ -126,7 +126,7 @@ namespace CustomSosigLoader
 
             if (tex == null)
             {
-                CustomSosigLoaderPlugin.Logger.LogError("Custom Sosig Loader - Texture Not Found: " + path);
+                CustomSosigLoaderPlugin.Logger.LogWarning("Custom Sosig Loader - Texture Not Found: " + path);
                 return null;
             }
             return tex;

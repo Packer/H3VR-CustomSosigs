@@ -12,14 +12,29 @@ namespace CustomSosigLoader
         public string[] Pantswear_Lower;
 
         private Sosig sosig;
+        private SosigWearable wearable;
+        [HideInInspector]
+        public int depth = 0;
 
         void Awake()
         {
-            sosig = transform.root.GetComponent<Sosig>();
         }
 
         void Start()
         {
+            sosig = transform.root.GetComponent<Sosig>();
+
+            if (sosig == null)
+            {
+                wearable = GetComponent<SosigWearable>();
+                if(wearable != null)
+                    sosig = wearable.S;
+            }
+
+            if (sosig == null)
+                sosig = GetComponent<Sosig>();
+
+
             if (sosig != null)
                 GenerateClothing();
             else
@@ -28,6 +43,12 @@ namespace CustomSosigLoader
 
         void GenerateClothing()
         {
+            if (depth >= 2)
+            {
+                CustomSosigLoaderPlugin.Logger.LogMessage($"Trying to create Wearable sets 2 or more deep, did you create an infinite loop?");
+                return;
+            }
+
             SetupAccessories(Torsowear, sosig.Links[1]);
             SetupAccessories(Headwear, sosig.Links[0]);
             SetupAccessories(Pantswear, sosig.Links[2]);
@@ -53,6 +74,10 @@ namespace CustomSosigLoader
             var linkTransform = link.transform;
             var accessory = Object.Instantiate(go, linkTransform.position, linkTransform.rotation, linkTransform);
             accessory.GetComponent<SosigWearable>().RegisterWearable(link);
+
+            CSL_Wearables wear = accessory.GetComponent<CSL_Wearables>();
+            if (wear != null)
+                wear.depth = depth + 1;
         }
 
         List<FVRObject> SetupItems(string[] itemIDs)
