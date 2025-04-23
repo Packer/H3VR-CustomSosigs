@@ -23,8 +23,11 @@ public class CSL_Vehicle : MonoBehaviour
     public float turnSpeed = 45f;
 
     [Header("Turret")]
-    public Transform turret;
-    public Transform barrel;
+    public Transform turretBase;
+    public Transform turretBarrel;
+
+    public Transform sosigWeaponRoot;
+    public Transform sosigWeapon;
 
     [HideInInspector] public Sosig sosig;
 
@@ -39,6 +42,7 @@ public class CSL_Vehicle : MonoBehaviour
     public float damagedMustardAmount = 0.5f;
 
     protected float maxMustard = 1000;
+    Quaternion lastRotation;
 
     public void Start()
     {
@@ -57,36 +61,77 @@ public class CSL_Vehicle : MonoBehaviour
 
     void FixedUpdate()
     {
+        if (sosig == null || sosig.Agent.enabled == false)
+            return;
+
         UpdateVisuals();
-        VehicleAngle();
         WeaponUpdate();
+        VehicleAngle();
     }
 
     void WeaponUpdate()
     {
+        //Vector3 agentDirection = Vector3.RotateTowards(sosig.Agent.transform.forward, sosig.m_faceTowards.normalized, sosig.GetAngularSpeed() * Time.deltaTime, 1f);
+
+        //Vector3 agentDirection = Vector3.RotateTowards(transform.forward, sosig.m_faceTowards.normalized, sosig.GetAngularSpeed() * Time.deltaTime, 1f);
+        //transform.rotation = Quaternion.Euler(agentDirection);
+
+        if (sosig.Agent.velocity != Vector3.zero)
+        {
+            Quaternion targetRotation = Quaternion.LookRotation(sosig.Agent.velocity);
+
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * turnSpeed * sosig.Agent.velocity.magnitude);
+        }
+
+        /*
+        if (sosig.Agent.velocity != Vector3.zero)
+        {
+            lastRotation = transform.rotation;
+        }
+        else
+            transform.rotation = lastRotation;
+        */
+
         switch (sosig.Hands[0].Pose)
         {
             case SosigHand.SosigHandPose.AtRest:
             default:
                 //We are not aiming
+                turretBase.rotation = sosig.Agent.transform.rotation;
+                turretBarrel.rotation = sosig.Agent.transform.rotation;
                 break;
             case SosigHand.SosigHandPose.HipFire:
             case SosigHand.SosigHandPose.Aimed:
             case SosigHand.SosigHandPose.Melee:
             case SosigHand.SosigHandPose.ShieldHold:
                 //We are AIMING
+                Vector3 targetPos = sosig.Priority.GetTargetPoint();
+                Vector3 lookNormal = sosig.Hands[0].m_aimTowardPoint;
+
+
+                turretBase.LookAt(targetPos);
+                Vector3 lookEuler = turretBase.localRotation.eulerAngles;
+                Vector3 baseRot = lookEuler;
+                baseRot.x = 0;
+                baseRot.z = 0;
+                turretBase.localRotation = Quaternion.Euler(baseRot);
+
+                Vector3 barrelRot = lookEuler;
+                turretBarrel.LookAt(targetPos);
                 break;
         }
 
 
+        if (sosig.Hands[0].HeldObject == null)
+            return;
 
         switch (sosig.Hands[0].HeldObject.UsageState)
         {
-            case SosigWeapon.SosigWeaponUsageState.Firing:
+            case FistVR.SosigWeapon.SosigWeaponUsageState.Firing:
                 //FIRE OUR PROJECTILE
 
                 break;
-            case SosigWeapon.SosigWeaponUsageState.Reloading:
+            case FistVR.SosigWeapon.SosigWeaponUsageState.Reloading:
             default:
                 //DO NOTHING
                 break;
@@ -95,7 +140,7 @@ public class CSL_Vehicle : MonoBehaviour
 
     void UpdateVisuals()
     {
-        if (sosig.BodyState == Sosig.SosigBodyState.Dead)
+        if (sosig.BodyState == Sosig.SosigBodyState.Dead || sosig.Mustard <= 0)
         {
             for (int i = 0; i < damagedObjects.Length; i++)
             {
@@ -155,17 +200,13 @@ public class CSL_Vehicle : MonoBehaviour
         transform.rotation = sosig.Agent.transform.rotation;
 
         // Setup Sosig Hand
-        sosig.Hands[0].Root = sosig.Hands[1].Root = turret;
-        sosig.Hands[0].Target = sosig.Hands[1].Target = barrel;
-        sosig.Hands[0].Point_Aimed = sosig.Hands[1].Point_Aimed = barrel;
-        sosig.Hands[0].Point_AtRest = sosig.Hands[1].Point_AtRest = barrel;
-        sosig.Hands[0].Point_HipFire = sosig.Hands[1].Point_HipFire = barrel;
-        sosig.Hands[0].Point_ShieldHold = sosig.Hands[1].Point_ShieldHold = barrel;
+        sosig.Hands[0].Root = sosig.Hands[1].Root = sosigWeaponRoot;
+        sosig.Hands[0].Target = sosig.Hands[1].Target = sosigWeapon;
+        sosig.Hands[0].Point_Aimed = sosig.Hands[1].Point_Aimed = sosigWeapon;
+        sosig.Hands[0].Point_AtRest = sosig.Hands[1].Point_AtRest = sosigWeapon;
+        sosig.Hands[0].Point_HipFire = sosig.Hands[1].Point_HipFire = sosigWeapon;
+        sosig.Hands[0].Point_ShieldHold = sosig.Hands[1].Point_ShieldHold = sosigWeapon;
 
-        sosig.Priority.GetTargetPoint();
-
-
-        //AIMTOWARDS = sosig.Hands[0].m_aimTowardPoint
 
         maxMustard = sosig.Mustard;
 
