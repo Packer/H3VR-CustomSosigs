@@ -12,7 +12,6 @@ namespace CustomSosigLoader
         public string[] Pantswear_Lower;
 
         private Sosig sosig;
-        private SosigWearable wearable;
         [HideInInspector]
         public int depth = 0;
 
@@ -22,17 +21,7 @@ namespace CustomSosigLoader
 
         void Start()
         {
-            sosig = transform.root.GetComponent<Sosig>();
-
-            if (sosig == null)
-            {
-                wearable = GetComponent<SosigWearable>();
-                if(wearable != null)
-                    sosig = wearable.S;
-            }
-
-            if (sosig == null)
-                sosig = GetComponent<Sosig>();
+            sosig = Global.GetSosig(transform);
 
 
             if (sosig != null)

@@ -8,7 +8,6 @@ namespace CustomSosigLoader
     public class CSL_PassiveFollower : MonoBehaviour
     {
         [HideInInspector] public Sosig sosig;
-        [HideInInspector] public SosigWearable wearable;
         [HideInInspector] public Transform followPlayer;
         private float timeout = 0;
         public float followDistance = 4;
@@ -17,7 +16,7 @@ namespace CustomSosigLoader
         public void Start()
         {
             if (sosig == null)
-                GetSosig();
+                sosig = Global.GetSosig(transform);
 
             if (sosig == null)
             {
@@ -69,21 +68,6 @@ namespace CustomSosigLoader
                 1f,
                 true,
                 50f);
-        }
-
-        void GetSosig()
-        {
-            sosig = transform.root.GetComponent<Sosig>();
-
-            if (sosig == null)
-            {
-                wearable = GetComponent<SosigWearable>();
-                if (wearable != null)
-                    sosig = wearable.S;
-            }
-
-            if (sosig == null)
-                sosig = GetComponent<Sosig>();
         }
 
         void SetAlly()

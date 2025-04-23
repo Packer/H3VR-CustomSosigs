@@ -318,6 +318,24 @@ namespace CustomSosigLoader
 
             return null;
         }
+
+
+        public static Sosig GetSosig(Transform start)
+        {
+            Sosig sosig = start.root.GetComponent<Sosig>();
+
+            if (sosig == null)
+            {
+                SosigWearable wearable = start.GetComponent<SosigWearable>();
+                if (wearable != null)
+                    sosig = wearable.S;
+            }
+
+            if (sosig == null)
+                sosig = start.GetComponent<Sosig>();
+
+            return sosig;
+        }
     }
 
     public class VoiceSet

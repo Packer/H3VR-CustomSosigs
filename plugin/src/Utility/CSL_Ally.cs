@@ -17,7 +17,7 @@ namespace CustomSosigLoader
         public void Start()
         {
             if (sosig == null)
-                GetSosig();
+                Global.GetSosig(transform);
 
             if (sosig == null)
             {
@@ -92,21 +92,6 @@ namespace CustomSosigLoader
                 1f,
                 true,
                 50f);
-        }
-
-        void GetSosig()
-        {
-            sosig = transform.root.GetComponent<Sosig>();
-
-            if (sosig == null)
-            {
-                wearable = GetComponent<SosigWearable>();
-                if (wearable != null)
-                    sosig = wearable.S;
-            }
-
-            if (sosig == null)
-                sosig = GetComponent<Sosig>();
         }
 
         void SetAlly()
