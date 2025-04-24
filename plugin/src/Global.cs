@@ -336,6 +336,13 @@ namespace CustomSosigLoader
 
             return sosig;
         }
+
+
+        public static Quaternion SmoothRotateTowards(Vector3 direction, Quaternion currentRotation, float turnSpeed)
+        {
+            Quaternion quaternionDirection = Quaternion.LookRotation(direction);
+            return Quaternion.RotateTowards(currentRotation, quaternionDirection, turnSpeed * Time.deltaTime);
+        }
     }
 
     public class VoiceSet
