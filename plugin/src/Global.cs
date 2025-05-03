@@ -343,6 +343,24 @@ namespace CustomSosigLoader
             Quaternion quaternionDirection = Quaternion.LookRotation(direction);
             return Quaternion.RotateTowards(currentRotation, quaternionDirection, turnSpeed * Time.deltaTime);
         }
+
+        public static bool IsSosigDead(Sosig sosig)
+        {
+            if (sosig.BodyState == Sosig.SosigBodyState.Dead
+            || sosig.Mustard <= 0
+            || sosig.m_diedFromType != Sosig.SosigDeathType.Unknown
+                /*
+            || sosig.m_doesExplodeKill_Head && sosig.Links[0].IsExploded
+            || sosig.m_doesExplodeKill_Upper && sosig.Links[1].IsExploded
+            || sosig.m_doesExplodeKill_Lower && (sosig.Links[2].IsExploded || sosig.Links[3].IsExploded)
+            || sosig.m_doesSeverKill_Head && sosig.Links[0].m_isJointSevered
+            || sosig.m_doesSeverKill_Upper && sosig.Links[1].m_isJointSevered
+            || sosig.m_doesSeverKill_Lower && (sosig.Links[2].m_isJointSevered || sosig.Links[3].m_isJointSevered)*/
+                )
+                return true;
+            else
+                return false;
+        }
     }
 
     public class VoiceSet

@@ -8,7 +8,8 @@ namespace CustomSosigLoader;
 public class CSL_Vehicle : MonoBehaviour
 {
     //Build new Navmesh for this vehicle
-    //public static Dictionary<string, NavMeshBuildSettings> navMeshSettings = new Dictionary<string, NavMeshBuildSettings>();
+
+    public SosigWearable wearable;
 
     [Header("Spawning")]
     //public bool requiresSky = false;
@@ -46,19 +47,19 @@ public class CSL_Vehicle : MonoBehaviour
 
     [Header("Agent")]
     [Tooltip("The size of the vehicle, radius should match the width of the vehicle (How narrow of an area it can drive through)")]
-    public float agentRadius = 1f;
+    public float agentRadius = 3f;
     [Tooltip("How tall the vehicle is")]
-    public float agentHeight = 2;
+    public float agentHeight = 3;
     [Tooltip("Rate the vehicle gets up to speed")]
-    public float agentAccerlation = 2.5f;
+    public float agentAccerlation = 2f;
     [Tooltip("How far it stops from its move waypoint, should be minimum Agent Radius")]
-    public float agentStoppingDistance = 1f;
+    public float agentStoppingDistance = 5f;
 
     [Header("Movement")]
-    [Tooltip("How fast the vehicle moves")]
-    public float moveSpeed = 10f;
+    //[Tooltip("How fast the vehicle moves")]
+    //public float moveSpeed = 10f;
     [Tooltip("Speed the vehicle turns at minimum")]
-    public float turnSpeedMin = 10f;
+    public float turnSpeedMin = 1f;
     [Tooltip("Speed the vehicle turns moving at max speed")]
     public float turnSpeedMax = 45f;
     [Tooltip("How fast the vehicle aligns to the surface angle")]
@@ -74,23 +75,17 @@ public class CSL_Vehicle : MonoBehaviour
     [Tooltip("Degrees per second the turret turns to aim at its target")]
     public float aimSpeed = 45f;
     public bool hideSosigWeapon = true;
+    public bool vehicleAlignsToSurface = true;
+    //public bool useSosigNavAgent = false;
 
     [Header("Sosig")]
     public Transform sosigIconsPoint;
     public Transform sosigVision;
-    public SosigWeapon dummyWeapon;
+    //public SosigWeapon dummyWeapon;
     [HideInInspector] public Sosig sosig;
     protected Vector2 sosigLocalVelocity;
     protected Vector2 sosigLocalVelocityNormal;
-    /*
-    public Transform sosigHandRoot;
-    public Transform sosigAim;
-    public Transform sosigHipFire;
-    public Transform sosigAtRest;
-    public Transform sosigShield;
-    public Transform sosigHandTarget;
-    */
-    //public GameObject[] sosigDebug;
+    protected Vector3 localTargetPos;
 
     [Header("Visuals")]
     public Animator bodyAnimator;
@@ -102,19 +97,21 @@ public class CSL_Vehicle : MonoBehaviour
     public GameObject[] deathObjects;
     [Tooltip("Damaged Objects get enabled when mustard reaches amount percentage")]
     public GameObject[] damagedObjects;
-    [MinMaxRange(0, 1f), Tooltip("Percentage of health remaining when the damaged objects get enabled")]
+    [Range(0, 1f), Tooltip("Percentage of health remaining when the damaged objects get enabled")]
     public float damagedMustardAmount = 0.5f;
 
     protected float maxMustard = 1000;
 
-    public bool vehicleAlignsToSurface = true;
 
     protected float healthDebug = 0;
+    bool isDead = false;
 
 
     public void Start()
     {
         sosig = Global.GetSosig(transform);
+        if(wearable == null)
+            wearable = GetComponent<SosigWearable>();
 
         //Disable incase of error
         if (sosig == null)
@@ -130,7 +127,10 @@ public class CSL_Vehicle : MonoBehaviour
             wheels[i].startLocalPosition = wheels[i].wheel.localPosition;
         }
 
-        SetupSosig();
+        GM.CurrentSceneSettings.SosigKillEvent += VehicleKillEvent;
+
+        //Update our scale AFTER everything is setup
+        Invoke(nameof(LateSosigSetup), 0.5f);
     }
 
     void Update()
@@ -140,14 +140,16 @@ public class CSL_Vehicle : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (sosig == null || sosig.Agent.enabled == false)
+        if (sosig == null || sosig.Agent.enabled == false || isDead)
             return;
 
+        /*
         if (healthDebug != sosig.Mustard)
         {
             healthDebug = sosig.Mustard;
-            Debug.Log(sosig.name + " Health: " + healthDebug);
+            //Debug.Log(sosig.name + " Health: " + healthDebug);
         }
+        */
 
         sosigLocalVelocity = SosigLocalVelocity();
         sosigLocalVelocityNormal = SosigClampedLocalVelocity();
@@ -160,39 +162,21 @@ public class CSL_Vehicle : MonoBehaviour
         WeaponUpdate();
     }
 
-    void SetupSosig()
+    void LateSosigSetup()
     {
-
-        sosig.E.transform.SetParent(vehicleCenter, false);
         for (int i = 0; i < sosig.Links.Count; i++)
         {
-            //Disable all Sosig Colliders
-            //sosig.Links[i].C.enabled = false;
-            //Delete collision on sosig
-            //Destroy(sosig.Links[i].C);
-            //sosig.Links[i].R.isKinematic = true;
-            sosig.Links[i].C.gameObject.layer = LayerMask.NameToLayer("NoCol");
-            CapsuleCollider c = (CapsuleCollider)sosig.Links[i].C;
-            sosig.Links[i].gameObject.SetActive(false);
+            //Force links already severed stop them 'breaking'
+            sosig.Links[i].m_isJointSevered = true;
         }
 
-        /*
-        for (int i = 0; i < sosig.Meshes.Length; i++)
-        {
-            //Disable all Sosig visuals
-            sosig.Meshes[i].GetComponent<MeshRenderer>().enabled = false;
-        }
-        */
+        sosig.E.transform.SetParent(vehicleCenter, false);
 
         //Set new Radius
         sosig.Agent.radius = agentRadius;
         sosig.Agent.height = agentHeight;
         sosig.Agent.acceleration = agentAccerlation;
         sosig.Agent.stoppingDistance = agentStoppingDistance; //Stop vehicle away from player
-
-        //Movement
-        sosig.Agent.speed = moveSpeed;
-        sosig.Agent.angularSpeed = turnSpeedMax;
 
         //Attach to Agent
         transform.SetParent(sosig.Agent.transform);
@@ -220,15 +204,16 @@ public class CSL_Vehicle : MonoBehaviour
                 sosig.Hands[i].HeldObject.O.RootRigidbody.isKinematic = true;
         }
 
+        for (int i = 0; i < sosig.Inventory.Slots.Count; i++)
+        {
+            sosig.Inventory.Slots[i].Target = muzzle;
+        }
 
-        
-
-        //sosig.Hands[0].HeldObject = dummyWeapon;
-        //sosig.Inventory.Slots[0].HeldObject = dummyWeapon;
-        sosig.CoreTarget = sosigVision;
+        sosig.CoreTarget.position = turretMuzzle.position;
         sosig.Pose_Standing = turretMuzzle;
         sosig.Pose_Crouching = turretMuzzle;
         sosig.Pose_Prone = turretMuzzle;
+        sosig.m_targetPose = turretMuzzle;
 
         sosig.Agent.autoTraverseOffMeshLink = false;
 
@@ -241,17 +226,20 @@ public class CSL_Vehicle : MonoBehaviour
 
         for (int i = 0; i < aliveObjects.Length; i++)
         {
-            aliveObjects[i].SetActive(true);
+            if(aliveObjects[i] != null)
+                aliveObjects[i].SetActive(true);
         }
 
         for (int i = 0; i < deathObjects.Length; i++)
         {
-            deathObjects[i].SetActive(false);
+            if(deathObjects[i] != null)
+                deathObjects[i].SetActive(false);
         }
 
         for (int i = 0; i < damagedObjects.Length; i++)
         {
-            damagedObjects[i].SetActive(false);
+            if(damagedObjects[i] != null)
+                damagedObjects[i].SetActive(false);
         }
 
         //Move icons to above vehicle
@@ -270,46 +258,101 @@ public class CSL_Vehicle : MonoBehaviour
 
         //Hide held weapons
         HideSosigWeapon();
+
+        //Disable all Sosig visuals
+        for (int i = 0; i < sosig.Meshes.Length; i++)
+        {
+            sosig.Meshes[i].GetComponent<MeshRenderer>().enabled = false;
+        }
+
+        for (int i = 0; i < sosig.Links.Count; i++)
+        {
+            sosig.Links[i].transform.localScale = Vector3.one * 0.01f;
+        }
+    }
+
+    void OnDisable()
+    {
+        GM.CurrentSceneSettings.SosigKillEvent -= VehicleKillEvent;
+    }
+
+    protected virtual void VehicleKillEvent(Sosig s)
+    {
+        if (s == sosig)
+        {
+            //Already dead
+            if (isDead || sosig == null)
+                return;
+
+            //Stop it from breaking??
+            if (sosig.m_linksDestroyed != null)
+            {
+                for (int i = 0; i < sosig.m_linksDestroyed.Length; i++)
+                {
+                    sosig.m_linksDestroyed[i] = true;
+                }
+            }
+
+
+            for (int i = 0; i < damagedObjects.Length; i++)
+            {
+                if(damagedObjects[i] != null)
+                    damagedObjects[i].SetActive(false);
+            }
+
+            for (int i = 0; i < aliveObjects.Length; i++)
+            {
+                if(aliveObjects[i] != null)
+                    aliveObjects[i].SetActive(false);
+            }
+
+            for (int i = 0; i < deathObjects.Length; i++)
+            {
+                if(deathObjects[i] != null)
+                    deathObjects[i].SetActive(true);
+            }
+
+            isDead = true;
+        }
     }
 
     void SosigUpdate()
     {
-        muzzle.SetPositionAndRotation(turretMuzzle.position, turretMuzzle.rotation);
+        if(turretMuzzle != null && muzzle != null)
+            muzzle.SetPositionAndRotation(turretMuzzle.position, turretMuzzle.rotation);
 
-        //Thanks Anton
-        for (int i = 0; i < sosig.Links.Count; i++)
+        if (sosig.CoreRB != null && sosigVision != null)
         {
-            if (sosig.Links[i].IsExploded || sosig.Links[i].m_isJointBroken)
-                continue;
-
-            sosig.Links[i].R.MovePosition(sosigVision.position);
-            sosig.Links[i].transform.position = (sosigVision.position);
-            sosig.Links[i].R.MoveRotation(sosigVision.rotation);
-            sosig.Links[i].transform.rotation = (sosigVision.rotation);
-            //sosigDebug[i].transform.position = sosig.Links[i].transform.position;
+            sosig.CoreRB.MovePosition(sosigVision.position);
+            sosig.CoreRB.transform.position = (sosigVision.position);
+            sosig.CoreRB.MoveRotation(sosigVision.rotation);
+            sosig.CoreRB.transform.rotation = (sosigVision.rotation);
         }
 
-        for (int i = 0; i < sosig.Hands.Count; i++)
+        if (sosig.Hands != null)
         {
-            if (sosig.Hands[i].HeldObject != null)
+            for (int i = 0; i < sosig.Hands.Count; i++)
             {
-                //sosig.Hands[i].Target = sosigHandTarget;
-                sosig.Hands[i].HeldObject.O.RootRigidbody.position = turretMuzzle.position;
-                sosig.Hands[i].HeldObject.O.RootRigidbody.rotation = turretMuzzle.rotation;
-                //sosig.Hands[i].HeldObject.O.transform.LookAt(sosig.Priority.GetTargetPoint());
+                if (sosig.Hands[i] != null && sosig.Hands[i].HeldObject != null)
+                {
+                    //sosig.Hands[i].Target = sosigHandTarget;
+                    sosig.Hands[i].HeldObject.O.RootRigidbody.position = turretMuzzle.position;
+                    sosig.Hands[i].HeldObject.O.RootRigidbody.rotation = turretMuzzle.rotation;
+                    //sosig.Hands[i].HeldObject.O.transform.LookAt(sosig.Priority.GetTargetPoint());
 
 
-                for (int x = 0; x < sosig.Hands[i].vertOffsets.Count; x++)
-                {
-                    sosig.Hands[i].vertOffsets[i] = 0;
-                }
-                for (int x = 0; x < sosig.Hands[i].forwardOffsets.Count; x++)
-                {
-                    sosig.Hands[i].forwardOffsets[i] = 0;
-                }
-                for (int x = 0; x < sosig.Hands[i].tiltLerpOffsets.Count; x++)
-                {
-                    sosig.Hands[i].tiltLerpOffsets[i] = 0;
+                    for (int x = 0; x < sosig.Hands[i].vertOffsets.Count; x++)
+                    {
+                        sosig.Hands[i].vertOffsets[i] = 0;
+                    }
+                    for (int x = 0; x < sosig.Hands[i].forwardOffsets.Count; x++)
+                    {
+                        sosig.Hands[i].forwardOffsets[i] = 0;
+                    }
+                    for (int x = 0; x < sosig.Hands[i].tiltLerpOffsets.Count; x++)
+                    {
+                        sosig.Hands[i].tiltLerpOffsets[i] = 0;
+                    }
                 }
             }
         }
@@ -318,65 +361,36 @@ public class CSL_Vehicle : MonoBehaviour
 
     void WeaponUpdate()
     {
-
+        //Relative position to vehicle's body
+        localTargetPos = transform.InverseTransformPoint(sosig.Priority.GetTargetPoint());
 
         switch (sosig.Hands[0].Pose)
         {
             case SosigHand.SosigHandPose.AtRest:
             default:
+                //Keep old Aim
+                /*
                 //We are not aiming
-                turretBase.rotation = Global.SmoothRotateTowards(sosig.Agent.transform.forward, turretBase.rotation, aimSpeed);
-                turretBarrel.rotation = Global.SmoothRotateTowards(sosig.Agent.transform.forward, turretBarrel.rotation, aimSpeed * 0.5f); // Half speed for barrel
+                turretBase.rotation = Quaternion.Lerp(turretBase.localRotation, sosig.Agent.transform.rotation, Time.deltaTime * aimSpeed);
+                turretBarrel.rotation = Quaternion.Lerp(turretBarrel.localRotation, sosig.Agent.transform.rotation, Time.deltaTime * aimSpeed * 0.5f);
+                */
+
                 break;
             case SosigHand.SosigHandPose.HipFire:
             case SosigHand.SosigHandPose.Aimed:
             case SosigHand.SosigHandPose.Melee:
             case SosigHand.SosigHandPose.ShieldHold:
 
-
-                //turretBase.LookAt(sosig.Priority.GetTargetPoint());
-                //turretBarrel.LookAt(sosig.Priority.GetTargetPoint());
-                
-                //Aim Base
-                Vector3 lookLevel = sosig.Priority.GetTargetPoint();
-                lookLevel.y = turretBase.position.y;
-                Vector3 lookDirection = lookLevel - turretBase.position;
-                turretBase.rotation = Global.SmoothRotateTowards(lookDirection, turretBase.rotation, aimSpeed);
+                Vector3 flatLocalTarget = new Vector3(localTargetPos.x, 0, localTargetPos.z);
+                if (flatLocalTarget.sqrMagnitude > 0.001f)
+                {
+                    Quaternion desiredHeadRotation = Quaternion.LookRotation(flatLocalTarget, Vector3.up);
+                    turretBase.localRotation = Quaternion.Lerp(turretBase.localRotation, desiredHeadRotation, Time.deltaTime * aimSpeed);
+                }
 
                 //Aim Barrel
-                lookDirection = sosig.Priority.GetTargetPoint() - turretBarrel.position;
-                turretBarrel.rotation = Global.SmoothRotateTowards(lookDirection, turretBarrel.rotation, aimSpeed);
-                
-
-                /*
-                turretBase.LookAt(targetPos);
-                Vector3 lookEuler = turretBase.localRotation.eulerAngles;
-                Vector3 baseRot = lookEuler;
-                baseRot.x = 0;
-                baseRot.z = 0;
-                turretBase.localRotation = Quaternion.Euler(baseRot);
-
-                Vector3 barrelRot = lookEuler;
-                turretBarrel.LookAt(targetPos);
-                */
-                break;
-        }
-
-
-        if (sosig.Hands[0].HeldObject == null)
-            return;
-
-        switch (sosig.Hands[0].HeldObject.UsageState)
-        {
-            case SosigWeapon.SosigWeaponUsageState.Firing:
-                //FIRE OUR PROJECTILE
-                //Play fire animation
-                //Debug.Log(sosig.name + " BANG " + Time.time);
-                break;
-            case SosigWeapon.SosigWeaponUsageState.Reloading:
-            default:
-                //DO NOTHING
-
+                Vector3 lookDirection = sosig.Priority.GetTargetPoint() - turretBarrel.position;
+                turretBarrel.rotation = Global.SmoothRotateTowards(lookDirection, turretBarrel.rotation, aimSpeed * 0.5f);
                 break;
         }
     }
@@ -386,7 +400,7 @@ public class CSL_Vehicle : MonoBehaviour
         //Body Rotation
         if (sosig.Agent.velocity != Vector3.zero)
         {
-            float turnRate = Mathf.Lerp(turnSpeedMin, turnSpeedMax, Mathf.InverseLerp(0, moveSpeed, sosig.Agent.velocity.magnitude));
+            float turnRate = Mathf.Lerp(turnSpeedMin, turnSpeedMax, Mathf.InverseLerp(0, SosigMoveSpeed(), sosig.Agent.velocity.magnitude));
             transform.rotation = Global.SmoothRotateTowards(sosig.Agent.velocity, transform.rotation, turnRate);
         }
 
@@ -398,7 +412,7 @@ public class CSL_Vehicle : MonoBehaviour
 
                 //wheels[i].wheelRotation.y = Mathf.MoveTowards(wheels[i].wheelRotation.y, sosigLocalVelocityNormal.x > 0 ? angleTurnRate : -angleTurnRate, sosigLocalVelocityNormal.x);
 
-                
+
                 Vector3 currentTurn = wheels[i].wheel.localRotation.eulerAngles;
                 switch (wheels[i].type)
                 {
@@ -444,33 +458,17 @@ public class CSL_Vehicle : MonoBehaviour
 
         if (turretAnimator != null)
         {
-            
+
         }
 
-
-
-        //Game Objects
-        if (sosig.BodyState == Sosig.SosigBodyState.Dead || sosig.Mustard <= 0 || sosig.m_diedFromType != Sosig.SosigDeathType.Unknown)
+        //Show damaged
+        if (isDead == false)
         {
-            for (int i = 0; i < damagedObjects.Length; i++)
-            {
-                damagedObjects[i].SetActive(false);
-            }
-
-            for (int i = 0; i < aliveObjects.Length; i++)
-            {
-                aliveObjects[i].SetActive(false);
-            }
-
-            for (int i = 0; i < deathObjects.Length; i++)
-            {
-                deathObjects[i].SetActive(true);
-            }
-        }
-        else
-        {
-            //Show damaged
-            if (sosig.Mustard <= damagedMustardAmount)
+            //If 40 or Below
+            if (sosig.Links[0].GetDamageStateIndex() >= 1
+                || sosig.Links[0].GetDamageStateIndex() >= 1
+                || sosig.Links[0].GetDamageStateIndex() >= 1
+                || sosig.Links[0].GetDamageStateIndex() >= 1)
             {
                 for (int i = 0; i < damagedObjects.Length; i++)
                 {
@@ -526,7 +524,24 @@ public class CSL_Vehicle : MonoBehaviour
 
     Vector2 SosigClampedLocalVelocity()
     {
-        return Vector2.ClampMagnitude(SosigLocalVelocity() / moveSpeed, 1f);
+        return Vector2.ClampMagnitude(SosigLocalVelocity() / SosigMoveSpeed(), 1f);
+    }
+
+    float SosigMoveSpeed()
+    {
+        switch (sosig.MoveSpeed)
+        {
+            default:
+            case Sosig.SosigMoveSpeed.Walking:
+            case Sosig.SosigMoveSpeed.Still:
+                return sosig.Speed_Walk;
+            case Sosig.SosigMoveSpeed.Crawling:
+                return sosig.Speed_Crawl;
+            case Sosig.SosigMoveSpeed.Sneaking:
+                return sosig.Speed_Sneak;
+            case Sosig.SosigMoveSpeed.Running:
+                return sosig.Speed_Run;
+        }
     }
 
     void HideSosigWeapon()
@@ -546,21 +561,9 @@ public class CSL_Vehicle : MonoBehaviour
 
     }
 
-    void SetupNavMesh()
-    {
-        //Build Navmesh for vehicles here if there isn't one in this scene
-        /*
-        sosig.Agent.agentTypeID = 1;
-        NavMesh.GetSettingsByIndex(1);
-        NavMesh.Get
-        NavMeshBuildSettings ahhh = NavMesh.CreateSettings();
-        ahhh.agent
-        */
-    }
 
     void OnDrawGizmos()
     {
-        DrawCircleGizmo(transform.position, transform.forward, agentRadius, 12);
 
         for (int i = 0; i < wheels.Length; i++)
         {
@@ -572,9 +575,12 @@ public class CSL_Vehicle : MonoBehaviour
                 //Gizmos.DrawLine(wheels[i].wheel.position, wheels[i].wheel.position + (Vector3.up * wheelSize));
             }
         }
+        Gizmos.color = Color.cyan;
+        DrawCircleGizmo(transform.position, transform.forward, agentRadius);
+        DrawCircleGizmo(transform.position + transform.up * agentHeight, transform.forward, agentRadius);
     }
 
-    void DrawCircleGizmo(Vector3 center, Vector3 normal, float radius, int segments = 32)
+    void DrawCircleGizmo(Vector3 center, Vector3 normal, float radius, int segments = 16)
     {
         Quaternion rotation = Quaternion.LookRotation(normal);
         Vector3 prevPoint = center + rotation * (Vector3.right * radius);

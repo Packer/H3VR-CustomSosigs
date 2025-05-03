@@ -3,9 +3,10 @@ using BepInEx.Logging;
 using FistVR;
 using System.Collections.Generic;
 using UnityEngine;
-using System.IO;
 using BepInEx.Bootstrap;
 using OtherLoader.Loaders;
+using UnityEngine.AI;
+using UnityEngine.SceneManagement;
 
 namespace CustomSosigLoader
 {
@@ -41,6 +42,8 @@ namespace CustomSosigLoader
         public delegate void SosigsLoadedComplete();
         public static event SosigsLoadedComplete SosigsLoadedCompleted;
 
+        public static int vehicleAgentID = 1;
+
         private void Awake()
         {
             Logger = base.Logger;
@@ -52,6 +55,8 @@ namespace CustomSosigLoader
 
             //Wait for all custom items to be added before loading more
             OtherLoader.LoaderStatus.ProgressUpdated += LoadCustomSosigCheck;
+
+            //SceneManager.activeSceneChanged += ChangedActiveScene;
         }
 
         void Start()
@@ -220,6 +225,46 @@ namespace CustomSosigLoader
                 }
             }
         }
+
+        // --------------------------------------------------------------------------------
+        // VEHICLE NAV MESH
+        // --------------------------------------------------------------------------------
+        /*
+        void OnDisable()
+        {
+            SceneManager.activeSceneChanged -= ChangedActiveScene;
+        }
+
+        public static NavMeshSurface sceneSurface;
+
+        private void ChangedActiveScene(Scene current, Scene next)
+        {
+            SetupNavMesh();
+        }
+
+        int SetupNavMesh()
+        {
+            Debug.Log("Build START " + Time.time);
+            //Build Navmesh for vehicles here if there isn't one in this scene
+            NavMeshBuildSettings sosigSettings = NavMesh.GetSettingsByIndex(0);
+
+            NavMeshBuildSettings vehicleSettings = NavMesh.CreateSettings();
+            vehicleSettings.agentHeight = 3;
+            vehicleSettings.agentRadius = 3;
+            vehicleSettings.agentClimb = sosigSettings.agentClimb;
+            vehicleSettings.agentSlope = sosigSettings.agentSlope;
+
+            GameObject navObject = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            sceneSurface = new GameObject().AddComponent<NavMeshSurface>();
+            sceneSurface.m_UseGeometry = NavMeshCollectGeometry.PhysicsColliders;
+            //sceneSurface.layerMask = LayerMask.NameToLayer("Environment");
+            sceneSurface.BuildNavMesh();
+
+            Debug.Log("AGENT ID: " + vehicleSettings.agentTypeID);
+            Debug.Log("Build Complete: " + Time.time);
+            return vehicleSettings.agentTypeID;
+        }
+        */
 
         // The line below allows access to your plugin's logger from anywhere in your code, including outside of this file.
         // Use it with 'YourPlugin.Logger.LogInfo(message)' (or any of the other Log* methods)
