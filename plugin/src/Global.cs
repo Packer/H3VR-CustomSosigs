@@ -12,6 +12,7 @@ namespace CustomSosigLoader
     {
         //public static List<Texture2D> loadedTextures = new List<Texture2D>();
         public static Texture2D whiteSosig;
+        /*
         public static List<SosigMaterial> sosigMaterials;
 
         public class SosigMaterial
@@ -21,6 +22,7 @@ namespace CustomSosigLoader
             public Texture2D normal;
             public Texture masr;
         }
+        */
 
         public static List<string> GetCustomSosigDirectories()
         {

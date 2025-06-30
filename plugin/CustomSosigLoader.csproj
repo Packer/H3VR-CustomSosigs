@@ -3,7 +3,7 @@
     <!-- TODO: Change these values! -->
     <PropertyGroup>
         <AssemblyName>Sosig_Squad.CustomSosigLoader</AssemblyName>
-        <Version>1.1.1</Version>
+        <Version>1.1.4</Version>
         <Authors>Packer</Authors>
         <AssemblyTitle>Custom Sosig Loader</AssemblyTitle>
         <Description>A Custom Sosig Loader for H3VR</Description>
@@ -30,6 +30,9 @@
         <DebugSymbols>true</DebugSymbols>
         <DebugType>full</DebugType>
     </PropertyGroup>
+    <ItemGroup>
+      <None Include="src\Utility\CSL_VehicleDamage.cs" />
+    </ItemGroup>
 
     <!-- Project references -->
     <ItemGroup>

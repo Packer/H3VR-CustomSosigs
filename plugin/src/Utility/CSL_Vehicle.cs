@@ -7,14 +7,17 @@ namespace CustomSosigLoader;
 
 public class CSL_Vehicle : MonoBehaviour
 {
-    //Build new Navmesh for this vehicle
-
     public SosigWearable wearable;
 
     [Header("Spawning")]
-    //public bool requiresSky = false;
-    //public float spawnHeightLimit = 4f;
     public Transform vehicleCenter;
+
+    [Header("Health")]
+    [Tooltip("Maximum health for this vehicle")]
+    public float healthMax = 20;
+    [Tooltip("Current health for this vehicle")]
+    public float healthCurrent = 20;
+    protected float damageTimeout = 0;
 
     [Header("Wheels")]
     public float wheelRadius = 0.5f;
@@ -83,7 +86,8 @@ public class CSL_Vehicle : MonoBehaviour
     public Transform sosigVision;
     //public SosigWeapon dummyWeapon;
     [HideInInspector] public Sosig sosig;
-    protected Vector2 sosigLocalVelocity;
+    protected Vector2 currentVelocity;
+    protected Vector3 lastPosition;
     protected Vector2 sosigLocalVelocityNormal;
     protected Vector3 localTargetPos;
 
@@ -98,9 +102,7 @@ public class CSL_Vehicle : MonoBehaviour
     [Tooltip("Damaged Objects get enabled when mustard reaches amount percentage")]
     public GameObject[] damagedObjects;
     [Range(0, 1f), Tooltip("Percentage of health remaining when the damaged objects get enabled")]
-    public float damagedMustardAmount = 0.5f;
-
-    protected float maxMustard = 1000;
+    public float damagedThreshold = 0.5f;
 
 
     protected float healthDebug = 0;
@@ -151,7 +153,7 @@ public class CSL_Vehicle : MonoBehaviour
         }
         */
 
-        sosigLocalVelocity = SosigLocalVelocity();
+        currentVelocity = SosigLocalVelocity();
         sosigLocalVelocityNormal = SosigClampedLocalVelocity();
 
 
@@ -162,6 +164,66 @@ public class CSL_Vehicle : MonoBehaviour
         WeaponUpdate();
     }
 
+    public void Damage(float amount = 1, VehicleDamageEffect effect = VehicleDamageEffect.None, float effectTime = 0)
+    {
+
+        //If currently invincible
+        if (Time.time < damageTimeout)
+            return;
+        else
+            damageTimeout = 0.3f;
+
+        //Dummy Damage
+        Damage dam = new Damage();
+        dam.Dam_Blinding = 0;
+        dam.Dam_Cutting = 0;
+        dam.Dam_Chilling = 0;
+        dam.Dam_EMP = 0;
+        dam.Dam_Piercing = 0;
+        dam.Dam_Stunning = 0;
+        dam.Dam_Thermal = 0;
+        dam.Dam_TotalKinetic = 0;
+        dam.Dam_TotalEnergetic = 0;
+        dam.Class = FistVR.Damage.DamageClass.Abstract;
+
+        wearable.Damage(new Damage(dam));  //Tell Sosig we've damaged it
+
+        healthCurrent -= amount;
+
+        switch (effect)
+        {
+            case VehicleDamageEffect.Stun:
+                sosig.m_isStunned = true;
+                sosig.m_stunTimeLeft = effectTime;
+                break;
+            case VehicleDamageEffect.Confused:
+                sosig.m_isConfused = true;
+                sosig.m_confusedTime = effectTime;
+                break;
+            case VehicleDamageEffect.Freeze:
+                sosig.m_isFrozen = true;
+                sosig.m_debuffTime_Freeze = effectTime;
+                break;
+            case VehicleDamageEffect.None:
+            default:
+                break;
+        }
+
+        //Show Damaged Vehicle if half or less HP
+        if (healthCurrent <= healthMax * damagedThreshold)
+        {
+            for (int i = 0; i < damagedObjects.Length; i++)
+            {
+                if (damagedObjects[i].activeSelf == false)
+                    damagedObjects[i].SetActive(true);
+            }
+        }
+
+        //Kill Sosig or Tell it we've damaged it
+        if (healthCurrent <= 0)
+            sosig.KillSosig();
+    }
+
     void LateSosigSetup()
     {
         for (int i = 0; i < sosig.Links.Count; i++)
@@ -169,6 +231,8 @@ public class CSL_Vehicle : MonoBehaviour
             //Force links already severed stop them 'breaking'
             sosig.Links[i].m_isJointSevered = true;
         }
+
+        sosig.DamMult_Explosive = 0;
 
         sosig.E.transform.SetParent(vehicleCenter, false);
 
@@ -219,8 +283,6 @@ public class CSL_Vehicle : MonoBehaviour
 
         //Stop weapon from being dropped
         sosig.DoesDropWeaponsOnBallistic = false;
-
-        maxMustard = sosig.Mustard;
 
         //VISUALS
 
@@ -335,6 +397,10 @@ public class CSL_Vehicle : MonoBehaviour
             {
                 if (sosig.Hands[i] != null && sosig.Hands[i].HeldObject != null)
                 {
+                    //Give missing muzzle back
+                    if (sosig.Hands[i].HeldObject.Muzzle == null)
+                        sosig.Hands[i].HeldObject.Muzzle = Instantiate(muzzle, sosig.Hands[i].HeldObject.transform);
+
                     //sosig.Hands[i].Target = sosigHandTarget;
                     sosig.Hands[i].HeldObject.O.RootRigidbody.position = turretMuzzle.position;
                     sosig.Hands[i].HeldObject.O.RootRigidbody.rotation = turretMuzzle.rotation;
@@ -429,7 +495,7 @@ public class CSL_Vehicle : MonoBehaviour
 
                 if (wheelsSpin)
                 {
-                    currentTurn.x += (sosigLocalVelocity.y / wheelRadius) * Mathf.Rad2Deg;
+                    currentTurn.x += (currentVelocity.y / wheelRadius) * Mathf.Rad2Deg;
                 }
 
 
@@ -459,22 +525,6 @@ public class CSL_Vehicle : MonoBehaviour
         if (turretAnimator != null)
         {
 
-        }
-
-        //Show damaged
-        if (isDead == false)
-        {
-            //If 40 or Below
-            if (sosig.Links[0].GetDamageStateIndex() >= 1
-                || sosig.Links[0].GetDamageStateIndex() >= 1
-                || sosig.Links[0].GetDamageStateIndex() >= 1
-                || sosig.Links[0].GetDamageStateIndex() >= 1)
-            {
-                for (int i = 0; i < damagedObjects.Length; i++)
-                {
-                    damagedObjects[i].SetActive(true);
-                }
-            }
         }
     }
 
@@ -516,7 +566,8 @@ public class CSL_Vehicle : MonoBehaviour
 
     Vector2 SosigLocalVelocity()
     {
-        Vector3 relativeVelocity = sosig.Agent.transform.InverseTransformDirection(sosig.Agent.velocity);
+        Vector3 relativeVelocity = sosig.Agent.transform.position - lastPosition;
+        lastPosition = sosig.Agent.transform.position;
         Vector2 local2D = new Vector2(relativeVelocity.x, relativeVelocity.z);
 
         return local2D;
