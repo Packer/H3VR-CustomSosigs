@@ -68,9 +68,17 @@ namespace CustomSosigLoader
                     }
 
                     //Add to our collection
-                    CustomSosigLoaderPlugin.customSosigs.Add(sosigTemplate.SosigEnemyID, sosigTemplate);
+                    if (CustomSosigLoaderPlugin.customSosigs.TryGetValue(sosigTemplate.SosigEnemyID, out Custom_SosigEnemyTemplate dup))
+                    {
+                        CustomSosigLoaderPlugin.Logger.LogWarning("Could not add duplicate " + sosigTemplate.SosigEnemyID + " - " + sosigTemplate.DisplayName);
+                    }
+                    else
+                    {
+                        CustomSosigLoaderPlugin.customSosigs.Add(sosigTemplate.SosigEnemyID, sosigTemplate);
+                        CustomSosigLoaderPlugin.Logger.LogInfo("Loaded " + sosigTemplate.SosigEnemyID + " - " + sosigTemplate.DisplayName);
+                    }
 
-                    CustomSosigLoaderPlugin.Logger.LogInfo("Custom Sosig Loader - Loaded " + sosigTemplate.SosigEnemyID + " - " + sosigTemplate.DisplayName);
+
                 }
             }
         }
