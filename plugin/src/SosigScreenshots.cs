@@ -17,6 +17,7 @@ namespace CustomSosigLoader
         public static Transform spawnPoint;
         public static Sosig currentSosig;
         public static GameObject currentGear;
+        public static int aaOption = 0;
 
         public static readonly SosigAPI.SpawnOptions _spawnOptions = new SosigAPI.SpawnOptions
         {
@@ -88,8 +89,14 @@ namespace CustomSosigLoader
 
             return gearIDs;
         }
-        public static IEnumerator RunSosigGearCapture()
+        public static IEnumerator RunSosigGearCapture(bool ignoreDuplicates = false)
         {
+            //Save last AA option
+            aaOption = QualitySettings.antiAliasing;
+            QualitySettings.antiAliasing = 0;
+            yield return null;
+
+
             CreateScreenshotSetup();
             List<FVRObject> gearList = GearSosigClothing();
             yield return null;
@@ -103,10 +110,22 @@ namespace CustomSosigLoader
             {
                 if (!CustomSosigLoaderPlugin.screenshotSosigGear)
                 {
+                    //Reset our AA option
+                    QualitySettings.antiAliasing = aaOption;
+
                     CustomSosigLoaderPlugin.Logger.LogInfo("Sosig Gear force stopped at " + DateTime.Now);
                     if (currentGear)
                         GameObject.Destroy(currentGear);
                     yield break;
+                }
+
+                //Check if it exists already
+                if (ignoreDuplicates)
+                {
+                    string filename = gear.ItemID + ".png";
+                    string path = Application.persistentDataPath + "/Gear/";
+                    if (Directory.Exists(path) && File.Exists(path + filename))
+                        continue;
                 }
 
                 //Create Gear
@@ -119,9 +138,7 @@ namespace CustomSosigLoader
 
                 currentGear.transform.position = spawnPoint.position + Vector3.up;
                 currentGear.transform.rotation = Quaternion.Euler(0, 180, 0);
-                //currentGear.GetComponent<Rigidbody>().isKinematic = true;
 
-                //currentSosig.GetComponent<UnityEngine.AI.NavMeshAgent>().enabled = false;
 
                 yield return null;
                 yield return null;
@@ -140,12 +157,22 @@ namespace CustomSosigLoader
             if (currentGear)
                 GameObject.Destroy(currentGear);
 
+            //Reset our AA option
+            QualitySettings.antiAliasing = aaOption;
+
             CustomSosigLoaderPlugin.Logger.LogInfo("Sosig Gear Complete at " + DateTime.Now);
         }
 
 
-        public static IEnumerator RunSosigCapture()
+        public static IEnumerator RunSosigCapture(bool ignoreDuplicates = false)
         {
+            //Save last AA option
+            aaOption = QualitySettings.antiAliasing;
+            QualitySettings.antiAliasing = 0;
+            yield return null;
+
+            yield return null;
+
             CreateScreenshotSetup();
             yield return null;
 
@@ -158,15 +185,27 @@ namespace CustomSosigLoader
             {
                 if (!CustomSosigLoaderPlugin.screenshotSosigs)
                 {
+                    //Reset our AA option
+                    QualitySettings.antiAliasing = aaOption;
+
                     CustomSosigLoaderPlugin.Logger.LogInfo("Screen Capture force stopped at " + DateTime.Now);
                     if(currentSosig)
                         currentSosig.DeSpawnSosig();
                     yield break;
                 }
 
-                //Create Sosig
-
                 string enumName = Enum.GetName(typeof(SosigEnemyID), pieceType);
+
+                //Check if it exists already
+                if (ignoreDuplicates)
+                {
+                    string filename = (int)pieceType + "_" + enumName + ".png";
+                    string path = Application.persistentDataPath + "/Sosigs/";
+                    if (Directory.Exists(path) && File.Exists(path + filename))
+                        continue;
+                }
+
+                //Create Sosig
                 CustomSosigLoaderPlugin.Logger.LogInfo(pieceType + " - " + enumName);
 
                 SosigEnemyTemplate newSosig;
@@ -202,6 +241,10 @@ namespace CustomSosigLoader
             }
             if(captureCamera)
                 GameObject.Destroy(captureCamera.gameObject);
+
+            //Reset our AA option
+            QualitySettings.antiAliasing = aaOption;
+
             CustomSosigLoaderPlugin.Logger.LogInfo("Screen Capture Complete at " + DateTime.Now);
         }
 
@@ -221,6 +264,7 @@ namespace CustomSosigLoader
 
             imageOverview.ReadPixels(new Rect(0, 0, captureCamera.targetTexture.width, captureCamera.targetTexture.height), 0, 0);
             imageOverview.Apply();
+            imageOverview = RemoveGreen(imageOverview);
             RenderTexture.active = currentRT;
 
             // Encode texture into PNG
@@ -251,6 +295,27 @@ namespace CustomSosigLoader
                 CustomSosigLoaderPlugin.Logger.LogInfo("Write to file: " + path);
                 fileStream.Write(bytes, 0, bytes.Length);
             }
+        }
+
+        public static Texture2D RemoveGreen(Texture2D source)
+        {
+            Texture2D tex = new Texture2D(source.width, source.height, TextureFormat.RGBA32, false);
+            tex.SetPixels(source.GetPixels());
+
+            Color[] pixels = tex.GetPixels();
+
+            for (int i = 0; i < pixels.Length; i++)
+            {
+                // Exact pure green check
+                if (pixels[i].g >= 0.99f && pixels[i].r == 0f && pixels[i].b == 0f)
+                {
+                    pixels[i] = new Color(0,0,0,0); //Set to Transparent black to hide lines
+                }
+            }
+
+            tex.SetPixels(pixels);
+            tex.Apply();
+            return tex;
         }
     }
 }

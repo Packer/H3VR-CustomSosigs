@@ -78,9 +78,12 @@ namespace CustomSosigLoader
         {
             Logger.LogInfo("Custom Sosig Loader: Loading Sosigs");
             Logger.LogInfo("Custom Sosig Loader: Start Sosig Capture - Right Shift + O");
+            Logger.LogInfo("Custom Sosig Loader: Start Sosig Capture Only New - Right Shift + L");
             Logger.LogInfo("Custom Sosig Loader: Stop Sosig Capture - Right Shift + P");
             Logger.LogInfo("Custom Sosig Loader: Start Gear Capture - Right Shift + U");
+            Logger.LogInfo("Custom Sosig Loader: Start Gear Capture Only New - Right Shift + J");
             Logger.LogInfo("Custom Sosig Loader: Stop Gear Capture - Right Shift + I");
+            Logger.LogInfo("Custom Sosig Loader: Print All Gear IDs - Right Shift + T");
             Global.LoadCustomVoiceLines();
             Global.LoadWhiteSosigTexture("CustomSosig_Base.png");
             Global.LoadCustomSosigs();
@@ -101,10 +104,9 @@ namespace CustomSosigLoader
         {
             if (Input.GetKey(KeyCode.RightShift) && Input.GetKeyUp(KeyCode.T))
             {
-                Logger.LogInfo("Printing all Sosig Clothing");
+                Logger.LogInfo("Right Shift + T Pressed - Printing all Sosig Clothing");
                 PrintAllFVRObjects();
-            }
-            
+            }            
 
             if (Input.GetKey(KeyCode.RightShift) && Input.GetKeyUp(KeyCode.O))
             {
@@ -113,6 +115,15 @@ namespace CustomSosigLoader
                 {
                     screenshotSosigs = true;
                     StartCoroutine(SosigScreenshots.RunSosigCapture());
+                }
+            }
+            if (Input.GetKey(KeyCode.RightShift) && Input.GetKeyUp(KeyCode.L))
+            {
+                Logger.LogInfo("Right Shift + L Pressed - Start Sosig Capture Only New");
+                if (!screenshotSosigs)
+                {
+                    screenshotSosigs = true;
+                    StartCoroutine(SosigScreenshots.RunSosigCapture(true));
                 }
             }
             if (Input.GetKey(KeyCode.RightShift) && Input.GetKeyUp(KeyCode.P))
@@ -128,6 +139,15 @@ namespace CustomSosigLoader
                 {
                     screenshotSosigGear = true;
                     StartCoroutine(SosigScreenshots.RunSosigGearCapture());
+                }
+            }
+            if (Input.GetKey(KeyCode.RightShift) && Input.GetKeyUp(KeyCode.J))
+            {
+                Logger.LogInfo("Right Shift + J Pressed - Start Gear Capture Only New");
+                if (!screenshotSosigGear)
+                {
+                    screenshotSosigGear = true;
+                    StartCoroutine(SosigScreenshots.RunSosigGearCapture(true));
                 }
             }
             if (Input.GetKey(KeyCode.RightShift) && Input.GetKeyUp(KeyCode.I))
@@ -220,7 +240,7 @@ namespace CustomSosigLoader
                 {
                     if (fvrObject && fvrObject.Category == FVRObject.ObjectCategory.SosigClothing)
                     {
-                        Logger.LogInfo(fvrObject.DisplayName);
+                        Logger.LogInfo(fvrObject.DisplayName + " - " + fvrObject.ItemID);
                     }
                 }
             }
