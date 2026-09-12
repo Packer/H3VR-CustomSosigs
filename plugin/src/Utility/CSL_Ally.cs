@@ -17,7 +17,7 @@ namespace CustomSosigLoader
         public void Start()
         {
             if (sosig == null)
-                Global.GetSosig(transform);
+                sosig = Global.GetSosig(transform);
 
             if (sosig == null)
             {
@@ -27,7 +27,7 @@ namespace CustomSosigLoader
             }
             SetAlly();
 
-            followSide = Random.Range(0,10) > 5 ? true : false;
+            followSide = Random.Range(0, 10) > 5 ? true : false;
         }
 
         void Update()

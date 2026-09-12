@@ -18,6 +18,7 @@ namespace CustomSosigLoader
     //[BepInDependency("h3vr.tnhframework", BepInDependency.DependencyFlags.SoftDependency)]
     public partial class CustomSosigLoaderPlugin : BaseUnityPlugin
     {
+        public static CustomSosigLoaderPlugin instance;
         public static bool h3mpEnabled = false;
         public static bool supplyRaidEnabled = false;
         public static bool otherLoaderEnabled = false;
@@ -46,6 +47,7 @@ namespace CustomSosigLoader
 
         private void Awake()
         {
+            instance = this;
             Logger = base.Logger;
             //Enabled Mods for soft dependencies
             h3mpEnabled = Chainloader.PluginInfos.ContainsKey("VIP.TommySoucy.H3MP");
@@ -66,7 +68,6 @@ namespace CustomSosigLoader
                 sosigMP = new GameObject().AddComponent<SosigMP>();
                 DontDestroyOnLoad(sosigMP.gameObject);
             }
-
         }
 
         void OnDestroy()
@@ -76,14 +77,14 @@ namespace CustomSosigLoader
 
         void LoadCustomSosigs()
         {
-            Logger.LogInfo("Custom Sosig Loader: Loading Sosigs");
-            Logger.LogInfo("Custom Sosig Loader: Start Sosig Capture - Right Shift + O");
-            Logger.LogInfo("Custom Sosig Loader: Start Sosig Capture Only New - Right Shift + L");
-            Logger.LogInfo("Custom Sosig Loader: Stop Sosig Capture - Right Shift + P");
-            Logger.LogInfo("Custom Sosig Loader: Start Gear Capture - Right Shift + U");
-            Logger.LogInfo("Custom Sosig Loader: Start Gear Capture Only New - Right Shift + J");
-            Logger.LogInfo("Custom Sosig Loader: Stop Gear Capture - Right Shift + I");
-            Logger.LogInfo("Custom Sosig Loader: Print All Gear IDs - Right Shift + T");
+            Logger.LogInfo("Loading Sosigs");
+            Logger.LogInfo("Start Sosig Capture - Right Shift + O");
+            Logger.LogInfo("Start Sosig Capture Only New - Right Shift + L");
+            Logger.LogInfo("Stop Sosig Capture - Right Shift + P");
+            Logger.LogInfo("Start Gear Capture - Right Shift + U");
+            Logger.LogInfo("Start Gear Capture Only New - Right Shift + J");
+            Logger.LogInfo("Stop Gear Capture - Right Shift + I");
+            Logger.LogInfo("Print All Gear IDs - Right Shift + T");
             Global.LoadCustomVoiceLines();
             Global.LoadWhiteSosigTexture("CustomSosig_Base.png");
             Global.LoadCustomSosigs();

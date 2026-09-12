@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using BepInEx;
 using FistVR;
-using UnityEngine;
-using BepInEx;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using UnityEngine;
 
 namespace CustomSosigLoader
 {
@@ -246,7 +247,7 @@ namespace CustomSosigLoader
 
                                     CustomSosigLoaderPlugin.customVoicelines.Add(voicelineName, speech);
 
-                                    CustomSosigLoaderPlugin.Logger.LogInfo("Custom Sosig Loader: Loaded voicelines - " + voicelineName);
+                                    CustomSosigLoaderPlugin.Logger.LogInfo("Loaded voicelines - " + voicelineName);
                                     break;
                                 }
                             }
@@ -264,6 +265,9 @@ namespace CustomSosigLoader
         {
             // Load .wav files in each subdirectory
             string[] wavFiles = Directory.GetFiles(path, "*.wav", SearchOption.TopDirectoryOnly);
+            string[] oggFiles = Directory.GetFiles(path, "*.ogg", SearchOption.TopDirectoryOnly);
+            //string[] mpFiles = Directory.GetFiles(path, "*.mp3", SearchOption.TopDirectoryOnly);
+
             foreach (string wavFile in wavFiles)
             {
                 // Load the .wav file as an AudioClip
@@ -273,7 +277,78 @@ namespace CustomSosigLoader
                     list.Add(clip);
                 }
             }
+
+            CustomSosigLoaderPlugin.instance.StartCoroutine(LoadOggAudio(oggFiles, list));
+            //CustomSosigLoaderPlugin.instance.StartCoroutine(LoadMP3Audio(mpFiles, list));
         }
+
+        public static IEnumerator LoadOggAudio(string[] oggPaths, List<AudioClip> list)
+        {
+            for (int i = 0; i < oggPaths.Length; i++)
+            {
+                string formattedPath = "file:///" + oggPaths[i];
+
+                using (WWW www = new WWW(formattedPath))
+                {
+                    yield return www;
+
+                    if (!string.IsNullOrEmpty(www.error))
+                    {
+                        Debug.LogError("Error loading OGG file: " + www.error);
+                    }
+                    else
+                    {
+                        // In Unity 5.6, use WWWAudioExtensions to safely extract OGG Vorbis
+                        AudioClip clip = WWWAudioExtensions.GetAudioClip(www, true, true, AudioType.OGGVORBIS);
+
+                        if (clip != null)
+                        {
+                            list.Add(clip);
+                        }
+                        else
+                        {
+
+                            Debug.LogError(formattedPath + " failed to load");
+                        }
+                    }
+                }
+            }
+        }
+        /*
+        //MP3 not supported
+        public static IEnumerator LoadMP3Audio(string[] mp3Paths, List<AudioClip> list)
+        {
+            for (int i = 0; i < mp3Paths.Length; i++)
+            {
+                string formattedPath = "file:///" + mp3Paths[i];
+
+                using (WWW www = new WWW(formattedPath))
+                {
+                    yield return www;
+
+                    if (!string.IsNullOrEmpty(www.error))
+                    {
+                        Debug.LogError("Error loading MP3 file: " + www.error);
+                    }
+                    else
+                    {
+                        // In Unity 5.6, use WWWAudioExtensions to safely extract OGG Vorbis
+                        AudioClip clip = WWWAudioExtensions.GetAudioClip(www, true, true, AudioType.MPEG);
+
+                        if (clip != null)
+                        {
+                            list.Add(clip);
+                        }
+                        else
+                        {
+
+                            Debug.LogError(formattedPath + " failed to load");
+                        }
+                    }
+                }
+            }
+        }
+        */
 
         public static AudioClip LoadWav(string filePath)
         {

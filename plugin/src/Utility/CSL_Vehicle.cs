@@ -319,7 +319,8 @@ public class CSL_Vehicle : MonoBehaviour
         }
 
         //Hide held weapons
-        HideSosigWeapon();
+        if(hideSosigWeapon)
+            HideSosigWeapon();
 
         //Disable all Sosig visuals
         for (int i = 0; i < sosig.Meshes.Length; i++)
@@ -375,6 +376,8 @@ public class CSL_Vehicle : MonoBehaviour
             }
 
             isDead = true;
+
+            s.DestroyAllHeldObjects();
         }
     }
 
